@@ -1,6 +1,6 @@
 charm_name: ovn-central
 gate_bundles:
-- disco
+- eoan
 - bionic
 smoke_bundles:
 - bionic
