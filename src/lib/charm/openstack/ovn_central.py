@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import collections
 import os
 import subprocess
 
@@ -48,7 +49,14 @@ def ovn_ca_cert(cls):
 
 
 class OVNCentralCharm(charms_openstack.charm.OpenStackCharm):
-    release = 'stein'
+    # OpenvSwitch and OVN is distributed as part of the Ubuntu Cloud Archive
+    # Pockets get their name from OpenStack releases
+    release = 'train'
+    package_codenames = {
+        'ovn-central': collections.OrderedDict([
+            ('2.12', 'train'),
+        ]),
+    }
     name = 'ovn-central'
     packages = ['ovn-central']
     services = ['ovn-central']

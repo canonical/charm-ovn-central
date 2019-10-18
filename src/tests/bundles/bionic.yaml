@@ -16,4 +16,4 @@ applications:
     charm: cs:~openstack-charmers-next/ovn-central
     num_units: 3
     options:
-      source: cloud:bionic-stein
+      source: cloud:bionic-train
