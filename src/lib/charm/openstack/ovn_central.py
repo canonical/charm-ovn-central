@@ -63,6 +63,7 @@ class OVNCentralCharm(charms_openstack.charm.OpenStackCharm):
     required_relations = ['certificates']
     restart_map = {
         '/etc/default/ovn-central': services,
+        os.path.join(OVS_ETCDIR, 'ovn-northd-db-params.conf'): services,
     }
     python_version = 3
     source_config_key = 'source'
@@ -151,12 +152,6 @@ class OVNCentralCharm(charms_openstack.charm.OpenStackCharm):
                      ovn_key(self.adapters_instance),
                      ovn_cert(self.adapters_instance),
                      ovn_ca_cert(self.adapters_instance))
-            self.run('ovs-vsctl',
-                     'set',
-                     'open',
-                     '.',
-                     'external-ids:ovn-remote=ssl:127.0.0.1:{}'
-                     .format(DB_SB_PORT))
             if reactive.is_flag_set('leadership.is_leader'):
                 self.run('ovn-nbctl',
                          'set-connection',
@@ -173,3 +168,19 @@ class OVNCentralCharm(charms_openstack.charm.OpenStackCharm):
                          'pssl:{}'.format(DB_SB_PORT))
                 self.restart_all()
             break
+
+    def configure_ovn_remote(self, ovsdb_interface):
+        """Configure the OVN remote setting in the local OVSDB.
+
+        The value is used by command line tools run on this unit.
+
+        :param ovsdb_interface: OVSDB interface instance
+        :type ovsdb_interface: reactive.Endpoint derived class
+        :raises: subprocess.CalledProcessError
+        """
+        self.run('ovs-vsctl',
+                 'set',
+                 'open',
+                 '.',
+                 'external-ids:ovn-remote={}'
+                 .format(','.join(ovsdb_interface.db_sb_connection_strs)))

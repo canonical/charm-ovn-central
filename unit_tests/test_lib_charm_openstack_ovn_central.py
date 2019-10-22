@@ -146,11 +146,6 @@ class TestOVNCentralCharm(Helper):
                           '/etc/openvswitch/key_host',
                           '/etc/openvswitch/cert_host',
                           '/etc/openvswitch/ovn-central.crt'),
-                mock.call('ovs-vsctl',
-                          'set',
-                          'open',
-                          '.',
-                          'external-ids:ovn-remote=ssl:127.0.0.1:6642'),
                 mock.call('ovn-nbctl',
                           'set-connection',
                           'pssl:6641'),
@@ -167,9 +162,19 @@ class TestOVNCentralCharm(Helper):
                           '/etc/openvswitch/key_host',
                           '/etc/openvswitch/cert_host',
                           '/etc/openvswitch/ovn-central.crt'),
-                mock.call('ovs-vsctl',
-                          'set',
-                          'open',
-                          '.',
-                          'external-ids:ovn-remote=ssl:127.0.0.1:6642'),
             ])
+
+    def test_configure_ovn_remote(self):
+        self.patch_target('run')
+        ovsdb_interface = mock.MagicMock()
+        ovsdb_interface.db_sb_connection_strs = \
+            mock.PropertyMock().return_value = [
+                'ssl:a.b.c.d:6642',
+                'ssl:a.b.c.d:6642',
+                'ssl:a.b.c.d:6642',
+            ]
+        self.target.configure_ovn_remote(ovsdb_interface)
+        self.run.assert_called_once_with(
+            'ovs-vsctl', 'set', 'open', '.',
+            'external-ids:ovn-remote='
+            'ssl:a.b.c.d:6642,ssl:a.b.c.d:6642,ssl:a.b.c.d:6642')
