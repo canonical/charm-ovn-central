@@ -1,0 +1,21 @@
+###############################################################################
+# [ WARNING ]
+# Configuration file maintained by Juju. Local changes may be overwritten.
+# Configuration managed by ovn-central charm
+###############################################################################
+[Unit]
+Description=Open vSwitch database server for OVN Southbound database
+After=network.target openvswitch-switch.service
+
+[Service]
+EnvironmentFile=-/etc/default/ovn-central
+Type=forking
+PIDFile=/var/run/openvswitch/ovnsb_db.pid
+ExecStart=/usr/share/openvswitch/scripts/ovn-ctl start_sb_ovsdb $OVN_CTL_OPTS
+ExecStop=/usr/share/openvswitch/scripts/ovn-ctl start_sb_ovsdb
+Restart=on-failure
+LimitNOFILE=65535
+TimeoutStopSec=15
+
+[Install]
+WantedBy=multi-user.target
