@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3fa7e38b_26c199e5",
+        "filename": "src/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 30561
+      },
+      "writtenOn": "2019-10-22T14:45:12Z",
+      "side": 1,
+      "message": "Similar comments from:\n\nhttps://review.opendev.org/#/c/690026/1/src/README.md",
+      "revId": "d21063ad568aaaaf7fc680485dd5b223cb106478",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543",
+      "unresolved": false
+    }
+  ]
+}
