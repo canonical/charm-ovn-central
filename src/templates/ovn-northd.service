@@ -1,0 +1,20 @@
+###############################################################################
+# [ WARNING ]
+# Configuration file maintained by Juju. Local changes may be overwritten.
+# Configuration managed by ovn-central charm
+###############################################################################
+[Unit]
+Description=Open Virtual Network central control daemon
+After=network.target ovn-nb-ovsdb.service ovn-sb-ovsdb.service
+PartOf=ovn-central.service
+DefaultDependencies=no
+
+[Service]
+EnvironmentFile=-/etc/default/ovn-central
+Type=forking
+PIDFile=/var/run/openvswitch/ovn-northd.pid
+ExecStart=/usr/share/openvswitch/scripts/ovn-ctl start_northd $OVN_CTL_OPTS
+ExecStop=/usr/share/openvswitch/scripts/ovn-ctl stop_northd
+Restart=on-failure
+LimitNOFILE=65535
+TimeoutStopSec=15

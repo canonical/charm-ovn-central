@@ -61,8 +61,26 @@ class OVNCentralCharm(charms_openstack.charm.OpenStackCharm):
     packages = ['ovn-central']
     services = ['ovn-central']
     required_relations = ['certificates']
+    # NOTE(fnordahl) we replace the package sysv init script with our own
+    # systemd service files.
+    #
+    # The issue that triggered this change is that to be able to pass the
+    # correct command line arguments to ``ovn-nortrhd`` we need to create
+    # a ``/etc/openvswitch/ovn-northd-db-params.conf`` which has the side
+    # effect of profoundly changing the behaviour of the ``ovn-ctl`` tool
+    # that the ``ovn-central`` init script makes use of.
+    #
+    # https://github.com/ovn-org/ovn/blob/dc0e10c068c20c4e59c9c86ecee26baf8ed50e90/utilities/ovn-ctl#L323
+    #
+    # TODO: The systemd service files should be upstreamed and removed from
+    # the charm
     restart_map = {
         '/etc/default/ovn-central': services,
+        os.path.join(OVS_ETCDIR, 'ovn-northd-db-params.conf'): ['ovn-northd'],
+        '/lib/systemd/system/ovn-central.service': [],
+        '/lib/systemd/system/ovn-northd.service': [],
+        '/lib/systemd/system/ovn-nb-ovsdb.service': [],
+        '/lib/systemd/system/ovn-sb-ovsdb.service': [],
     }
     python_version = 3
     source_config_key = 'source'
@@ -70,7 +88,7 @@ class OVNCentralCharm(charms_openstack.charm.OpenStackCharm):
     def install(self):
         """Extend the default install method.
 
-        Mask the ``ovn-central`` service before initial installation.
+        Mask services before initial installation.
 
         This is done to prevent extraneous standalone DB initialization and
         subsequent upgrade to clustered DB when configuration is rendered.
@@ -81,9 +99,12 @@ class OVNCentralCharm(charms_openstack.charm.OpenStackCharm):
         We also configure source before installing as OpenvSwitch and OVN
         packages are distributed as part of the UCA.
         """
-        ovn_central_service_file = '/etc/systemd/system/ovn-central.service'
-        if not os.path.islink(ovn_central_service_file):
-            os.symlink('/dev/null', ovn_central_service_file)
+        service_masks = [
+            '/etc/systemd/system/ovn-central.service',
+        ]
+        for service_file in service_masks:
+            if not os.path.islink(service_file):
+                os.symlink('/dev/null', service_file)
         self.configure_source()
         super().install()
 
@@ -151,13 +172,21 @@ class OVNCentralCharm(charms_openstack.charm.OpenStackCharm):
                      ovn_key(self.adapters_instance),
                      ovn_cert(self.adapters_instance),
                      ovn_ca_cert(self.adapters_instance))
-            self.run('ovs-vsctl',
-                     'set',
-                     'open',
-                     '.',
-                     'external-ids:ovn-remote=ssl:127.0.0.1:{}'
-                     .format(DB_SB_PORT))
-            if reactive.is_flag_set('leadership.is_leader'):
+            if (reactive.is_flag_set('leadership.is_leader') and not
+                    reactive.is_flag_set('leadership.set.ready')):
+                # This is one-time set up at cluster creation and can only be
+                # done one the OVSDB cluster leader.
+                #
+                # It also has to be done after certificates has been written
+                # to disk and before we do anything else which is why it is
+                # co-located with the ``configure_tls`` method.
+                #
+                # NOTE: There is one individual OVSDB cluster leader for each
+                # of the OVSDB databases and throughout a deployment lifetime
+                # they are not necessarilly the same as the charm leader.
+                #
+                # However, at bootstrap time the OVSDB cluster leaders will
+                # coincide with the charm leader.
                 self.run('ovn-nbctl',
                          'set-connection',
                          'pssl:{}'.format(DB_NB_PORT))
@@ -171,5 +200,21 @@ class OVNCentralCharm(charms_openstack.charm.OpenStackCharm):
                 self.run('ovn-sbctl',
                          'set-connection',
                          'pssl:{}'.format(DB_SB_PORT))
-                self.restart_all()
+            self.restart_all()
             break
+
+    def configure_ovn_remote(self, ovsdb_interface):
+        """Configure the OVN remote setting in the local OVSDB.
+
+        The value is used by command line tools run on this unit.
+
+        :param ovsdb_interface: OVSDB interface instance
+        :type ovsdb_interface: reactive.Endpoint derived class
+        :raises: subprocess.CalledProcessError
+        """
+        self.run('ovs-vsctl',
+                 'set',
+                 'open',
+                 '.',
+                 'external-ids:ovn-remote={}'
+                 .format(','.join(ovsdb_interface.db_sb_connection_strs)))

@@ -146,5 +146,6 @@ def render():
                                    ovsdb_peer.cluster_remote_addrs,
                                    ovsdb_peer.db_sb_cluster_port))
         if ovn_charm.enable_services():
+            ovn_charm.configure_ovn_remote(ovsdb_peer)
             reactive.set_flag('config.rendered')
         ovn_charm.assess_status()

@@ -64,11 +64,17 @@ class TestOVNCentralCharm(Helper):
         self.patch_object(ovn_central.os, 'symlink')
         self.patch_target('configure_source')
         self.target.install()
-        self.islink.assert_called_once_with(
-            '/etc/systemd/system/ovn-central.service')
-        self.symlink.assert_called_once_with(
-            '/dev/null',
-            '/etc/systemd/system/ovn-central.service')
+        calls = []
+        for service in self.target.services:
+            calls.append(
+                mock.call('/etc/systemd/system/{}.service'.format(service)))
+        self.islink.assert_has_calls(calls)
+        calls = []
+        for service in self.target.services:
+            calls.append(
+                mock.call('/dev/null',
+                          '/etc/systemd/system/{}.service'.format(service)))
+        self.symlink.assert_has_calls(calls)
         self.install.assert_called_once_with()
         self.configure_source.assert_called_once_with()
 
@@ -91,7 +97,10 @@ class TestOVNCentralCharm(Helper):
         self.assertFalse(self.service_resume.called)
         self.target.check_if_paused.return_value = (None, None)
         self.target.enable_services()
-        self.service_resume.assert_called_once_with('ovn-central')
+        calls = []
+        for service in self.target.services:
+            calls.append(mock.call(service))
+        self.service_resume.assert_has_calls(calls)
 
     def test_run(self):
         self.patch_object(ovn_central.subprocess, 'run')
@@ -129,7 +138,7 @@ class TestOVNCentralCharm(Helper):
             mocked_open.return_value = mocked_file
             self.target.configure_cert = mock.MagicMock()
             self.target.run = mock.MagicMock()
-            self.is_flag_set.return_value = True
+            self.is_flag_set.side_effect = [True, False]
             self.target.configure_tls()
             mocked_open.assert_called_once_with(
                 '/etc/openvswitch/ovn-central.crt', 'w')
@@ -146,11 +155,6 @@ class TestOVNCentralCharm(Helper):
                           '/etc/openvswitch/key_host',
                           '/etc/openvswitch/cert_host',
                           '/etc/openvswitch/ovn-central.crt'),
-                mock.call('ovs-vsctl',
-                          'set',
-                          'open',
-                          '.',
-                          'external-ids:ovn-remote=ssl:127.0.0.1:6642'),
                 mock.call('ovn-nbctl',
                           'set-connection',
                           'pssl:6641'),
@@ -158,7 +162,7 @@ class TestOVNCentralCharm(Helper):
                           'set-connection',
                           'pssl:6642'),
             ])
-            self.is_flag_set.return_value = False
+            self.is_flag_set.side_effect = [False, True]
             self.target.run.reset_mock()
             self.target.configure_tls()
             self.target.run.assert_has_calls([
@@ -167,9 +171,19 @@ class TestOVNCentralCharm(Helper):
                           '/etc/openvswitch/key_host',
                           '/etc/openvswitch/cert_host',
                           '/etc/openvswitch/ovn-central.crt'),
-                mock.call('ovs-vsctl',
-                          'set',
-                          'open',
-                          '.',
-                          'external-ids:ovn-remote=ssl:127.0.0.1:6642'),
             ])
+
+    def test_configure_ovn_remote(self):
+        self.patch_target('run')
+        ovsdb_interface = mock.MagicMock()
+        ovsdb_interface.db_sb_connection_strs = \
+            mock.PropertyMock().return_value = [
+                'ssl:a.b.c.d:6642',
+                'ssl:a.b.c.d:6642',
+                'ssl:a.b.c.d:6642',
+            ]
+        self.target.configure_ovn_remote(ovsdb_interface)
+        self.run.assert_called_once_with(
+            'ovs-vsctl', 'set', 'open', '.',
+            'external-ids:ovn-remote='
+            'ssl:a.b.c.d:6642,ssl:a.b.c.d:6642,ssl:a.b.c.d:6642')

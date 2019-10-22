@@ -1,0 +1,24 @@
+###############################################################################
+# [ WARNING ]
+# Configuration file maintained by Juju. Local changes may be overwritten.
+# Configuration managed by ovn-central charm
+###############################################################################
+[Unit]
+Description=Open Virtual Network central components
+After=network.target
+After=openvswitch-switch.service
+Requires=network.target
+Requires=openvswitch-switch.service
+Requires=ovn-northd.service
+# Facilitate spread placement of the DBs if someone should choose to do that
+Wants=ovn-nb-ovsdb.service
+Wants=ovn-sb-ovsdb.service
+
+[Service]
+Type=oneshot
+ExecStart=/bin/true
+ExecStop=/bin/true
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
