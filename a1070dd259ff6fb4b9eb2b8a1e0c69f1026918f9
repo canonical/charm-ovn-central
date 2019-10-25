@@ -1,0 +1,9 @@
+Verified+1: Canonical CI <uosci-testing-bot@ubuntu.com>
+Code-Review+2: James Page <james.page@canonical.com>
+Workflow+1: James Page <james.page@canonical.com>
+Verified+2: Zuul
+Submitted-by: Zuul
+Submitted-at: Fri, 25 Oct 2019 09:11:31 +0000
+Reviewed-on: https://review.opendev.org/690025
+Project: x/charm-ovn-central
+Branch: refs/heads/master
