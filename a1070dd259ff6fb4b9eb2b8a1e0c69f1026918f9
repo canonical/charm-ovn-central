@@ -16,6 +16,24 @@
       "revId": "a1070dd259ff6fb4b9eb2b8a1e0c69f1026918f9",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3fa7e38b_428c85d6",
+        "filename": "src/lib/charm/openstack/ovn_central.py",
+        "patchSetId": 8
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2019-10-25T08:47:52Z",
+      "side": 1,
+      "message": "It\u0027s the default mode of operation for charms.openstack to get a list of the configs to render.\n\nhttps://github.com/openstack/charms.openstack/blob/94d446433b415a31afba8c540e55772877476930/charms_openstack/charm/core.py#L791",
+      "parentUuid": "3fa7e38b_a2fe9968",
+      "revId": "a1070dd259ff6fb4b9eb2b8a1e0c69f1026918f9",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543",
+      "unresolved": false
     }
   ]
 }
