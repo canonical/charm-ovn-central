@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3fa7e38b_a2fe9968",
+        "filename": "src/lib/charm/openstack/ovn_central.py",
+        "patchSetId": 8
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 935
+      },
+      "writtenOn": "2019-10-25T08:31:41Z",
+      "side": 1,
+      "message": "I\u0027m not sure I understand the need to add the systemd units to the restart map?",
+      "revId": "a1070dd259ff6fb4b9eb2b8a1e0c69f1026918f9",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543",
+      "unresolved": false
+    }
+  ]
+}
