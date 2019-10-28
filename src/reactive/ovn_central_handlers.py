@@ -18,6 +18,10 @@ import charms.leadership as leadership
 import charms_openstack.bus
 import charms_openstack.charm as charm
 
+import charmhelpers.core as ch_core
+
+import charm.ovs as ovs
+
 
 charms_openstack.bus.discover()
 
@@ -149,3 +153,33 @@ def render():
             ovn_charm.configure_ovn_remote(ovsdb_peer)
             reactive.set_flag('config.rendered')
         ovn_charm.assess_status()
+
+
+# @reactive.when('leadership.set.ready', 'ovsdb.connected',
+#                'endpoint.ovsdb.changed.chassis')
+@reactive.when('leadership.set.ready', 'ovsdb.connected')
+def register_chassis():
+    ovsdb = reactive.endpoint_from_flag('ovsdb.connected')
+    if ovs.is_cluster_leader('/var/run/openvswitch/ovnsb_db.ctl',
+                             'OVN_Southbound'):
+        sb_encap = ovs.SimpleOVSDB('ovn-sbctl', 'encap')
+        for entry in ovsdb.get_chassis():
+            for chassis, encap in entry.items():
+                # TODO: We need to update interface data model to be a list of
+                # encap types, and we need a higher level function to compare
+                # the remote charm registration with the multiple encap rows
+                # in the SB DB to be able to detect when to update.
+                for enc in sb_encap.find('chassis_name={}'.format(chassis)):
+                    if (enc['type'] == encap[0] and enc['ip'] == encap[1]):
+                        ch_core.hookenv.log('skip registering already '
+                                            'existing and up to date chassis.',
+                                            level=ch_core.hookenv.DEBUG)
+                        break
+                else:
+                    ovs.del_chassis(chassis)
+                    ovs.add_chassis(chassis, encap[0], encap[1])
+
+    ch_core.hookenv.log('DEBUG: register_chassis "{}"'
+                        .format(list(ovsdb.get_chassis())),
+                        level=ch_core.hookenv.INFO)
+    reactive.clear_flag('endpoint.ovsdb.changed.chassis')
