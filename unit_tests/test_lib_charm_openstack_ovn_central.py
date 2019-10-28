@@ -81,7 +81,7 @@ class TestOVNCentralCharm(Helper):
     def test__default_port_list(self):
         self.assertEquals(
             self.target._default_port_list(),
-            [ovn_central.DB_NB_PORT, ovn_central.DB_SB_PORT])
+            [6641, 6642])
 
     def test_ports_to_check(self):
         self.target._default_port_list = mock.MagicMock()
@@ -133,6 +133,17 @@ class TestOVNCentralCharm(Helper):
             'ca': 'fakeca',
             'chain': 'fakechain',
         }]
+        self.patch_object(ovn_central.reactive, 'endpoint_from_name')
+        ovsdb_peer = mock.MagicMock()
+        ovsdb_peer.db_nb_port = mock.PropertyMock().return_value = 6641
+        ovsdb_peer.db_sb_port = mock.PropertyMock().return_value = 6642
+        ovsdb_peer.db_sb_admin_port = mock.PropertyMock().return_value = 16642
+        ovsdb_peer.cluster_local_addr = mock.PropertyMock().return_value = (
+            'a.b.c.d')
+        ovsdb = mock.MagicMock()
+        ovsdb.db_nb_port = mock.PropertyMock().return_value = 6641
+        ovsdb.db_sb_port = mock.PropertyMock().return_value = 6642
+        self.endpoint_from_name.side_effect = [ovsdb_peer, ovsdb]
         with mock.patch('builtins.open', create=True) as mocked_open:
             mocked_file = mock.MagicMock(spec=io.FileIO)
             mocked_open.return_value = mocked_file
@@ -158,9 +169,13 @@ class TestOVNCentralCharm(Helper):
                 mock.call('ovn-nbctl',
                           'set-connection',
                           'pssl:6641'),
-                mock.call('ovn-sbctl',
-                          'set-connection',
-                          'pssl:6642'),
+                mock.call('ovn-sbctl', '--', '--id=@connection', 'create',
+                          'connection', 'role=ovn-controller',
+                          'target="pssl:6642"', '--', 'add', 'SB_Global', '.',
+                          'connections', '@connection'),
+                mock.call('ovn-sbctl', '--', '--id=@connection', 'create',
+                          'connection', 'target="pssl:16642"', '--', 'add',
+                          'SB_Global', '.', 'connections', '@connection'),
             ])
             self.is_flag_set.side_effect = [False, True]
             self.target.run.reset_mock()

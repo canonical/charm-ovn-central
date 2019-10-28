@@ -25,11 +25,6 @@ import charms_openstack.charm
 
 
 OVS_ETCDIR = '/etc/openvswitch'
-# XXX get these from the ovsdb-cluster interface
-DB_NB_PORT = 6641
-DB_SB_PORT = 6642
-DB_NB_CLUSTER_PORT = 6643
-DB_SB_CLUSTER_PORT = 6644
 
 
 @charms_openstack.adapters.config_property
@@ -116,7 +111,7 @@ class OVNCentralCharm(charms_openstack.charm.OpenStackCharm):
         """
         # NOTE(fnordahl): the port check  does not appear to cope with
         # ports bound to a specific interface LP: #1843434
-        return [DB_NB_PORT, DB_SB_PORT]
+        return [6641, 6642]
 
     def ports_to_check(self, *_):
         """Return list of ports to check the payload listens too.
@@ -187,19 +182,26 @@ class OVNCentralCharm(charms_openstack.charm.OpenStackCharm):
                 #
                 # However, at bootstrap time the OVSDB cluster leaders will
                 # coincide with the charm leader.
+                ovsdb_peer = reactive.endpoint_from_name('ovsdb-peer')
+                ovsdb_client = reactive.endpoint_from_name('ovsdb')
                 self.run('ovn-nbctl',
                          'set-connection',
-                         'pssl:{}'.format(DB_NB_PORT))
-                # NOTE(fnordahl): Temporarilly disable RBAC, we need to figure
-                #                 out how to pre-populate the Chassis database
-                #                 before enabling this.
-                # self.run('ovn-sbctl',
-                #          'set-connection',
-                #          'role=ovn-controller',
-                #          'pssl:{}'.format(DB_SB_PORT))
+                         'pssl:{}'.format(ovsdb_peer.db_nb_port))
                 self.run('ovn-sbctl',
-                         'set-connection',
-                         'pssl:{}'.format(DB_SB_PORT))
+                         '--',
+                         '--id=@connection',
+                         'create', 'connection', 'role=ovn-controller',
+                         'target="pssl:{}"'
+                         .format(ovsdb_client.db_sb_port), '--',
+                         'add', 'SB_Global', '.', 'connections', '@connection')
+                self.run('ovn-sbctl',
+                         '--',
+                         '--id=@connection',
+                         'create', 'connection',
+                         'target="pssl:{}"'
+                         .format(ovsdb_peer.db_sb_admin_port,
+                                 ovsdb_peer.cluster_local_addr), '--',
+                         'add', 'SB_Global', '.', 'connections', '@connection')
             self.restart_all()
             break
 
