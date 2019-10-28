@@ -25,11 +25,6 @@ import charms_openstack.charm
 
 
 OVS_ETCDIR = '/etc/openvswitch'
-# XXX get these from the ovsdb-cluster interface
-DB_NB_PORT = 6641
-DB_SB_PORT = 6642
-DB_NB_CLUSTER_PORT = 6643
-DB_SB_CLUSTER_PORT = 6644
 
 
 @charms_openstack.adapters.config_property
@@ -109,20 +104,26 @@ class OVNCentralCharm(charms_openstack.charm.OpenStackCharm):
         super().install()
 
     def _default_port_list(self, *_):
-        """Return list of ports the payload listens too.
+        """Return list of ports the payload listens to.
 
         The api_ports class attribute can not be used as it does not allow
         one service to listen to multiple ports.
+
+        :returns: port numbers the payload listens to.
+        :rtype: List[int]
         """
         # NOTE(fnordahl): the port check  does not appear to cope with
         # ports bound to a specific interface LP: #1843434
-        return [DB_NB_PORT, DB_SB_PORT]
+        return [6641, 6642]
 
     def ports_to_check(self, *_):
         """Return list of ports to check the payload listens too.
 
         The api_ports class attribute can not be used as it does not allow
         one service to listen to multiple ports.
+
+        :returns: ports numbers the payload listens to.
+        :rtype List[int]
         """
         return self._default_port_list()
 
@@ -130,7 +131,8 @@ class OVNCentralCharm(charms_openstack.charm.OpenStackCharm):
         """Enable services.
 
         :returns: True on success, False on failure.
-        :rtype: bool"""
+        :rtype: bool
+        """
         if self.check_if_paused() != (None, None):
             return False
         for service in self.services:
@@ -138,12 +140,32 @@ class OVNCentralCharm(charms_openstack.charm.OpenStackCharm):
         return True
 
     def run(self, *args):
+        """Fork off a proc and run commands, collect output and return code.
+
+        :param args: Arguments
+        :type args: Union
+        :returns: subprocess.CompletedProcess object
+        :rtype: subprocess.CompletedProcess
+        :raises: subprocess.CalledProcessError
+        """
         cp = subprocess.run(
             args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, check=True,
             universal_newlines=True)
         ch_core.hookenv.log(cp, level=ch_core.hookenv.INFO)
 
     def join_cluster(self, db_file, schema_name, local_conn, remote_conn):
+        """Maybe create a OVSDB file with remote peer connection information.
+
+        :param db_file: Full path to OVSDB file
+        :type db_file: str
+        :param schema_name: OVSDB Schema [OVN_Northbound, OVN_Southbound]
+        :type schema_name: str
+        :param local_conn: Connection string for local unit
+        :type local_conn: Union[str, ...]
+        :param remote_conn: Connection string for remote unit(s)
+        :type remote_conn: Union[str, ...]
+        :raises: subprocess.CalledProcessError
+        """
         if os.path.exists(db_file):
             return
         cmd = ['ovsdb-tool', 'join-cluster', db_file, schema_name]
@@ -153,7 +175,12 @@ class OVNCentralCharm(charms_openstack.charm.OpenStackCharm):
         self.run(*cmd)
 
     def configure_tls(self, certificates_interface=None):
-        """Override default handler prepare certs per OVNs taste."""
+        """Override default handler prepare certs per OVNs taste.
+        
+        :param certificates_interface: Certificates interface if present
+        :type certificates_interface: Optional[reactive.Endpoint]
+        :raises: subprocess.CalledProcessError
+        """
         tls_objects = self.get_certs_and_keys(
             certificates_interface=certificates_interface)
 
@@ -187,19 +214,26 @@ class OVNCentralCharm(charms_openstack.charm.OpenStackCharm):
                 #
                 # However, at bootstrap time the OVSDB cluster leaders will
                 # coincide with the charm leader.
+                ovsdb_peer = reactive.endpoint_from_name('ovsdb-peer')
+                ovsdb_client = reactive.endpoint_from_name('ovsdb')
                 self.run('ovn-nbctl',
                          'set-connection',
-                         'pssl:{}'.format(DB_NB_PORT))
-                # NOTE(fnordahl): Temporarilly disable RBAC, we need to figure
-                #                 out how to pre-populate the Chassis database
-                #                 before enabling this.
-                # self.run('ovn-sbctl',
-                #          'set-connection',
-                #          'role=ovn-controller',
-                #          'pssl:{}'.format(DB_SB_PORT))
+                         'pssl:{}'.format(ovsdb_peer.db_nb_port))
                 self.run('ovn-sbctl',
-                         'set-connection',
-                         'pssl:{}'.format(DB_SB_PORT))
+                         '--',
+                         '--id=@connection',
+                         'create', 'connection', 'role=ovn-controller',
+                         'target="pssl:{}"'
+                         .format(ovsdb_client.db_sb_port), '--',
+                         'add', 'SB_Global', '.', 'connections', '@connection')
+                self.run('ovn-sbctl',
+                         '--',
+                         '--id=@connection',
+                         'create', 'connection',
+                         'target="pssl:{}"'
+                         .format(ovsdb_peer.db_sb_admin_port,
+                                 ovsdb_peer.cluster_local_addr), '--',
+                         'add', 'SB_Global', '.', 'connections', '@connection')
             self.restart_all()
             break
 
