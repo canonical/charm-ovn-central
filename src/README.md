@@ -31,6 +31,21 @@ communication.
 
     juju deploy ovn-central --bind "''=oam-space ovsdb=data-space"
 
+## OVN RBAC and securing the OVN services
+
+The charm enables [RBAC](https://github.com/ovn-org/ovn/blob/master/Documentation/topics/role-based-access-control.rst)
+in the OVN Southbound database by default.  The RBAC feature enforces
+authorization of individual chassis connecting to the database, and also
+restricts database operations.
+
+In the event of a individual chassis being compromised, RBAC will make it more
+difficult to leverage database access for compromising other parts of the network.
+
+> **Note**: Due to how RBAC is implemented in [ovsdb-server](https://github.com/openvswitch/ovs/blob/master/Documentation/ref/ovsdb-server.7.rst#413-transact)
+  the charm opens up a separate listener at port 16642 for connections from
+  [ovn-northd](https://manpages.ubuntu.com/manpages/eoan/en/man8/ovn-northd.8.html).
+  It is up to the operator to restrict access to this port.
+
 # Bugs
 
 Please report bugs on [Launchpad](https://bugs.launchpad.net/charm-ovn-central/+filebug).
