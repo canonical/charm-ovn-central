@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3fa7e38b_ed6539b0",
+        "filename": "src/lib/charm/openstack/ovn_central.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 20870
+      },
+      "writtenOn": "2019-10-29T11:36:23Z",
+      "side": 1,
+      "message": "The docstring probably needs :returns: and :rtype:",
+      "revId": "ddb1b40b376c40fd5eb1288aefcf71d8a6d19470",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543",
+      "unresolved": false
+    }
+  ]
+}
