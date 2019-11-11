@@ -44,7 +44,12 @@ difficult to leverage database access for compromising other parts of the networ
 > **Note**: Due to how RBAC is implemented in [ovsdb-server](https://github.com/openvswitch/ovs/blob/master/Documentation/ref/ovsdb-server.7.rst#413-transact)
   the charm opens up a separate listener at port 16642 for connections from
   [ovn-northd](https://manpages.ubuntu.com/manpages/eoan/en/man8/ovn-northd.8.html).
-  It is up to the operator to restrict access to this port.
+
+The charm automatically enables the firewall and will allow traffic from its
+cluster peers to port 6641, 6643, 6644 and 16642.  CMS clients will be allowed
+to talk to port 6641.
+
+Anyone will be allowed to connect to port 6642.
 
 # Bugs
 
