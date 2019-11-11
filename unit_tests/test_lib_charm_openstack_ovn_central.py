@@ -175,3 +175,62 @@ class TestOVNCentralCharm(Helper):
                           'add', 'SB_Global', '.', 'connections',
                           '@connection'),
             ])
+
+    def test_configure_firewall(self):
+        self.patch_object(ovn_central, 'ch_ufw')
+        self.target.configure_firewall({
+            (1, 2, 3, 4,): ('a.b.c.d', 'e.f.g.h',),
+            (1, 2,): ('i.j.k.l', 'm.n.o.p',),
+        })
+        self.ch_ufw.enable.assert_called_once_with()
+        self.ch_ufw.modify_access.assert_has_calls([
+            mock.call(src=None, dst='any', port=1,
+                      proto='tcp', action='reject'),
+            mock.call(src=None, dst='any', port=2,
+                      proto='tcp', action='reject'),
+            mock.call(src=None, dst='any', port=3,
+                      proto='tcp', action='reject'),
+            mock.call(src=None, dst='any', port=4,
+                      proto='tcp', action='reject'),
+        ])
+        self.ch_ufw.grant_access.assert_has_calls([
+            mock.call('a.b.c.d', port=1, proto='tcp', prepend=True),
+            mock.call('e.f.g.h', port=1, proto='tcp', prepend=True),
+            mock.call('a.b.c.d', port=2, proto='tcp', prepend=True),
+            mock.call('e.f.g.h', port=2, proto='tcp', prepend=True),
+            mock.call('a.b.c.d', port=3, proto='tcp', prepend=True),
+            mock.call('e.f.g.h', port=3, proto='tcp', prepend=True),
+            mock.call('a.b.c.d', port=4, proto='tcp', prepend=True),
+            mock.call('e.f.g.h', port=4, proto='tcp', prepend=True),
+            mock.call('i.j.k.l', port=1, proto='tcp', prepend=True),
+            mock.call('m.n.o.p', port=1, proto='tcp', prepend=True),
+            mock.call('i.j.k.l', port=2, proto='tcp', prepend=True),
+            mock.call('m.n.o.p', port=2, proto='tcp', prepend=True),
+        ])
+        self.ch_ufw.reset_mock()
+        self.target.configure_firewall({
+            (1, 2, 3, 4,): ('a.b.c.d', 'e.f.g.h',),
+            (1, 2, 5,): None,
+        })
+        self.ch_ufw.modify_access.assert_has_calls([
+            mock.call(src=None, dst='any', port=1,
+                      proto='tcp', action='reject'),
+            mock.call(src=None, dst='any', port=2,
+                      proto='tcp', action='reject'),
+            mock.call(src=None, dst='any', port=3,
+                      proto='tcp', action='reject'),
+            mock.call(src=None, dst='any', port=4,
+                      proto='tcp', action='reject'),
+            mock.call(src=None, dst='any', port=5,
+                      proto='tcp', action='reject'),
+        ])
+        self.ch_ufw.grant_access.assert_has_calls([
+            mock.call('a.b.c.d', port=1, proto='tcp', prepend=True),
+            mock.call('e.f.g.h', port=1, proto='tcp', prepend=True),
+            mock.call('a.b.c.d', port=2, proto='tcp', prepend=True),
+            mock.call('e.f.g.h', port=2, proto='tcp', prepend=True),
+            mock.call('a.b.c.d', port=3, proto='tcp', prepend=True),
+            mock.call('e.f.g.h', port=3, proto='tcp', prepend=True),
+            mock.call('a.b.c.d', port=4, proto='tcp', prepend=True),
+            mock.call('e.f.g.h', port=4, proto='tcp', prepend=True),
+        ])
