@@ -46,6 +46,7 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
                                           'ovsdb-peer.connected',),
                 'certificates_in_config_tls': ('config.rendered',
                                                'config.changed',),
+                'configure_firewall': ('ovsdb-peer.available',),
                 'enable_default_certificates': ('charm.installed',),
                 'initialize_ovsdbs': ('charm.installed',
                                       'leadership.is_leader',
@@ -103,6 +104,38 @@ class TestOvnCentralHandlers(test_utils.PatchHelper):
         self.patch_object(handlers.charm, 'use_defaults')
         handlers.enable_default_certificates()
         self.use_defaults.assert_called_once_with('certificates.available')
+
+    def test_configure_firewall(self):
+        self.patch_object(handlers.reactive, 'endpoint_from_flag')
+        ovsdb_peer = mock.MagicMock()
+        self.endpoint_from_flag.side_effect = (ovsdb_peer, None)
+        handlers.configure_firewall()
+        self.endpoint_from_flag.assert_has_calls([
+            mock.call('ovsdb-peer.available'),
+            mock.call('ovsdb-cms.connected'),
+        ])
+        self.charm.configure_firewall.assert_called_once_with({
+            (ovsdb_peer.db_nb_port,
+                ovsdb_peer.db_sb_admin_port,
+                ovsdb_peer.db_sb_cluster_port,
+                ovsdb_peer.db_nb_cluster_port,):
+            ovsdb_peer.cluster_remote_addrs,
+            (ovsdb_peer.db_nb_port,): None,
+        })
+        self.charm.assess_status.assert_called_once_with()
+        self.charm.configure_firewall.reset_mock()
+        ovsdb_cms = mock.MagicMock()
+        self.endpoint_from_flag.side_effect = (ovsdb_peer, ovsdb_cms)
+        handlers.configure_firewall()
+        self.charm.configure_firewall.assert_called_once_with({
+            (ovsdb_peer.db_nb_port,
+                ovsdb_peer.db_sb_admin_port,
+                ovsdb_peer.db_sb_cluster_port,
+                ovsdb_peer.db_nb_cluster_port,):
+            ovsdb_peer.cluster_remote_addrs,
+            (ovsdb_peer.db_nb_port,):
+            ovsdb_cms.client_remote_addrs,
+        })
 
     def test_publish_addr_to_clients(self):
         self.patch_object(handlers.reactive, 'endpoint_from_flag')

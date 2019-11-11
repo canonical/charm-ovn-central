@@ -97,6 +97,23 @@ def enable_default_certificates():
     charm.use_defaults('certificates.available')
 
 
+@reactive.when('ovsdb-peer.available')
+def configure_firewall():
+    ovsdb_peer = reactive.endpoint_from_flag('ovsdb-peer.available')
+    ovsdb_cms = reactive.endpoint_from_flag('ovsdb-cms.connected')
+    with charm.provide_charm_instance() as ovn_charm:
+        ovn_charm.configure_firewall({
+            (ovsdb_peer.db_nb_port,
+                ovsdb_peer.db_sb_admin_port,
+                ovsdb_peer.db_sb_cluster_port,
+                ovsdb_peer.db_nb_cluster_port,):
+            ovsdb_peer.cluster_remote_addrs,
+            (ovsdb_peer.db_nb_port,):
+            ovsdb_cms.client_remote_addrs if ovsdb_cms else None,
+        })
+        ovn_charm.assess_status()
+
+
 @reactive.when('ovsdb-peer.available',
                'leadership.set.ready',
                'certificates.connected',
