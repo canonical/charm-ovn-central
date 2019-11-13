@@ -90,6 +90,25 @@ class TestOVNCentralCharm(Helper):
         self.target.ports_to_check()
         self.target._default_port_list.assert_called_once_with()
 
+    def test_custom_assess_status_check(self):
+        self.patch_object(ovn_central.ovn, 'is_cluster_leader')
+        self.is_cluster_leader.side_effect = [False, False]
+        self.assertEquals(
+            self.target.custom_assess_status_check(),
+            (None, None))
+        self.is_cluster_leader.assert_has_calls([
+            mock.call('ovnnb_db'),
+            mock.call('ovnsb_db'),
+        ])
+        self.is_cluster_leader.side_effect = [True, False]
+        self.assertEquals(
+            self.target.custom_assess_status_check(),
+            ('active', 'Unit is ready (leader: ovnnb_db)'))
+        self.is_cluster_leader.side_effect = [True, True]
+        self.assertEquals(
+            self.target.custom_assess_status_check(),
+            ('active', 'Unit is ready (leader: ovnnb_db, ovnsb_db)'))
+
     def test_enable_services(self):
         self.patch_object(ovn_central.ch_core.host, 'service_resume')
         self.target.check_if_paused = mock.MagicMock()

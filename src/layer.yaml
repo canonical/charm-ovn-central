@@ -1,7 +1,6 @@
 includes:
+  - layer:ovn
   - layer:leadership
-  - layer:openstack
-  - interface:ovsdb
   - interface:ovsdb-cluster
   - interface:ovsdb-cms
 options:
@@ -9,12 +8,3 @@ options:
     use_venv: True
     include_system_packages: False
 repo: https://github.com/openstack/charm-ovn
-config:
-  deletes:
-    - debug
-    - ssl_ca
-    - ssl_cert
-    - ssl_key
-    - use-internal-endpoints
-    - use-syslog
-    - verbose
