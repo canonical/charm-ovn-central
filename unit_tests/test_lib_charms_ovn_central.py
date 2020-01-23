@@ -175,8 +175,13 @@ class TestOVNCentralCharm(Helper):
             mocked_open.return_value = mocked_file
             self.target.configure_cert = mock.MagicMock()
             self.target.run = mock.MagicMock()
+            config = mock.MagicMock()
+            config.__getitem__.return_value = '42'
+            self.target.config = config
             self.is_flag_set.side_effect = [True, False]
             self.target.configure_tls()
+            config.__getitem__.assert_called_with(
+                'ovsdb-server-inactivity-probe')
             mocked_open.assert_called_once_with(
                 '/etc/openvswitch/ovn-central.crt', 'w')
             mocked_file.__enter__().write.assert_called_once_with(
@@ -187,15 +192,18 @@ class TestOVNCentralCharm(Helper):
                 'fakekey',
                 cn='host')
             self.target.run.assert_has_calls([
-                mock.call('ovn-nbctl',
-                          'set-connection',
-                          'pssl:6641'),
+                mock.call('ovn-nbctl', '--', '--id=@connection', 'create',
+                          'connection', 'target="pssl:6641"',
+                          'inactivity_probe=42', '--', 'add', 'NB_Global',
+                          '.', 'connections', '@connection'),
                 mock.call('ovn-sbctl', '--', '--id=@connection', 'create',
                           'connection', 'role=ovn-controller',
-                          'target="pssl:6642"', '--', 'add', 'SB_Global', '.',
+                          'target="pssl:6642"', 'inactivity_probe=42', '--',
+                          'add', 'SB_Global', '.',
                           'connections', '@connection'),
                 mock.call('ovn-sbctl', '--', '--id=@connection', 'create',
-                          'connection', 'target="pssl:16642"', '--',
+                          'connection', 'target="pssl:16642"',
+                          'inactivity_probe=42', '--',
                           'add', 'SB_Global', '.', 'connections',
                           '@connection'),
             ])

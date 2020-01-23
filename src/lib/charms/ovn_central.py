@@ -230,14 +230,22 @@ class OVNCentralCharm(charms_openstack.charm.OpenStackCharm):
                 ovsdb_peer = reactive.endpoint_from_name('ovsdb-peer')
                 ovsdb_client = reactive.endpoint_from_name('ovsdb')
                 self.run('ovn-nbctl',
-                         'set-connection',
-                         'pssl:{}'.format(ovsdb_peer.db_nb_port))
+                         '--',
+                         '--id=@connection',
+                         'create', 'connection',
+                         'target="pssl:{}"'.format(ovsdb_peer.db_nb_port),
+                         'inactivity_probe={}'.format(
+                             self.config['ovsdb-server-inactivity-probe']),
+                         '--',
+                         'add', 'NB_Global', '.', 'connections', '@connection')
                 self.run('ovn-sbctl',
                          '--',
                          '--id=@connection',
                          'create', 'connection', 'role=ovn-controller',
-                         'target="pssl:{}"'
-                         .format(ovsdb_client.db_sb_port), '--',
+                         'target="pssl:{}"'.format(ovsdb_client.db_sb_port),
+                         'inactivity_probe={}'.format(
+                             self.config['ovsdb-server-inactivity-probe']),
+                         '--',
                          'add', 'SB_Global', '.', 'connections', '@connection')
                 # NOTE(fnordahl) the listener configuration is written to the
                 # database and used by all units, so we cannot bind to specific
@@ -248,8 +256,11 @@ class OVNCentralCharm(charms_openstack.charm.OpenStackCharm):
                          '--',
                          '--id=@connection',
                          'create', 'connection',
-                         'target="pssl:{}"'
-                         .format(ovsdb_peer.db_sb_admin_port), '--',
+                         'target="pssl:{}"'.format(
+                             ovsdb_peer.db_sb_admin_port),
+                         'inactivity_probe={}'.format(
+                             self.config['ovsdb-server-inactivity-probe']),
+                         '--',
                          'add', 'SB_Global', '.', 'connections', '@connection')
             self.restart_all()
             break
