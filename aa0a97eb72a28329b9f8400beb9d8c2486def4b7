@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3fa7e38b_74ad7fa2",
+        "filename": "src/config.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 935
+      },
+      "writtenOn": "2020-01-24T06:25:08Z",
+      "side": 1,
+      "message": "I think I\u0027d prefer to see see as a config option in seconds rather than in ms - its a bit more user friendly.",
+      "revId": "aa0a97eb72a28329b9f8400beb9d8c2486def4b7",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543",
+      "unresolved": false
+    }
+  ]
+}
