@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
-
 import charms.reactive as reactive
 import charms.leadership as leadership
 
@@ -21,7 +19,7 @@ import charms_openstack.bus
 import charms_openstack.charm as charm
 
 
-charms_openstack.bus.discover(os.path.join('lib', 'charms'))
+charms_openstack.bus.discover()
 
 # Use the charms.openstack defaults for common states and hooks
 charm.use_defaults(
