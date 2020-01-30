@@ -18,7 +18,7 @@ import os
 
 import charms_openstack.test_utils as test_utils
 
-import charms.ovn_central as ovn_central
+import charm.openstack.ovn_central as ovn_central
 
 
 class Helper(test_utils.PatchHelper):
