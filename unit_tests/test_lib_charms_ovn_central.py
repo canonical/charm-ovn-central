@@ -146,7 +146,6 @@ class TestOVNCentralCharm(Helper):
             'ssl:a.b.c.d:1234', 'ssl:e.f.g.h:1234', 'ssl:i.j.k.l:1234')
 
     def test_configure_tls(self):
-        self.patch_object(ovn_central.reactive, 'is_flag_set')
         self.patch_target('get_certs_and_keys')
         self.get_certs_and_keys.return_value = [{
             'cert': 'fakecert',
@@ -155,17 +154,6 @@ class TestOVNCentralCharm(Helper):
             'ca': 'fakeca',
             'chain': 'fakechain',
         }]
-        self.patch_object(ovn_central.reactive, 'endpoint_from_name')
-        ovsdb_peer = mock.MagicMock()
-        ovsdb_peer.db_nb_port = mock.PropertyMock().return_value = 6641
-        ovsdb_peer.db_sb_port = mock.PropertyMock().return_value = 6642
-        ovsdb_peer.db_sb_admin_port = mock.PropertyMock().return_value = 16642
-        ovsdb_peer.cluster_local_addr = mock.PropertyMock().return_value = (
-            'a.b.c.d')
-        ovsdb = mock.MagicMock()
-        ovsdb.db_nb_port = mock.PropertyMock().return_value = 6641
-        ovsdb.db_sb_port = mock.PropertyMock().return_value = 6642
-        self.endpoint_from_name.side_effect = [ovsdb_peer, ovsdb]
         self.patch_object(ovn_central, 'ovn_charm')
         self.ovn_charm.OVS_ETCDIR = '/etc/openvswitch'
         self.ovn_charm.ovn_ca_cert.return_value = os.path.join(
@@ -174,14 +162,7 @@ class TestOVNCentralCharm(Helper):
             mocked_file = mock.MagicMock(spec=io.FileIO)
             mocked_open.return_value = mocked_file
             self.target.configure_cert = mock.MagicMock()
-            self.target.run = mock.MagicMock()
-            config = mock.MagicMock()
-            config.__getitem__.return_value = '42'
-            self.target.config = config
-            self.is_flag_set.side_effect = [True, False]
             self.target.configure_tls()
-            config.__getitem__.assert_called_with(
-                'ovsdb-server-inactivity-probe')
             mocked_open.assert_called_once_with(
                 '/etc/openvswitch/ovn-central.crt', 'w')
             mocked_file.__enter__().write.assert_called_once_with(
@@ -191,22 +172,52 @@ class TestOVNCentralCharm(Helper):
                 'fakecert',
                 'fakekey',
                 cn='host')
-            self.target.run.assert_has_calls([
-                mock.call('ovn-nbctl', '--', '--id=@connection', 'create',
-                          'connection', 'target="pssl:6641"',
-                          'inactivity_probe=42000', '--', 'add', 'NB_Global',
-                          '.', 'connections', '@connection'),
-                mock.call('ovn-sbctl', '--', '--id=@connection', 'create',
-                          'connection', 'role=ovn-controller',
-                          'target="pssl:6642"', 'inactivity_probe=42000', '--',
-                          'add', 'SB_Global', '.',
-                          'connections', '@connection'),
-                mock.call('ovn-sbctl', '--', '--id=@connection', 'create',
-                          'connection', 'target="pssl:16642"',
-                          'inactivity_probe=42000', '--',
-                          'add', 'SB_Global', '.', 'connections',
-                          '@connection'),
-            ])
+
+    def test_configure_ovn_listener(self):
+        self.patch_object(ovn_central.ovn, 'is_cluster_leader')
+        self.patch_object(ovn_central.ovn, 'SimpleOVSDB')
+        self.patch_target('run')
+        port_map = {'6641': {'inactivity_probe': 42},
+                    '6642': {'role': 'ovn-controller'}}
+        self.is_cluster_leader.return_value = False
+        self.target.configure_ovn_listener('nb', port_map)
+        self.assertFalse(self.SimpleOVSDB.called)
+        self.is_cluster_leader.return_value = True
+        connections = mock.MagicMock()
+        connections.find.side_effect = [
+            [],
+            [{'_uuid': 'fake-uuid'}],
+            [],
+            [{'_uuid': 'fake-uuid'}],
+        ]
+        self.SimpleOVSDB.return_value = connections
+        self.target.configure_ovn_listener('nb', port_map)
+        self.run.assert_has_calls([
+            mock.call('ovn-nbctl', '--', '--id=@connection', 'create',
+                      'connection', 'target="pssl:6641"', '--', 'add',
+                      'NB_Global', '.', 'connections', '@connection'),
+            mock.call('ovn-nbctl', '--', '--id=@connection', 'create',
+                      'connection', 'target="pssl:6642"', '--', 'add',
+                      'NB_Global', '.', 'connections', '@connection'),
+        ])
+        connections.set.assert_has_calls([
+            mock.call('fake-uuid', 'inactivity_probe', 42),
+            mock.call('fake-uuid', 'role', 'ovn-controller')
+        ])
+
+    def test_configure_ovn(self):
+        self.patch_target('config')
+        self.config.__getitem__.return_value = 42
+        self.patch_target('configure_ovn_listener')
+        self.target.configure_ovn(1, 2, 3)
+        self.config.__getitem__.assert_called_once_with(
+            'ovsdb-server-inactivity-probe')
+        self.configure_ovn_listener.assert_has_calls([
+            mock.call('nb', {'6641': {'inactivity_probe': 42000}}),
+            mock.call('sb', {'6642': {'role': 'ovn-controller',
+                                      'inactivity_probe': 42000}}),
+            mock.call('sb', {'16642': {'inactivity_probe': 42000}}),
+        ])
 
     def test_configure_firewall(self):
         self.patch_object(ovn_central, 'ch_ufw')

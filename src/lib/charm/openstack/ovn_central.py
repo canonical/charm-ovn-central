@@ -16,8 +16,6 @@ import collections
 import os
 import subprocess
 
-import charms.reactive as reactive
-
 import charmhelpers.core as ch_core
 from charmhelpers.contrib.network import ufw as ch_ufw
 
@@ -212,57 +210,94 @@ class OVNCentralCharm(charms_openstack.charm.OpenStackCharm):
                                 tls_object['cert'],
                                 tls_object['key'],
                                 cn='host')
-            if (reactive.is_flag_set('leadership.is_leader') and not
-                    reactive.is_flag_set('leadership.set.ready')):
-                # This is one-time set up at cluster creation and can only be
-                # done one the OVSDB cluster leader.
-                #
-                # It also has to be done after certificates has been written
-                # to disk and before we do anything else which is why it is
-                # co-located with the ``configure_tls`` method.
-                #
-                # NOTE: There is one individual OVSDB cluster leader for each
-                # of the OVSDB databases and throughout a deployment lifetime
-                # they are not necessarilly the same as the charm leader.
-                #
-                # However, at bootstrap time the OVSDB cluster leaders will
-                # coincide with the charm leader.
-                inactivity_probe = int(
-                    self.config['ovsdb-server-inactivity-probe']) * 1000
-                ovsdb_peer = reactive.endpoint_from_name('ovsdb-peer')
-                ovsdb_client = reactive.endpoint_from_name('ovsdb')
-                self.run('ovn-nbctl',
-                         '--',
-                         '--id=@connection',
-                         'create', 'connection',
-                         'target="pssl:{}"'.format(ovsdb_peer.db_nb_port),
-                         'inactivity_probe={}'.format(inactivity_probe),
-                         '--',
-                         'add', 'NB_Global', '.', 'connections', '@connection')
-                self.run('ovn-sbctl',
-                         '--',
-                         '--id=@connection',
-                         'create', 'connection', 'role=ovn-controller',
-                         'target="pssl:{}"'.format(ovsdb_client.db_sb_port),
-                         'inactivity_probe={}'.format(inactivity_probe),
-                         '--',
-                         'add', 'SB_Global', '.', 'connections', '@connection')
-                # NOTE(fnordahl) the listener configuration is written to the
-                # database and used by all units, so we cannot bind to specific
-                # space/address here.  We might consider not using listener
-                # configuration from DB, but that is currently not supported
-                # by init script.
-                self.run('ovn-sbctl',
-                         '--',
-                         '--id=@connection',
-                         'create', 'connection',
-                         'target="pssl:{}"'.format(
-                             ovsdb_peer.db_sb_admin_port),
-                         'inactivity_probe={}'.format(inactivity_probe),
-                         '--',
-                         'add', 'SB_Global', '.', 'connections', '@connection')
-            self.restart_all()
             break
+
+    def configure_ovn_listener(self, db, port_map):
+        """Create or update OVN listener configuration.
+
+        :param db: Database to operate on, 'nb' or 'sb'
+        :type db: str
+        :param port_map: Dictionary with port number and associated settings
+        :type port_map: Dict[str,Dict[str,str]]
+        :raises: ValueError
+        """
+        if db not in ('nb', 'sb'):
+            raise ValueError
+        # NOTE: There is one individual OVSDB cluster leader for each
+        # of the OVSDB databases and throughout a deployment lifetime
+        # they are not necessarilly the same as the charm leader.
+        #
+        # However, at bootstrap time the OVSDB cluster leaders will
+        # coincide with the charm leader.
+        if ovn.is_cluster_leader('ovn{}_db'.format(db)):
+            ch_core.hookenv.log('is_cluster_leader {}'.format(db),
+                                level=ch_core.hookenv.DEBUG)
+            connections = ovn.SimpleOVSDB('ovn-{}ctl'.format(db), 'connection')
+            for port, settings in port_map.items():
+                ch_core.hookenv.log('port {} {}'.format(port, settings),
+                                    level=ch_core.hookenv.DEBUG)
+                # discover and create any non-existing listeners first
+                for connection in connections.find(
+                        'target="pssl:{}"'.format(port)):
+                    break
+                else:
+                    ch_core.hookenv.log('create port {}'.format(port),
+                                        level=ch_core.hookenv.DEBUG)
+                    # NOTE(fnordahl) the listener configuration is written to
+                    # the database and used by all units, so we cannot bind to
+                    # specific space/address here.  We might consider not
+                    # using listener configuration from DB, but that is
+                    # currently not supported by ``ovn-ctl`` script.
+                    self.run('ovn-{}ctl'.format(db),
+                             '--',
+                             '--id=@connection',
+                             'create', 'connection',
+                             'target="pssl:{}"'.format(port),
+                             '--',
+                             'add', '{}_Global'.format(db.upper()),
+                             '.', 'connections', '@connection')
+                # set/update connection settings
+                for connection in connections.find(
+                        'target="pssl:{}"'.format(port)):
+                    for k, v in settings.items():
+                        ch_core.hookenv.log(
+                            'set {} {} {}'
+                            .format(str(connection['_uuid']), k, v),
+                            level=ch_core.hookenv.DEBUG)
+                        connections.set(str(connection['_uuid']), k, v)
+
+    def configure_ovn(self, nb_port, sb_port, sb_admin_port):
+        """Create or update OVN listener configuration.
+
+        :param nb_port: Port for Northbound DB listener
+        :type nb_port: int
+        :param sb_port: Port for Southbound DB listener
+        :type sb_port: int
+        :param sb_admin_port: Port for cluster private Southbound DB listener
+        :type sb_admin_port: int
+        """
+        inactivity_probe = int(
+            self.config['ovsdb-server-inactivity-probe']) * 1000
+
+        self.configure_ovn_listener(
+            'nb', {
+                '6641': {
+                    'inactivity_probe': inactivity_probe,
+                },
+            })
+        self.configure_ovn_listener(
+            'sb', {
+                '6642': {
+                    'role': 'ovn-controller',
+                    'inactivity_probe': inactivity_probe,
+                },
+            })
+        self.configure_ovn_listener(
+            'sb', {
+                '16642': {
+                    'inactivity_probe': inactivity_probe,
+                },
+            })
 
     def configure_firewall(self, port_addr_map):
         """Configure firewall.

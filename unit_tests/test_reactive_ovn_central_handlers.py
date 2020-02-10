@@ -29,14 +29,17 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
             'upgrade-charm',
         ]
         hook_set = {
-            'when_not_all': {
-                'certificates_in_config_tls': ('config.default.ssl_ca',
-                                               'config.default.ssl_cert',
-                                               'config.default.ssl_key',),
-            },
-            'when_not': {
-                'enable_default_certificates': ('leadership.is_leader',),
-                'initialize_ovsdbs': ('leadership.set.ready',),
+            'when_none': {
+                'announce_leader_ready': ('leadership.set.nb_cid',
+                                          'leadership.set.sb_cid'),
+                'configure_firewall': ('run-default-update-status',),
+                'enable_default_certificates': ('run-default-update-status',
+                                                'leadership.is_leader',),
+                'initialize_ovsdbs': ('run-default-update-status',
+                                      'leadership.set.nb_cid',
+                                      'leadership.set.sb_cid',),
+                'publish_addr_to_clients': ('run-default-update-status',),
+                'render': ('run-default-update-status',),
             },
             'when': {
                 'announce_leader_ready': ('config.rendered',
@@ -52,11 +55,13 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
                                       'leadership.is_leader',
                                       'ovsdb-peer.connected',),
                 'publish_addr_to_clients': ('ovsdb-peer.available',
-                                            'leadership.set.ready',
+                                            'leadership.set.nb_cid',
+                                            'leadership.set.sb_cid',
                                             'certificates.connected',
                                             'certificates.available',),
                 'render': ('ovsdb-peer.available',
-                           'leadership.set.ready',
+                           'leadership.set.nb_cid',
+                           'leadership.set.sb_cid',
                            'certificates.connected',
                            'certificates.available',),
             },
@@ -71,21 +76,37 @@ class TestOvnCentralHandlers(test_utils.PatchHelper):
     def setUp(self):
         super().setUp()
         # self.patch_release(octavia.OctaviaCharm.release)
-        self.charm = mock.MagicMock()
+        self.target = mock.MagicMock()
         self.patch_object(handlers.charm, 'provide_charm_instance',
                           new=mock.MagicMock())
         self.provide_charm_instance().__enter__.return_value = \
-            self.charm
+            self.target
         self.provide_charm_instance().__exit__.return_value = None
 
     def test_announce_leader_ready(self):
+        self.patch_object(handlers.reactive, 'endpoint_from_name')
         self.patch_object(handlers.reactive, 'endpoint_from_flag')
         self.patch_object(handlers.leadership, 'leader_set')
+        self.patch_object(handlers.ovn, 'cluster_status')
+        ovsdb = mock.MagicMock()
+        self.endpoint_from_name.return_value = ovsdb
         ovsdb_peer = mock.MagicMock()
         self.endpoint_from_flag.return_value = ovsdb_peer
+        self.cluster_status.return_value = {
+            'cluster_id': ('fake', 'fake-cid')}
         handlers.announce_leader_ready()
         ovsdb_peer.publish_cluster_local_addr.assert_called_once_with()
-        self.leader_set.assert_called_once_with({'ready': True})
+        self.target.configure_ovn.assert_called_once_with(
+            ovsdb_peer.db_nb_port,
+            ovsdb.db_sb_port,
+            ovsdb_peer.db_sb_admin_port)
+
+        self.leader_set.assert_called_once_with(
+            {
+                'ready': True,
+                'nb_cid': ('fake', 'fake-cid'),
+                'sb_cid': ('fake', 'fake-cid'),
+            })
 
     def test_initialize_ovsdbs(self):
         self.patch_object(handlers.reactive, 'endpoint_from_flag')
@@ -94,11 +115,12 @@ class TestOvnCentralHandlers(test_utils.PatchHelper):
         ovsdb_peer = mock.MagicMock()
         self.endpoint_from_flag.return_value = ovsdb_peer
         handlers.initialize_ovsdbs()
-        self.charm.render_with_interfaces.assert_called_once_with([ovsdb_peer])
-        self.charm.enable_services.assert_called_once_with()
+        self.target.render_with_interfaces.assert_called_once_with(
+            [ovsdb_peer])
+        self.target.enable_services.assert_called_once_with()
         self.use_defaults.assert_called_once_with('certificates.available')
         self.set_flag.assert_called_once_with('config.rendered')
-        self.charm.assess_status()
+        self.target.assess_status()
 
     def test_enable_default_certificates(self):
         self.patch_object(handlers.charm, 'use_defaults')
@@ -114,7 +136,7 @@ class TestOvnCentralHandlers(test_utils.PatchHelper):
             mock.call('ovsdb-peer.available'),
             mock.call('ovsdb-cms.connected'),
         ])
-        self.charm.configure_firewall.assert_called_once_with({
+        self.target.configure_firewall.assert_called_once_with({
             (ovsdb_peer.db_nb_port,
                 ovsdb_peer.db_sb_admin_port,
                 ovsdb_peer.db_sb_cluster_port,
@@ -122,12 +144,12 @@ class TestOvnCentralHandlers(test_utils.PatchHelper):
             ovsdb_peer.cluster_remote_addrs,
             (ovsdb_peer.db_nb_port,): None,
         })
-        self.charm.assess_status.assert_called_once_with()
-        self.charm.configure_firewall.reset_mock()
+        self.target.assess_status.assert_called_once_with()
+        self.target.configure_firewall.reset_mock()
         ovsdb_cms = mock.MagicMock()
         self.endpoint_from_flag.side_effect = (ovsdb_peer, ovsdb_cms)
         handlers.configure_firewall()
-        self.charm.configure_firewall.assert_called_once_with({
+        self.target.configure_firewall.assert_called_once_with({
             (ovsdb_peer.db_nb_port,
                 ovsdb_peer.db_sb_admin_port,
                 ovsdb_peer.db_sb_cluster_port,
@@ -150,6 +172,7 @@ class TestOvnCentralHandlers(test_utils.PatchHelper):
         ovsdb_cms.publish_cluster_local_addr.assert_called_once_with('a.b.c.d')
 
     def test_render(self):
+        self.patch_object(handlers.reactive, 'endpoint_from_name')
         self.patch_object(handlers.reactive, 'endpoint_from_flag')
         self.patch_object(handlers.reactive, 'set_flag')
         ovsdb_peer = mock.MagicMock()
@@ -160,11 +183,12 @@ class TestOvnCentralHandlers(test_utils.PatchHelper):
                            'ssl:i.j.k.l:1234',)
         ovsdb_peer.db_connection_strs.return_value = connection_strs
         self.endpoint_from_flag.return_value = ovsdb_peer
-        self.charm.enable_services.return_value = False
+        self.target.enable_services.return_value = False
         handlers.render()
         self.endpoint_from_flag.assert_called_once_with('ovsdb-peer.available')
-        self.charm.render_with_interfaces.assert_called_once_with([ovsdb_peer])
-        self.charm.join_cluster.assert_has_calls([
+        self.target.render_with_interfaces.assert_called_once_with(
+            [ovsdb_peer])
+        self.target.join_cluster.assert_has_calls([
             mock.call('/var/lib/openvswitch/ovnnb_db.db',
                       'OVN_Northbound',
                       connection_strs,
@@ -174,7 +198,7 @@ class TestOvnCentralHandlers(test_utils.PatchHelper):
                       connection_strs,
                       connection_strs),
         ])
-        self.charm.assess_status.assert_called_once_with()
-        self.charm.enable_services.return_value = True
+        self.target.assess_status.assert_called_once_with()
+        self.target.enable_services.return_value = True
         handlers.render()
         self.set_flag.assert_called_once_with('config.rendered')

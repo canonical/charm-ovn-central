@@ -18,6 +18,8 @@ import charms.leadership as leadership
 import charms_openstack.bus
 import charms_openstack.charm as charm
 
+import charms.ovn as ovn
+
 
 charms_openstack.bus.discover()
 
@@ -30,19 +32,7 @@ charm.use_defaults(
 )
 
 
-# XXX this has not received testing, so disabling config options
-# for now.
-@reactive.when_not_all('config.default.ssl_ca',
-                       'config.default.ssl_cert',
-                       'config.default.ssl_key')
-@reactive.when('config.rendered', 'config.changed')
-def certificates_in_config_tls():
-    # handle the legacy ssl_* configuration options
-    with charm.provide_charm_instance() as ovn_charm:
-        ovn_charm.configure_tls()
-        ovn_charm.assess_status()
-
-
+@reactive.when_none('leadership.set.nb_cid', 'leadership.set.sb_cid')
 @reactive.when('config.rendered',
                'certificates.connected',
                'certificates.available',
@@ -64,11 +54,25 @@ def announce_leader_ready():
     ovsdb_peer = reactive.endpoint_from_flag('ovsdb-peer.connected')
     ovsdb_peer.publish_cluster_local_addr()
 
-    # FIXME use the OVSDB cluster and/or server IDs here?
-    leadership.leader_set({'ready': True})
+    ovsdb = reactive.endpoint_from_name('ovsdb')
+    with charm.provide_charm_instance() as ovn_charm:
+        # Create and configure listeners
+        ovn_charm.configure_ovn(
+            ovsdb_peer.db_nb_port,
+            ovsdb.db_sb_port,
+            ovsdb_peer.db_sb_admin_port)
+
+    nb_status = ovn.cluster_status('ovnnb_db')
+    sb_status = ovn.cluster_status('ovnsb_db')
+    leadership.leader_set({
+        'ready': True,
+        'nb_cid': nb_status['cluster_id'],
+        'sb_cid': sb_status['cluster_id'],
+    })
 
 
-@reactive.when_not('leadership.set.ready')
+@reactive.when_none('run-default-update-status', 'leadership.set.nb_cid',
+                    'leadership.set.sb_cid')
 @reactive.when('charm.installed', 'leadership.is_leader',
                'ovsdb-peer.connected')
 def initialize_ovsdbs():
@@ -88,7 +92,7 @@ def initialize_ovsdbs():
         ovn_charm.assess_status()
 
 
-@reactive.when_not('leadership.is_leader')
+@reactive.when_none('run-default-update-status', 'leadership.is_leader')
 @reactive.when('charm.installed')
 def enable_default_certificates():
     # belated enablement of default certificates handler due to the
@@ -97,6 +101,7 @@ def enable_default_certificates():
     charm.use_defaults('certificates.available')
 
 
+@reactive.when_none('run-default-update-status')
 @reactive.when('ovsdb-peer.available')
 def configure_firewall():
     ovsdb_peer = reactive.endpoint_from_flag('ovsdb-peer.available')
@@ -114,8 +119,10 @@ def configure_firewall():
         ovn_charm.assess_status()
 
 
+@reactive.when_none('run-default-update-status')
 @reactive.when('ovsdb-peer.available',
-               'leadership.set.ready',
+               'leadership.set.nb_cid',
+               'leadership.set.sb_cid',
                'certificates.connected',
                'certificates.available')
 def publish_addr_to_clients():
@@ -127,11 +134,14 @@ def publish_addr_to_clients():
         ep.publish_cluster_local_addr(ovsdb_peer.cluster_local_addr)
 
 
+@reactive.when_none('run-default-update-status')
 @reactive.when('ovsdb-peer.available',
-               'leadership.set.ready',
+               'leadership.set.nb_cid',
+               'leadership.set.sb_cid',
                'certificates.connected',
                'certificates.available')
 def render():
+    ovsdb = reactive.endpoint_from_name('ovsdb')
     ovsdb_peer = reactive.endpoint_from_flag('ovsdb-peer.available')
     with charm.provide_charm_instance() as ovn_charm:
         ovn_charm.render_with_interfaces([ovsdb_peer])
@@ -163,5 +173,10 @@ def render():
                                    ovsdb_peer.cluster_remote_addrs,
                                    ovsdb_peer.db_sb_cluster_port))
         if ovn_charm.enable_services():
+            # Handle any post deploy configuration changes impacting listeners
+            ovn_charm.configure_ovn(
+                ovsdb_peer.db_nb_port,
+                ovsdb.db_sb_port,
+                ovsdb_peer.db_sb_admin_port)
             reactive.set_flag('config.rendered')
         ovn_charm.assess_status()
