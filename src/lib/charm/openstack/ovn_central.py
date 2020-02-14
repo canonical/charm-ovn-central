@@ -299,6 +299,19 @@ class OVNCentralCharm(charms_openstack.charm.OpenStackCharm):
                 },
             })
 
+    @staticmethod
+    def initialize_firewall():
+        """Initialize firewall.
+
+        Note that this function is disruptive to active connections and should
+        only be called when necessary.
+        """
+        # set default allow
+        ch_ufw.enable()
+        ch_ufw.default_policy('allow', 'incoming')
+        ch_ufw.default_policy('allow', 'outgoing')
+        ch_ufw.default_policy('allow', 'routed')
+
     def configure_firewall(self, port_addr_map):
         """Configure firewall.
 
@@ -311,11 +324,6 @@ class OVNCentralCharm(charms_openstack.charm.OpenStackCharm):
         """
         ufw_comment = 'charm-' + self.name
 
-        # set default allow
-        ch_ufw.enable()
-        ch_ufw.default_policy('allow', 'incoming')
-        ch_ufw.default_policy('allow', 'outgoing')
-        ch_ufw.default_policy('allow', 'routed')
         # reject connection to protected ports
         for port in set().union(*port_addr_map.keys()):
             ch_ufw.modify_access(src=None, dst='any', port=port,

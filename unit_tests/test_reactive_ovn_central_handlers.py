@@ -35,6 +35,7 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
                 'configure_firewall': ('run-default-update-status',),
                 'enable_default_certificates': ('run-default-update-status',
                                                 'leadership.is_leader',),
+                'initialize_firewall': ('charm.firewall_initialized',),
                 'initialize_ovsdbs': ('run-default-update-status',
                                       'leadership.set.nb_cid',
                                       'leadership.set.sb_cid',),
@@ -82,6 +83,12 @@ class TestOvnCentralHandlers(test_utils.PatchHelper):
         self.provide_charm_instance().__enter__.return_value = \
             self.target
         self.provide_charm_instance().__exit__.return_value = None
+
+    def test_initialize_firewall(self):
+        self.patch_object(handlers.reactive, 'set_flag')
+        handlers.initialize_firewall()
+        self.target.initialize_firewall.assert_called_once_with()
+        self.set_flag.assert_called_once_with('charm.firewall_initialized')
 
     def test_announce_leader_ready(self):
         self.patch_object(handlers.reactive, 'endpoint_from_name')

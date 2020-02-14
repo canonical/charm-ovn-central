@@ -31,6 +31,13 @@ charm.use_defaults(
     'upgrade-charm',
 )
 
+@reactive.when_none('charm.firewall_initialized')
+def initialize_firewall():
+    """Do one-time initialization of firewall."""
+    with charm.provide_charm_instance() as ovn_charm:
+        ovn_charm.initialize_firewall()
+        reactive.set_flag('charm.firewall_initialized')
+
 
 @reactive.when_none('leadership.set.nb_cid', 'leadership.set.sb_cid')
 @reactive.when('config.rendered',

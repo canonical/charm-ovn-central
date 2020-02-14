@@ -219,6 +219,16 @@ class TestOVNCentralCharm(Helper):
             mock.call('sb', {3: {'inactivity_probe': 42000}}),
         ])
 
+    def test_initialize_firewall(self):
+        self.patch_object(ovn_central, 'ch_ufw')
+        self.target.initialize_firewall()
+        self.ch_ufw.enable.assert_called_once_with()
+        self.ch_ufw.default_policy.assert_has_calls([
+            mock.call('allow', 'incoming'),
+            mock.call('allow', 'outgoing'),
+            mock.call('allow', 'routed'),
+        ])
+
     def test_configure_firewall(self):
         self.patch_object(ovn_central, 'ch_ufw')
         self.ch_ufw.status.return_value = [
@@ -235,7 +245,6 @@ class TestOVNCentralCharm(Helper):
             (1, 2, 3, 4,): ('a.b.c.d', 'e.f.g.h',),
             (1, 2,): ('i.j.k.l', 'm.n.o.p',),
         })
-        self.ch_ufw.enable.assert_called_once_with()
         self.ch_ufw.modify_access.assert_has_calls([
             mock.call(src=None, dst='any', port=1,
                       proto='tcp', action='reject',
