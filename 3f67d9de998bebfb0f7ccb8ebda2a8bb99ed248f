@@ -1,0 +1,10 @@
+Verified+1: Canonical CI <uosci-testing-bot@ubuntu.com>
+Code-Review+1: Edward Hope-Morley <edward.hope-morley@canonical.com>
+Code-Review+2: James Page <james.page@canonical.com>
+Workflow+1: James Page <james.page@canonical.com>
+Verified+2: Zuul
+Submitted-by: Zuul
+Submitted-at: Fri, 14 Feb 2020 13:41:32 +0000
+Reviewed-on: https://review.opendev.org/707770
+Project: x/charm-ovn-central
+Branch: refs/heads/master
