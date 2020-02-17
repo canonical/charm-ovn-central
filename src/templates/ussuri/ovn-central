@@ -1,0 +1,40 @@
+# This is a systemd EnvironmentFile as documented in systemd.exec(5)
+#
+###############################################################################
+# [ WARNING ]
+# Configuration file maintained by Juju. Local changes may be overwritten.
+# Configuration managed by ovn-central charm
+###############################################################################
+
+# OVN_CTL_OPTS: Extra options to pass to ovs-ctl.  This is, for example,
+# a suitable place to specify --ovn-northd-wrapper=valgrind.
+
+# NOTE(fnordahl): Cluster join is directed towards all peers by a direct call
+# to `ovsdb-tool join-cluster` by the charm.
+#
+# That will create a database file on disk with the required information and
+# the `ovn-ctl` script will not touch it.
+#
+# The `ovn-ctl` `db-nb-cluster-remote-addr` and `db-sb-cluster-remote-addr`
+# configuration options only take one remote and one must be provided for
+# correct startup, but the values in the on-disk database file will be used by
+# `ovsdb-server`.
+OVN_CTL_OPTS= \
+    --db-nb-cluster-local-addr={{ ovsdb_peer.cluster_local_addr }} \
+    --db-nb-cluster-local-port={{ ovsdb_peer.db_nb_cluster_port }} \
+    --db-nb-cluster-local-proto=ssl \
+    --ovn-nb-db-ssl-key={{ options.ovn_key }} \
+    --ovn-nb-db-ssl-cert={{ options.ovn_cert }} \
+    --ovn-nb-db-ssl-ca-cert={{ options.ovn_ca_cert }} \
+    --db-nb-cluster-remote-addr={{ ovsdb_peer.cluster_remote_addrs | first }} \
+    --db-nb-cluster-remote-port={{ ovsdb_peer.db_nb_cluster_port }} \
+    --db-nb-cluster-remote-proto=ssl \
+    --db-sb-cluster-local-addr={{ ovsdb_peer.cluster_local_addr }} \
+    --db-sb-cluster-local-port={{ ovsdb_peer.db_sb_cluster_port }} \
+    --db-sb-cluster-local-proto=ssl \
+    --ovn-sb-db-ssl-key={{ options.ovn_key }} \
+    --ovn-sb-db-ssl-cert={{ options.ovn_cert }} \
+    --ovn-sb-db-ssl-ca-cert={{ options.ovn_ca_cert }} \
+    --db-sb-cluster-remote-addr={{ ovsdb_peer.cluster_remote_addrs | first }} \
+    --db-sb-cluster-remote-port={{ ovsdb_peer.db_sb_cluster_port }} \
+    --db-sb-cluster-remote-proto=ssl

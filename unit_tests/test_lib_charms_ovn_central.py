@@ -14,7 +14,6 @@
 
 import io
 import mock
-import os
 
 import charms_openstack.test_utils as test_utils
 
@@ -25,10 +24,10 @@ class Helper(test_utils.PatchHelper):
 
     def setUp(self):
         super().setUp()
-        self.patch_release(ovn_central.OVNCentralCharm.release)
+        self.patch_release(ovn_central.UssuriOVNCentralCharm.release)
         self.patch_object(
             ovn_central.charms_openstack.adapters, 'config_property')
-        self.target = ovn_central.OVNCentralCharm()
+        self.target = ovn_central.UssuriOVNCentralCharm()
 
     def patch_target(self, attr, return_value=None):
         mocked = mock.patch.object(self.target, attr)
@@ -41,13 +40,16 @@ class Helper(test_utils.PatchHelper):
 
 class TestOVNCentralCharm(Helper):
 
-    def test_install(self):
+    def test_install_train(self):
+        self.patch_release(ovn_central.TrainOVNCentralCharm.release)
+        self.target = ovn_central.TrainOVNCentralCharm()
         self.patch_object(ovn_central.charms_openstack.charm.OpenStackCharm,
                           'install')
         self.patch_object(ovn_central.os.path, 'islink')
         self.islink.return_value = False
         self.patch_object(ovn_central.os, 'symlink')
         self.patch_target('configure_source')
+        self.patch_object(ovn_central.os, 'mkdir')
         self.target.install()
         calls = []
         for service in ('openvswitch-switch', 'ovs-vswitchd', 'ovsdb-server',
@@ -58,6 +60,32 @@ class TestOVNCentralCharm(Helper):
         calls = []
         for service in ('openvswitch-switch', 'ovs-vswitchd', 'ovsdb-server',
                         self.target.services[0],):
+            calls.append(
+                mock.call('/dev/null',
+                          '/etc/systemd/system/{}.service'.format(service)))
+        self.symlink.assert_has_calls(calls)
+        self.install.assert_called_once_with()
+        self.configure_source.assert_called_once_with()
+
+    def test_install(self):
+        self.patch_object(ovn_central.charms_openstack.charm.OpenStackCharm,
+                          'install')
+        self.patch_object(ovn_central.os.path, 'islink')
+        self.islink.return_value = False
+        self.patch_object(ovn_central.os, 'symlink')
+        self.patch_target('configure_source')
+        self.patch_object(ovn_central.os, 'mkdir')
+        self.target.install()
+        calls = []
+        for service in (self.target.services[0],
+                        'ovn-ovsdb-server-nb',
+                        'ovn-ovsdb-server-sb',):
+            calls.append(
+                mock.call('/etc/systemd/system/{}.service'.format(service)))
+        self.islink.assert_has_calls(calls)
+        calls = []
+        for service in (self.target.services[0], 'ovn-ovsdb-server-nb',
+                        'ovn-ovsdb-server-sb',):
             calls.append(
                 mock.call('/dev/null',
                           '/etc/systemd/system/{}.service'.format(service)))
@@ -155,20 +183,20 @@ class TestOVNCentralCharm(Helper):
             'chain': 'fakechain',
         }]
         self.patch_object(ovn_central, 'ovn_charm')
-        self.ovn_charm.OVS_ETCDIR = '/etc/openvswitch'
-        self.ovn_charm.ovn_ca_cert.return_value = os.path.join(
-            self.ovn_charm.OVS_ETCDIR, 'ovn-central.crt')
+        self.ovn_charm.ovn_ca_cert.return_value = '/etc/ovn/ovn-central.crt'
+        self.patch_object(ovn_central.ovn, 'ovn_sysconfdir')
+        self.ovn_sysconfdir.return_value = '/etc/ovn'
         with mock.patch('builtins.open', create=True) as mocked_open:
             mocked_file = mock.MagicMock(spec=io.FileIO)
             mocked_open.return_value = mocked_file
             self.target.configure_cert = mock.MagicMock()
             self.target.configure_tls()
             mocked_open.assert_called_once_with(
-                '/etc/openvswitch/ovn-central.crt', 'w')
+                '/etc/ovn/ovn-central.crt', 'w')
             mocked_file.__enter__().write.assert_called_once_with(
                 'fakeca\nfakechain')
             self.target.configure_cert.assert_called_once_with(
-                self.ovn_charm.OVS_ETCDIR,
+                '/etc/ovn',
                 'fakecert',
                 'fakekey',
                 cn='host')
