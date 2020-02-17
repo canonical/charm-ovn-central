@@ -1,9 +1,11 @@
 charm_name: ovn-central
 gate_bundles:
+- bionic-train
 - eoan
-- bionic
+- bionic-ussuri
+- focal
 smoke_bundles:
-- bionic
+- bionic-ussuri
 target_deploy_status:
   ovn-central:
     workload-status: blocked
