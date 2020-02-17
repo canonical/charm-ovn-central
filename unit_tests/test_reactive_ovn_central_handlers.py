@@ -25,6 +25,7 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
         defaults = [
             'charm.installed',
             'config.changed',
+            'charm.default-select-release',
             'update-status',
             'upgrade-charm',
         ]
@@ -39,6 +40,7 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
                 'initialize_ovsdbs': ('run-default-update-status',
                                       'leadership.set.nb_cid',
                                       'leadership.set.sb_cid',),
+                'maybe_do_upgrade': ('run-default-update-status',),
                 'publish_addr_to_clients': ('run-default-update-status',),
                 'render': ('run-default-update-status',),
             },
@@ -55,6 +57,8 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
                 'initialize_ovsdbs': ('charm.installed',
                                       'leadership.is_leader',
                                       'ovsdb-peer.connected',),
+                'maybe_do_upgrade': ('config.changed.source',
+                                     'ovsdb-peer.available',),
                 'publish_addr_to_clients': ('ovsdb-peer.available',
                                             'leadership.set.nb_cid',
                                             'leadership.set.sb_cid',
@@ -76,7 +80,6 @@ class TestOvnCentralHandlers(test_utils.PatchHelper):
 
     def setUp(self):
         super().setUp()
-        # self.patch_release(octavia.OctaviaCharm.release)
         self.target = mock.MagicMock()
         self.patch_object(handlers.charm, 'provide_charm_instance',
                           new=mock.MagicMock())
@@ -149,7 +152,8 @@ class TestOvnCentralHandlers(test_utils.PatchHelper):
                 ovsdb_peer.db_sb_cluster_port,
                 ovsdb_peer.db_nb_cluster_port,):
             ovsdb_peer.cluster_remote_addrs,
-            (ovsdb_peer.db_nb_port,): None,
+            (ovsdb_peer.db_nb_port,
+                ovsdb_peer.db_sb_admin_port,): None,
         })
         self.target.assess_status.assert_called_once_with()
         self.target.configure_firewall.reset_mock()
@@ -162,8 +166,8 @@ class TestOvnCentralHandlers(test_utils.PatchHelper):
                 ovsdb_peer.db_sb_cluster_port,
                 ovsdb_peer.db_nb_cluster_port,):
             ovsdb_peer.cluster_remote_addrs,
-            (ovsdb_peer.db_nb_port,):
-            ovsdb_cms.client_remote_addrs,
+            (ovsdb_peer.db_nb_port,
+                ovsdb_peer.db_sb_admin_port,): ovsdb_cms.client_remote_addrs,
         })
 
     def test_publish_addr_to_clients(self):
@@ -196,11 +200,11 @@ class TestOvnCentralHandlers(test_utils.PatchHelper):
         self.target.render_with_interfaces.assert_called_once_with(
             [ovsdb_peer])
         self.target.join_cluster.assert_has_calls([
-            mock.call('/var/lib/openvswitch/ovnnb_db.db',
+            mock.call('ovnnb_db.db',
                       'OVN_Northbound',
                       connection_strs,
                       connection_strs),
-            mock.call('/var/lib/openvswitch/ovnsb_db.db',
+            mock.call('ovnsb_db.db',
                       'OVN_Southbound',
                       connection_strs,
                       connection_strs),
