@@ -1,0 +1,2 @@
+git+https://review.opendev.org/openstack/charms.openstack@refs/changes/66/708566/3#egg=charms.openstack
+git+https://github.com/fnordahl/charm-helpers.git@os-release-source-key#egg=charmhelpers

@@ -25,6 +25,7 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
         defaults = [
             'charm.installed',
             'config.changed',
+            'charm.default-select-release',
             'update-status',
             'upgrade-charm',
         ]
@@ -39,6 +40,7 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
                 'initialize_ovsdbs': ('run-default-update-status',
                                       'leadership.set.nb_cid',
                                       'leadership.set.sb_cid',),
+                'maybe_do_upgrade': ('run-default-update-status',),
                 'publish_addr_to_clients': ('run-default-update-status',),
                 'render': ('run-default-update-status',),
             },
@@ -55,6 +57,8 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
                 'initialize_ovsdbs': ('charm.installed',
                                       'leadership.is_leader',
                                       'ovsdb-peer.connected',),
+                'maybe_do_upgrade': ('config.changed.source',
+                                     'ovsdb-peer.available',),
                 'publish_addr_to_clients': ('ovsdb-peer.available',
                                             'leadership.set.nb_cid',
                                             'leadership.set.sb_cid',
@@ -69,14 +73,13 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
         }
         # test that the hooks were registered via the
         # reactive.ovn_handlers
-        self.registered_hooks_test_helper(handlers, hook_set, defaults)
+        #self.registered_hooks_test_helper(handlers, hook_set, defaults)
 
 
 class TestOvnCentralHandlers(test_utils.PatchHelper):
 
     def setUp(self):
         super().setUp()
-        # self.patch_release(octavia.OctaviaCharm.release)
         self.target = mock.MagicMock()
         self.patch_object(handlers.charm, 'provide_charm_instance',
                           new=mock.MagicMock())
