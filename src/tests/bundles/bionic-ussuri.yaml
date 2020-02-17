@@ -1,0 +1,19 @@
+series: bionic
+relations:
+- - vault:shared-db
+  - mysql:shared-db
+- - ovn-central:certificates
+  - vault:certificates
+applications:
+  mysql:
+    charm: cs:~openstack-charmers-next/percona-cluster
+    num_units: 1
+  vault:
+    charm: cs:~openstack-charmers-next/vault
+    num_units: 1
+  ovn-central:
+    series: bionic
+    charm: cs:~openstack-charmers-next/ovn-central
+    num_units: 3
+    options:
+      source: cloud:bionic-ussuri/staging

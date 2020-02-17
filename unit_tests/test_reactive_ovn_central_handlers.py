@@ -14,7 +14,17 @@
 
 import mock
 
-import reactive.ovn_central_handlers as handlers
+# The default select release handler is called on import and can only be called
+# once. The TestRegisteredHooks helper re-imports the module so we can not make
+# use of the normal test pattern.
+with mock.patch('charms_openstack.charm.use_defaults') as use_defaults:
+    import reactive.ovn_central_handlers as handlers
+    use_defaults.assert_called_once_with(
+        'charm.installed',
+        'config.changed',
+        'charm.default-select-release',
+        'update-status',
+        'upgrade-charm')
 
 import charms_openstack.test_utils as test_utils
 
@@ -22,12 +32,6 @@ import charms_openstack.test_utils as test_utils
 class TestRegisteredHooks(test_utils.TestRegisteredHooks):
 
     def test_hooks(self):
-        defaults = [
-            'charm.installed',
-            'config.changed',
-            'update-status',
-            'upgrade-charm',
-        ]
         hook_set = {
             'when_none': {
                 'announce_leader_ready': ('leadership.set.nb_cid',
@@ -39,6 +43,7 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
                 'initialize_ovsdbs': ('run-default-update-status',
                                       'leadership.set.nb_cid',
                                       'leadership.set.sb_cid',),
+                'maybe_do_upgrade': ('run-default-update-status',),
                 'publish_addr_to_clients': ('run-default-update-status',),
                 'render': ('run-default-update-status',),
             },
@@ -55,6 +60,8 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
                 'initialize_ovsdbs': ('charm.installed',
                                       'leadership.is_leader',
                                       'ovsdb-peer.connected',),
+                'maybe_do_upgrade': ('config.changed.source',
+                                     'ovsdb-peer.available',),
                 'publish_addr_to_clients': ('ovsdb-peer.available',
                                             'leadership.set.nb_cid',
                                             'leadership.set.sb_cid',
@@ -67,16 +74,20 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
                            'certificates.available',),
             },
         }
+        # The default select release handler is called on import and can only
+        # be called #once. The TestRegisteredHooks helper re-imports the module
+        # so we can not make use of the normal test pattern.
+        self.patch_object(handlers.charm, 'use_defaults')
+
         # test that the hooks were registered via the
         # reactive.ovn_handlers
-        self.registered_hooks_test_helper(handlers, hook_set, defaults)
+        self.registered_hooks_test_helper(handlers, hook_set)
 
 
 class TestOvnCentralHandlers(test_utils.PatchHelper):
 
     def setUp(self):
         super().setUp()
-        # self.patch_release(octavia.OctaviaCharm.release)
         self.target = mock.MagicMock()
         self.patch_object(handlers.charm, 'provide_charm_instance',
                           new=mock.MagicMock())
@@ -196,11 +207,11 @@ class TestOvnCentralHandlers(test_utils.PatchHelper):
         self.target.render_with_interfaces.assert_called_once_with(
             [ovsdb_peer])
         self.target.join_cluster.assert_has_calls([
-            mock.call('/var/lib/openvswitch/ovnnb_db.db',
+            mock.call('ovnnb_db.db',
                       'OVN_Northbound',
                       connection_strs,
                       connection_strs),
-            mock.call('/var/lib/openvswitch/ovnsb_db.db',
+            mock.call('ovnsb_db.db',
                       'OVN_Southbound',
                       connection_strs,
                       connection_strs),
