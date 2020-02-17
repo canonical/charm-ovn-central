@@ -27,6 +27,7 @@ charms_openstack.bus.discover()
 charm.use_defaults(
     'charm.installed',
     'config.changed',
+    'charm.default-select-release',
     'update-status',
     'upgrade-charm',
 )
@@ -140,6 +141,17 @@ def publish_addr_to_clients():
         if not ep:
             continue
         ep.publish_cluster_local_addr(ovsdb_peer.cluster_local_addr)
+
+
+@reactive.when_none('run-default-update-status')
+@reactive.when('config.changed.source', 'ovsdb-peer.available')
+def maybe_do_upgrade():
+    ovsdb_peer = reactive.endpoint_from_flag('ovsdb-peer.available')
+    with charm.provide_charm_instance() as ovn_charm:
+        ovn_charm.configure_source()
+        ovn_charm.upgrade_if_available([ovsdb_peer])
+        reactive.clear_flag('config.changed.source')
+        ovn_charm.assess_status()
 
 
 @reactive.when_none('run-default-update-status')
