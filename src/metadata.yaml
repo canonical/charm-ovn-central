@@ -26,6 +26,7 @@ tags:
 series:
   - bionic
   - eoan
+  - focal
 subordinate: false
 provides:
   ovsdb:

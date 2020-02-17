@@ -6,11 +6,19 @@
 # Configuration managed by ovn-central charm
 ###############################################################################
 
-# FORCE_COREFILES: If 'yes' then core files will be enabled.
-# FORCE_COREFILES=yes
-
 # OVN_CTL_OPTS: Extra options to pass to ovs-ctl.  This is, for example,
 # a suitable place to specify --ovn-northd-wrapper=valgrind.
+
+# NOTE(fnordahl): Cluster join is directed towards all peers by a direct call
+# to `ovsdb-tool join-cluster` by the charm.
+#
+# That will create a database file on disk with the required information and
+# the `ovn-ctl` script will not touch it.
+#
+# The `ovn-ctl` `db-nb-cluster-remote-addr` and `db-sb-cluster-remote-addr`
+# configuration options only take one remote and one must be provided for
+# correct startup, but the values in the on-disk database file will be used by
+# `ovsdb-server`.
 OVN_CTL_OPTS=--db-nb-file=/var/lib/openvswitch/ovnnb_db.db \
     --db-nb-cluster-local-addr={{ ovsdb_peer.cluster_local_addr }} \
     --db-nb-cluster-local-port={{ ovsdb_peer.db_nb_cluster_port }} \
@@ -29,17 +37,5 @@ OVN_CTL_OPTS=--db-nb-file=/var/lib/openvswitch/ovnnb_db.db \
     --ovn-sb-db-ssl-cert={{ options.ovn_cert }} \
     --ovn-sb-db-ssl-ca-cert={{ options.ovn_ca_cert }} \
     --db-sb-cluster-remote-addr={{ ovsdb_peer.cluster_remote_addrs | first }} \
-    --db-nb-cluster-remote-port={{ ovsdb_peer.db_nb_cluster_port }} \
+    --db-sb-cluster-remote-port={{ ovsdb_peer.db_sb_cluster_port }} \
     --db-sb-cluster-remote-proto=ssl
-
-# DPDK options are now configured via ovs-vsctl/ovsdb, see:
-# - /usr/share/doc/openvswitch-common/INSTALL.DPDK.md.gz
-# - /usr/share/doc/openvswitch-common/INSTALL.DPDK-ADVANCED.md.gz
-# dpdk-extra is the fallback for users who formerly set e.g.
-#  '--vhost-owner libvirt-qemu:kvm --vhost-perm 0664'
-# here or any other DPDK EAL arguments via DPDK_OPTS which are not covered by
-# the default switches provided by ovs-vsctl.
-# This is an arbitrary string that will get appended to the EAL commandline.
-# For more on the new ovsdb based configuration of DPDK features, see:
-# `man ovs-vswitchd.conf.db`
-
