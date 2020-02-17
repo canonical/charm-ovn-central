@@ -26,51 +26,38 @@ import charms.ovn as ovn
 import charms.ovn_charm as ovn_charm
 
 
-class OVNCentralCharm(charms_openstack.charm.OpenStackCharm):
-    # OpenvSwitch and OVN is distributed as part of the Ubuntu Cloud Archive
-    # Pockets get their name from OpenStack releases
-    release = 'train'
+class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
+    abstract_class = True
     package_codenames = {
         'ovn-central': collections.OrderedDict([
-            ('2.12', 'train'),
+            ('2', 'train'),
+            ('20', 'ussuri'),
         ]),
     }
     name = 'ovn-central'
     packages = ['ovn-central']
     services = ['ovn-central']
+    release_pkg = 'ovn-central'
     required_relations = ['certificates']
-    # NOTE(fnordahl) we replace the package sysv init script with our own
-    # systemd service files.
-    #
-    # The issue that triggered this change is that to be able to pass the
-    # correct command line arguments to ``ovn-nortrhd`` we need to create
-    # a ``/etc/openvswitch/ovn-northd-db-params.conf`` which has the side
-    # effect of profoundly changing the behaviour of the ``ovn-ctl`` tool
-    # that the ``ovn-central`` init script makes use of.
-    #
-    # https://github.com/ovn-org/ovn/blob/dc0e10c068c20c4e59c9c86ecee26baf8ed50e90/utilities/ovn-ctl#L323
-    #
-    # TODO: The systemd service files should be upstreamed and removed from
-    # the charm
     restart_map = {
         '/etc/default/ovn-central': services,
         os.path.join(
-            ovn_charm.OVS_ETCDIR, 'ovn-northd-db-params.conf'): ['ovn-northd'],
-        '/lib/systemd/system/ovn-central.service': [],
-        '/lib/systemd/system/ovn-northd.service': [],
-        '/lib/systemd/system/ovn-nb-ovsdb.service': [],
-        '/lib/systemd/system/ovn-sb-ovsdb.service': [],
+            ovn.ovn_sysconfdir(), 'ovn-northd-db-params.conf'): ['ovn-northd'],
     }
     python_version = 3
     source_config_key = 'source'
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        charms_openstack.adapters.config_property(ovn_charm.ovn_key)
-        charms_openstack.adapters.config_property(ovn_charm.ovn_cert)
-        charms_openstack.adapters.config_property(ovn_charm.ovn_ca_cert)
+        try:
+            charms_openstack.adapters.config_property(ovn_charm.ovn_key)
+            charms_openstack.adapters.config_property(ovn_charm.ovn_cert)
+            charms_openstack.adapters.config_property(ovn_charm.ovn_ca_cert)
+        except RuntimeError:
+            # The custom config properties are allready registered
+            pass
 
-    def install(self):
+    def install(self, service_masks=None):
         """Extend the default install method.
 
         Mask services before initial installation.
@@ -84,15 +71,9 @@ class OVNCentralCharm(charms_openstack.charm.OpenStackCharm):
         We also configure source before installing as OpenvSwitch and OVN
         packages are distributed as part of the UCA.
         """
-        # NOTE(fnordahl) The OVN central components are currently packaged with
-        # a dependency on openvswitch-switch, but it does not need the switch
-        # or stock ovsdb running.
-        service_masks = [
-            'openvswitch-switch.service',
-            'ovs-vswitchd.service',
-            'ovsdb-server.service',
-            'ovn-central.service',
-        ]
+        # NOTE(fnordahl): The actual masks are provided by the release specific
+        # classes.
+        service_masks = service_masks or []
         for service_file in service_masks:
             abs_path_svc = os.path.join('/etc/systemd/system', service_file)
             if not os.path.islink(abs_path_svc):
@@ -179,9 +160,13 @@ class OVNCentralCharm(charms_openstack.charm.OpenStackCharm):
         :type remote_conn: Union[str, ...]
         :raises: subprocess.CalledProcessError
         """
-        if os.path.exists(db_file):
+        if self.release == 'train':
+            absolute_path = os.path.join('/var/lib/openvswitch', db_file)
+        else:
+            absolute_path = os.path.join('/var/lib/ovn', db_file)
+        if os.path.exists(absolute_path):
             return
-        cmd = ['ovsdb-tool', 'join-cluster', db_file, schema_name]
+        cmd = ['ovsdb-tool', 'join-cluster', absolute_path, schema_name]
         cmd.extend(list(local_conn))
         cmd.extend(list(remote_conn))
         ch_core.hookenv.log(cmd, level=ch_core.hookenv.INFO)
@@ -206,7 +191,7 @@ class OVNCentralCharm(charms_openstack.charm.OpenStackCharm):
                 else:
                     crt.write(tls_object['ca'])
 
-            self.configure_cert(ovn_charm.OVS_ETCDIR,
+            self.configure_cert(ovn.ovn_sysconfdir(),
                                 tls_object['cert'],
                                 tls_object['key'],
                                 cn='host')
@@ -349,3 +334,67 @@ class OVNCentralCharm(charms_openstack.charm.OpenStackCharm):
                     delete_rules.append(num)
         for rule in sorted(delete_rules, reverse=True):
             ch_ufw.modify_access(None, dst=None, action='delete', index=rule)
+
+
+class TrainOVNCentralCharm(BaseOVNCentralCharm):
+    # OpenvSwitch and OVN is distributed as part of the Ubuntu Cloud Archive
+    # Pockets get their name from OpenStack releases
+    release = 'train'
+
+    # NOTE(fnordahl) we have to replace the package sysv init script with
+    # systemd service files, this should be removed from the charm when the
+    # systemd service files committed to Focal can be backported to the Train
+    # UCA.
+    #
+    # The issue that triggered this change is that to be able to pass the
+    # correct command line arguments to ``ovn-nortrhd`` we need to create
+    # a ``/etc/openvswitch/ovn-northd-db-params.conf`` which has the side
+    # effect of profoundly changing the behaviour of the ``ovn-ctl`` tool
+    # that the ``ovn-central`` init script makes use of.
+    #
+    # https://github.com/ovn-org/ovn/blob/dc0e10c068c20c4e59c9c86ecee26baf8ed50e90/utilities/ovn-ctl#L323
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.restart_map.update({
+            '/lib/systemd/system/ovn-central.service': [],
+            '/lib/systemd/system/ovn-northd.service': [],
+            '/lib/systemd/system/ovn-nb-ovsdb.service': [],
+            '/lib/systemd/system/ovn-sb-ovsdb.service': [],
+        })
+
+    def install(self):
+        # NOTE(fnordahl) At Train, the OVN central components is packaged with
+        # a dependency on openvswitch-switch, but it does not need the switch
+        # or stock ovsdb running.
+        service_masks = [
+            'openvswitch-switch.service',
+            'ovs-vswitchd.service',
+            'ovsdb-server.service',
+            'ovn-central.service',
+        ]
+        super().install(service_masks=service_masks)
+
+
+class UssuriOVNCentralCharm(BaseOVNCentralCharm):
+    # OpenvSwitch and OVN is distributed as part of the Ubuntu Cloud Archive
+    # Pockets get their name from OpenStack releases
+    release = 'ussuri'
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        # We need to list the OVN ovsdb-server services explicitly so they get
+        # unmasked on render of ``ovn-central``.
+        self.services.extend([
+            'ovn-ovsdb-server-nb',
+            'ovn-ovsdb-server-sb',
+        ])
+
+    def install(self):
+        # This is done to prevent extraneous standalone DB initialization and
+        # subsequent upgrade to clustered DB when configuration is rendered.
+        service_masks = [
+            'ovn-central.service',
+            'ovn-ovsdb-server-nb.service',
+            'ovn-ovsdb-server-sb.service',
+        ]
+        super().install(service_masks=service_masks)
