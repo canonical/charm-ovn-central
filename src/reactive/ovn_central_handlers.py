@@ -27,6 +27,7 @@ charms_openstack.bus.discover()
 charm.use_defaults(
     'charm.installed',
     'config.changed',
+    'charm.default-select-release',
     'update-status',
     'upgrade-charm',
 )
@@ -143,6 +144,17 @@ def publish_addr_to_clients():
 
 
 @reactive.when_none('run-default-update-status')
+@reactive.when('config.changed.source', 'ovsdb-peer.available')
+def maybe_do_upgrade():
+    ovsdb_peer = reactive.endpoint_from_flag('ovsdb-peer.available')
+    with charm.provide_charm_instance() as ovn_charm:
+        ovn_charm.configure_source()
+        ovn_charm.upgrade_if_available([ovsdb_peer])
+        reactive.clear_flag('config.changed.source')
+        ovn_charm.assess_status()
+
+
+@reactive.when_none('run-default-update-status')
 @reactive.when('ovsdb-peer.available',
                'leadership.set.nb_cid',
                'leadership.set.sb_cid',
@@ -164,16 +176,14 @@ def render():
         #
         # Replace this with functionality in ``ovn-ctl`` when support has been
         # added upstream.
-        ovn_charm.join_cluster('/var/lib/openvswitch/ovnnb_db.db',
-                               'OVN_Northbound',
+        ovn_charm.join_cluster('ovnnb_db.db', 'OVN_Northbound',
                                ovsdb_peer.db_connection_strs(
                                    (ovsdb_peer.cluster_local_addr,),
                                    ovsdb_peer.db_nb_cluster_port),
                                ovsdb_peer.db_connection_strs(
                                    ovsdb_peer.cluster_remote_addrs,
                                    ovsdb_peer.db_nb_cluster_port))
-        ovn_charm.join_cluster('/var/lib/openvswitch/ovnsb_db.db',
-                               'OVN_Southbound',
+        ovn_charm.join_cluster('ovnsb_db.db', 'OVN_Southbound',
                                ovsdb_peer.db_connection_strs(
                                    (ovsdb_peer.cluster_local_addr,),
                                    ovsdb_peer.db_sb_cluster_port),
