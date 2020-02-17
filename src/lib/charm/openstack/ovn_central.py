@@ -32,12 +32,14 @@ class OVNCentralCharm(charms_openstack.charm.OpenStackCharm):
     release = 'train'
     package_codenames = {
         'ovn-central': collections.OrderedDict([
-            ('2.12', 'train'),
+            ('2', 'train'),
+            ('20', 'ussuri'),
         ]),
     }
     name = 'ovn-central'
     packages = ['ovn-central']
     services = ['ovn-central']
+    release_pkg = 'ovn-central'
     required_relations = ['certificates']
     # NOTE(fnordahl) we replace the package sysv init script with our own
     # systemd service files.
@@ -66,9 +68,11 @@ class OVNCentralCharm(charms_openstack.charm.OpenStackCharm):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        charms_openstack.adapters.config_property(ovn_charm.ovn_key)
-        charms_openstack.adapters.config_property(ovn_charm.ovn_cert)
-        charms_openstack.adapters.config_property(ovn_charm.ovn_ca_cert)
+        if ('ovn_key' not in
+                charms_openstack.adapters._custom_config_properties):
+            charms_openstack.adapters.config_property(ovn_charm.ovn_key)
+            charms_openstack.adapters.config_property(ovn_charm.ovn_cert)
+            charms_openstack.adapters.config_property(ovn_charm.ovn_ca_cert)
 
     def install(self):
         """Extend the default install method.
