@@ -16,6 +16,24 @@
       "revId": "90dca7331796605e4de37d222f4828e513a36e55",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1fa4df85_bbb7123b",
+        "filename": "src/tests/bundles/focal.yaml",
+        "patchSetId": 9
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2020-02-24T13:51:15Z",
+      "side": 1,
+      "message": "It does not require it, but it surely would be good to include it for increased test exposure, I\u0027ll add it to this and the eoan bundle.\n\nThx!",
+      "parentUuid": "3fa7e38b_dbff3701",
+      "revId": "90dca7331796605e4de37d222f4828e513a36e55",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543",
+      "unresolved": false
     }
   ]
 }
