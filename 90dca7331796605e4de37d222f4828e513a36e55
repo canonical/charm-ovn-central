@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3fa7e38b_dbff3701",
+        "filename": "src/tests/bundles/focal.yaml",
+        "patchSetId": 9
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 935
+      },
+      "writtenOn": "2020-02-24T13:42:13Z",
+      "side": 1,
+      "message": "Does focal not also require use of mysql-router?",
+      "revId": "90dca7331796605e4de37d222f4828e513a36e55",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543",
+      "unresolved": false
+    }
+  ]
+}
