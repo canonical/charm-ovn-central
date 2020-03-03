@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1fa4df85_e7f1fa6c",
+        "filename": "src/lib/charm/openstack/ovn_central.py",
+        "patchSetId": 16
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 20805
+      },
+      "writtenOn": "2020-03-03T09:05:12Z",
+      "side": 1,
+      "message": "Can you explain the condition for the maybe join cluster in the docstring?",
+      "revId": "d48633b660fa2a6a98b0686e1280b308efedb3c3",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1fa4df85_8702863c",
+        "filename": "src/lib/charm/openstack/ovn_central.py",
+        "patchSetId": 16
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 20805
+      },
+      "writtenOn": "2020-03-03T09:05:12Z",
+      "side": 1,
+      "message": "This seems to be the condition. Can we juju debug log when we skip this. That will help future debuggers.",
+      "revId": "d48633b660fa2a6a98b0686e1280b308efedb3c3",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1fa4df85_6778aac3",
+        "filename": "src/lib/charm/openstack/ovn_central.py",
+        "patchSetId": 16
+      },
+      "lineNbr": 362,
+      "author": {
+        "id": 20805
+      },
+      "writtenOn": "2020-03-03T09:05:12Z",
+      "side": 1,
+      "message": "For my understanding, why are we adding files to the restart map with empty services lists? What gets restarted?",
+      "revId": "d48633b660fa2a6a98b0686e1280b308efedb3c3",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543",
+      "unresolved": false
+    }
+  ]
+}
