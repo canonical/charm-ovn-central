@@ -4,5 +4,4 @@
 *.pyc
 build
 interfaces
-layers
 *.swp
