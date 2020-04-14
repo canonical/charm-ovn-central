@@ -38,24 +38,19 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
     packages = ['ovn-central']
     services = ['ovn-central']
     release_pkg = 'ovn-central'
+    configuration_class = ovn_charm.OVNConfigurationAdapter
     required_relations = ['certificates']
-    restart_map = {
-        '/etc/default/ovn-central': services,
-        os.path.join(
-            ovn.ovn_sysconfdir(), 'ovn-northd-db-params.conf'): ['ovn-northd'],
-    }
     python_version = 3
     source_config_key = 'source'
 
     def __init__(self, **kwargs):
+        """Override class init to populate restart map with instance method."""
+        self.restart_map = {
+            '/etc/default/ovn-central': self.services,
+            os.path.join(self.ovn_sysconfdir(),
+                         'ovn-northd-db-params.conf'): ['ovn-northd'],
+        }
         super().__init__(**kwargs)
-        try:
-            charms_openstack.adapters.config_property(ovn_charm.ovn_key)
-            charms_openstack.adapters.config_property(ovn_charm.ovn_cert)
-            charms_openstack.adapters.config_property(ovn_charm.ovn_ca_cert)
-        except RuntimeError:
-            # The custom config properties are allready registered
-            pass
 
     def install(self, service_masks=None):
         """Extend the default install method.
@@ -80,6 +75,10 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
                 os.symlink('/dev/null', abs_path_svc)
         self.configure_source()
         super().install()
+
+    @staticmethod
+    def ovn_sysconfdir():
+        return '/etc/ovn'
 
     def _default_port_list(self, *_):
         """Return list of ports the payload listens to.
@@ -201,14 +200,14 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
 
         for tls_object in tls_objects:
             with open(
-                    ovn_charm.ovn_ca_cert(self.adapters_instance), 'w') as crt:
+                    self.options.ovn_ca_cert, 'w') as crt:
                 chain = tls_object.get('chain')
                 if chain:
                     crt.write(tls_object['ca'] + os.linesep + chain)
                 else:
                     crt.write(tls_object['ca'])
 
-            self.configure_cert(ovn.ovn_sysconfdir(),
+            self.configure_cert(self.ovn_sysconfdir(),
                                 tls_object['cert'],
                                 tls_object['key'],
                                 cn='host')
@@ -403,6 +402,10 @@ class TrainOVNCentralCharm(BaseOVNCentralCharm):
             'ovn-central.service',
         ]
         super().install(service_masks=service_masks)
+
+    @staticmethod
+    def ovn_sysconfdir():
+        return '/etc/openvswitch'
 
 
 class UssuriOVNCentralCharm(BaseOVNCentralCharm):
