@@ -18,7 +18,7 @@ target_deploy_status:
 configure:
 - zaza.openstack.charm_tests.vault.setup.auto_initialize_no_validation
 tests:
-- zaza.charm_tests.noop.tests.NoopTest
+- zaza.openstack.charm_tests.ovn.tests.CentralCharmOperationTest
 tests_options:
   force_deploy:
     - focal

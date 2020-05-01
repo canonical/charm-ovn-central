@@ -7,15 +7,20 @@ options:
   basic:
     use_venv: True
     include_system_packages: False
-repo: https://github.com/openstack/charm-ovn
+repo: https://opendev.org/x/charm-ovn-central
 config:
   deletes:
     - debug
+    - dpdk-bond-config
+    - dpdk-bond-mappings
+    - dpdk-driver
+    - dpdk-socket-cores
+    - dpdk-socket-memory
+    - enable-dpdk
+    - enable-hardware-offload
+    - enable-sriov
     - interface-bridge-mappings
+    - networking-tools-source
     - ovn-bridge-mappings
-    - ssl_ca
-    - ssl_cert
-    - ssl_key
-    - use-internal-endpoints
-    - use-syslog
-    - verbose
+    - sriov-device-mappings
+    - sriov-numvfs

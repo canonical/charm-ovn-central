@@ -18,8 +18,6 @@ import charms.leadership as leadership
 import charms_openstack.bus
 import charms_openstack.charm as charm
 
-import charms.ovn as ovn
-
 
 charms_openstack.bus.discover()
 
@@ -27,7 +25,6 @@ charms_openstack.bus.discover()
 charm.use_defaults(
     'charm.installed',
     'config.changed',
-    'charm.default-select-release',
     'update-status',
     'upgrade-charm',
 )
@@ -70,14 +67,13 @@ def announce_leader_ready():
             ovsdb_peer.db_nb_port,
             ovsdb.db_sb_port,
             ovsdb_peer.db_sb_admin_port)
-
-    nb_status = ovn.cluster_status('ovnnb_db')
-    sb_status = ovn.cluster_status('ovnsb_db')
-    leadership.leader_set({
-        'ready': True,
-        'nb_cid': nb_status['cluster_id'],
-        'sb_cid': sb_status['cluster_id'],
-    })
+        nb_status = ovn_charm.cluster_status('ovnnb_db')
+        sb_status = ovn_charm.cluster_status('ovnsb_db')
+        leadership.leader_set({
+            'ready': True,
+            'nb_cid': str(nb_status.cluster_id),
+            'sb_cid': str(sb_status.cluster_id),
+        })
 
 
 @reactive.when_none('run-default-update-status', 'leadership.set.nb_cid',
