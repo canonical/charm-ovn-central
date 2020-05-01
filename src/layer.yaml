@@ -19,3 +19,9 @@ config:
     - use-internal-endpoints
     - use-syslog
     - verbose
+    - dpdk-bond-mappings
+    - dpdk-bond-config
+    - enable-dpdk
+    - dpdk-socket-memory
+    - dpdk-socket-cores
+    - dpdk-driver
