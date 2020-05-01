@@ -40,6 +40,11 @@ class Helper(test_utils.PatchHelper):
 
 class TestOVNCentralCharm(Helper):
 
+    class FakeClusterStatus(object):
+
+        def __init__(self, is_cluster_leader=None):
+            self.is_cluster_leader = is_cluster_leader
+
     def test_install_train(self):
         self.patch_release(ovn_central.TrainOVNCentralCharm.release)
         self.target = ovn_central.TrainOVNCentralCharm()
@@ -104,35 +109,53 @@ class TestOVNCentralCharm(Helper):
         self.target._default_port_list.assert_called_once_with()
 
     def test_custom_assess_status_last_check(self):
-        self.patch_object(ovn_central.ovn, 'is_cluster_leader')
-        self.patch_object(ovn_central.ovn, 'is_northd_active')
-        self.is_cluster_leader.side_effect = [False, False]
+        self.patch_target('cluster_status')
+        self.patch_target('is_northd_active')
+        self.cluster_status.side_effect = [
+            self.FakeClusterStatus(False),
+            self.FakeClusterStatus(False),
+        ]
         self.is_northd_active.return_value = False
         self.assertEquals(
             self.target.custom_assess_status_last_check(),
             (None, None))
-        self.is_cluster_leader.assert_has_calls([
+        self.cluster_status.assert_has_calls([
             mock.call('ovnnb_db'),
             mock.call('ovnsb_db'),
         ])
-        self.is_cluster_leader.side_effect = [True, False]
+        self.cluster_status.side_effect = [
+            self.FakeClusterStatus(True),
+            self.FakeClusterStatus(False),
+        ]
         self.assertEquals(
             self.target.custom_assess_status_last_check(),
             ('active', 'Unit is ready (leader: ovnnb_db)'))
-        self.is_cluster_leader.side_effect = [True, True]
+        self.cluster_status.side_effect = [
+            self.FakeClusterStatus(True),
+            self.FakeClusterStatus(True),
+        ]
         self.assertEquals(
             self.target.custom_assess_status_last_check(),
             ('active', 'Unit is ready (leader: ovnnb_db, ovnsb_db)'))
-        self.is_cluster_leader.side_effect = [False, False]
+        self.cluster_status.side_effect = [
+            self.FakeClusterStatus(False),
+            self.FakeClusterStatus(False),
+        ]
         self.is_northd_active.return_value = True
         self.assertEquals(
             self.target.custom_assess_status_last_check(),
             ('active', 'Unit is ready (northd: active)'))
-        self.is_cluster_leader.side_effect = [True, False]
+        self.cluster_status.side_effect = [
+            self.FakeClusterStatus(True),
+            self.FakeClusterStatus(False),
+        ]
         self.assertEquals(
             self.target.custom_assess_status_last_check(),
             ('active', 'Unit is ready (leader: ovnnb_db northd: active)'))
-        self.is_cluster_leader.side_effect = [True, True]
+        self.cluster_status.side_effect = [
+            self.FakeClusterStatus(True),
+            self.FakeClusterStatus(True),
+        ]
         self.assertEquals(
             self.target.custom_assess_status_last_check(),
             ('active',
@@ -182,10 +205,6 @@ class TestOVNCentralCharm(Helper):
             'ca': 'fakeca',
             'chain': 'fakechain',
         }]
-        self.patch_object(ovn_central, 'ovn_charm')
-        self.ovn_charm.ovn_ca_cert.return_value = '/etc/ovn/ovn-central.crt'
-        self.patch_object(ovn_central.ovn, 'ovn_sysconfdir')
-        self.ovn_sysconfdir.return_value = '/etc/ovn'
         with mock.patch('builtins.open', create=True) as mocked_open:
             mocked_file = mock.MagicMock(spec=io.FileIO)
             mocked_open.return_value = mocked_file
@@ -202,23 +221,26 @@ class TestOVNCentralCharm(Helper):
                 cn='host')
 
     def test_configure_ovn_listener(self):
-        self.patch_object(ovn_central.ovn, 'is_cluster_leader')
-        self.patch_object(ovn_central.ovn, 'SimpleOVSDB')
+        self.patch_object(ovn_central.ch_ovsdb, 'SimpleOVSDB')
         self.patch_target('run')
         port_map = {6641: {'inactivity_probe': 42},
                     6642: {'role': 'ovn-controller'}}
-        self.is_cluster_leader.return_value = False
+        self.patch_target('cluster_status')
+
+        cluster_status = self.FakeClusterStatus()
+        self.cluster_status.return_value = cluster_status
+        cluster_status.is_cluster_leader = False
         self.target.configure_ovn_listener('nb', port_map)
         self.assertFalse(self.SimpleOVSDB.called)
-        self.is_cluster_leader.return_value = True
-        connections = mock.MagicMock()
-        connections.find.side_effect = [
+        cluster_status.is_cluster_leader = True
+        ovsdb = mock.MagicMock()
+        ovsdb.connection.find.side_effect = [
             [],
             [{'_uuid': 'fake-uuid'}],
             [],
             [{'_uuid': 'fake-uuid'}],
         ]
-        self.SimpleOVSDB.return_value = connections
+        self.SimpleOVSDB.return_value = ovsdb
         self.target.configure_ovn_listener('nb', port_map)
         self.run.assert_has_calls([
             mock.call('ovn-nbctl', '--', '--id=@connection', 'create',
@@ -228,7 +250,7 @@ class TestOVNCentralCharm(Helper):
                       'connection', 'target="pssl:6642"', '--', 'add',
                       'NB_Global', '.', 'connections', '@connection'),
         ])
-        connections.set.assert_has_calls([
+        ovsdb.connection.set.assert_has_calls([
             mock.call('fake-uuid', 'inactivity_probe', 42),
             mock.call('fake-uuid', 'role', 'ovn-controller')
         ])

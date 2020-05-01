@@ -33,6 +33,9 @@ class _fake_decorator(object):
         return f
 
 
+sys.modules['charmhelpers.contrib.network.ovs'] = mock.MagicMock()
+sys.modules['charmhelpers.contrib.network.ovs.ovn'] = mock.MagicMock()
+sys.modules['charmhelpers.contrib.network.ovs.ovsdb'] = mock.MagicMock()
 charms = mock.MagicMock()
 sys.modules['charms'] = charms
 charms.leadership = mock.MagicMock()

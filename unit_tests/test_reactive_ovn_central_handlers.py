@@ -97,13 +97,13 @@ class TestOvnCentralHandlers(test_utils.PatchHelper):
         self.patch_object(handlers.reactive, 'endpoint_from_name')
         self.patch_object(handlers.reactive, 'endpoint_from_flag')
         self.patch_object(handlers.leadership, 'leader_set')
-        self.patch_object(handlers.ovn, 'cluster_status')
         ovsdb = mock.MagicMock()
         self.endpoint_from_name.return_value = ovsdb
         ovsdb_peer = mock.MagicMock()
         self.endpoint_from_flag.return_value = ovsdb_peer
-        self.cluster_status.return_value = {
-            'cluster_id': ('fake', 'fake-cid')}
+        cluster_status = mock.MagicMock()
+        cluster_status.cluster_id = 'fake-uuid'
+        self.target.cluster_status.return_value = cluster_status
         handlers.announce_leader_ready()
         ovsdb_peer.publish_cluster_local_addr.assert_called_once_with()
         self.target.configure_ovn.assert_called_once_with(
@@ -114,8 +114,8 @@ class TestOvnCentralHandlers(test_utils.PatchHelper):
         self.leader_set.assert_called_once_with(
             {
                 'ready': True,
-                'nb_cid': ('fake', 'fake-cid'),
-                'sb_cid': ('fake', 'fake-cid'),
+                'nb_cid': 'fake-uuid',
+                'sb_cid': 'fake-uuid',
             })
 
     def test_initialize_ovsdbs(self):
