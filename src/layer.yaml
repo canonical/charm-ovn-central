@@ -1,5 +1,5 @@
 includes:
-  - layer:ovn
+  - layer:openstack
   - layer:leadership
   - interface:ovsdb-cluster
   - interface:ovsdb-cms
@@ -11,16 +11,9 @@ repo: https://opendev.org/x/charm-ovn-central
 config:
   deletes:
     - debug
-    - dpdk-bond-config
-    - dpdk-bond-mappings
-    - dpdk-driver
-    - dpdk-socket-cores
-    - dpdk-socket-memory
-    - enable-dpdk
-    - enable-hardware-offload
-    - enable-sriov
-    - interface-bridge-mappings
-    - networking-tools-source
-    - ovn-bridge-mappings
-    - sriov-device-mappings
-    - sriov-numvfs
+    - ssl_ca
+    - ssl_cert
+    - ssl_key
+    - use-internal-endpoints
+    - use-syslog
+    - verbose
