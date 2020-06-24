@@ -12,8 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import collections
 import io
-import mock
+import unittest.mock as mock
 
 import charms_openstack.test_utils as test_utils
 
@@ -97,6 +98,26 @@ class TestOVNCentralCharm(Helper):
         self.symlink.assert_has_calls(calls)
         self.install.assert_called_once_with()
         self.configure_source.assert_called_once_with()
+
+    def test_states_to_check(self):
+        self.maxDiff = None
+        expect = collections.OrderedDict([
+            ('ovsdb-peer', [
+                ('ovsdb-peer.connected',
+                 'blocked',
+                 'Charm requires peers to operate, add more units. A minimum '
+                 'of 3 is required for HA'),
+                ('ovsdb-peer.available',
+                 'waiting',
+                 "'ovsdb-peer' incomplete")]),
+            ('certificates', [
+                ('certificates.available', 'blocked',
+                 "'certificates' missing"),
+                ('certificates.server.certs.available',
+                 'waiting',
+                 "'certificates' awaiting server certificate data")]),
+        ])
+        self.assertDictEqual(self.target.states_to_check(), expect)
 
     def test__default_port_list(self):
         self.assertEquals(

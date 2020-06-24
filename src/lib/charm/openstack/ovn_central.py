@@ -29,6 +29,10 @@ import charms_openstack.charm
 charms_openstack.charm.use_defaults('charm.default-select-release')
 
 
+PEER_RELATION = 'ovsdb-peer'
+CERT_RELATION = 'certificates'
+
+
 # NOTE(fnordahl): We should split the ``OVNConfigurationAdapter`` in
 # ``layer-ovn`` into common and chassis specific parts so we can re-use the
 # common parts here.
@@ -63,7 +67,7 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
     services = ['ovn-central']
     release_pkg = 'ovn-central'
     configuration_class = OVNCentralConfigurationAdapter
-    required_relations = ['certificates']
+    required_relations = [PEER_RELATION, CERT_RELATION]
     python_version = 3
     source_config_key = 'source'
 
@@ -99,6 +103,53 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
                 os.symlink('/dev/null', abs_path_svc)
         self.configure_source()
         super().install()
+
+    def states_to_check(self, required_relations=None):
+        """Override upstream method to add custom messaging.
+
+        Note that this method will only override the messaging for certain
+        relations, any relations we don't know about will get the default
+        treatment from the parent method.
+
+        Please take a look at parent method for parameter and return type
+        declaration.
+        """
+        # Retrieve default state map
+        states_to_check = super().states_to_check(
+            required_relations=required_relations)
+
+        if not states_to_check:
+            return None, None
+
+        if PEER_RELATION in states_to_check:
+            # for peer relation we want default messaging for all states but
+            # connected.
+            states_to_check[PEER_RELATION] = [
+                ('{}.connected'.format(PEER_RELATION),
+                 'blocked',
+                 'Charm requires peers to operate, add more units. A minimum '
+                 'of 3 is required for HA')
+            ] + [
+                states for states in states_to_check[PEER_RELATION]
+                if 'connected' not in states[0]
+            ]
+
+        if CERT_RELATION in states_to_check:
+            # for certificates relation we want to replace all messaging
+            states_to_check[CERT_RELATION] = [
+                # certificates relation has no connected state
+                ('{}.available'.format(CERT_RELATION),
+                 'blocked',
+                 "'{}' missing".format(CERT_RELATION)),
+                # we cannot proceed until Vault have provided server
+                # certificates
+                ('{}.server.certs.available'.format(CERT_RELATION),
+                 'waiting',
+                 "'{}' awaiting server certificate data"
+                 .format(CERT_RELATION)),
+            ]
+
+        return states_to_check
 
     @staticmethod
     def ovn_sysconfdir():

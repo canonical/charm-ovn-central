@@ -10,8 +10,8 @@ dev_bundles:
 - focal
 target_deploy_status:
   ovn-central:
-    workload-status: blocked
-    workload-status-message: "'certificates' missing"
+    workload-status: waiting
+    workload-status-message: "'certificates' awaiting server certificate data"
   vault:
     workload-status: blocked
     workload-status-message: Vault needs to be initialized
