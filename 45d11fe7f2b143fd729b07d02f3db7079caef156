@@ -16,6 +16,24 @@
       "revId": "45d11fe7f2b143fd729b07d02f3db7079caef156",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bf51134e_c0b5fd7f",
+        "filename": "src/lib/charm/openstack/ovn_central.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2020-06-24T12:35:59Z",
+      "side": 1,
+      "message": "No, the reason for explicitly dealing only with these two relations is that they are the ones that require specific handling.\n\nAny other relations added to the required_relations list will be handled by the default states_to_check method and we will not touch them here.",
+      "parentUuid": "bf51134e_20ee79b3",
+      "revId": "45d11fe7f2b143fd729b07d02f3db7079caef156",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543",
+      "unresolved": false
     }
   ]
 }
