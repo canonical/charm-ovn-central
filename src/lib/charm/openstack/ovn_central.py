@@ -63,7 +63,7 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
     services = ['ovn-central']
     release_pkg = 'ovn-central'
     configuration_class = OVNCentralConfigurationAdapter
-    required_relations = ['certificates']
+    required_relations = ['ovsdb-peer', 'certificates']
     python_version = 3
     source_config_key = 'source'
 
@@ -99,6 +99,46 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
                 os.symlink('/dev/null', abs_path_svc)
         self.configure_source()
         super().install()
+
+    def states_to_check(self, required_relations=None):
+        """Override upstream method to add custom messaging."""
+        states_to_check = super().states_to_check(
+            required_relations=required_relations)
+
+        if not states_to_check:
+            return None, None
+
+        peer_relation = 'ovsdb-peer'
+        cert_relation = 'certificates'
+        if peer_relation in states_to_check:
+            # for peer relation we want default messaging for all states but
+            # connected.
+            states_to_check[peer_relation] = [
+                ('{}.connected'.format(peer_relation),
+                 'blocked',
+                 'Charm requires peers to operate, add more units. A minimum '
+                 'of 3 is required for HA')
+            ] + [
+                states for states in states_to_check[peer_relation]
+                if 'connected' not in states[0]
+            ]
+
+        if cert_relation in states_to_check:
+            # for certificates relation we want to replace all messaging
+            states_to_check[cert_relation] = [
+                # certificates relation has no connected state
+                ('{}.available'.format(cert_relation),
+                 'blocked',
+                 "'{}' missing".format(cert_relation)),
+                # we cannot proceed until Vault have provided server
+                # certificates
+                ('{}.server.certs.available'.format(cert_relation),
+                 'waiting',
+                 "'{}' awaiting server certificate data."
+                 .format(cert_relation)),
+            ]
+
+        return states_to_check
 
     @staticmethod
     def ovn_sysconfdir():
