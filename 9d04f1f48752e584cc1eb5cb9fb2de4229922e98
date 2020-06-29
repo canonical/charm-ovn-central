@@ -1,0 +1,9 @@
+Verified+1: Canonical CI <uosci-testing-bot@ubuntu.com>
+Code-Review+2: Dmitrii Shcherbakov <dmitrii.shcherbakov@canonical.com>
+Workflow+1: Dmitrii Shcherbakov <dmitrii.shcherbakov@canonical.com>
+Verified+2: Zuul
+Submitted-by: Zuul
+Submitted-at: Mon, 29 Jun 2020 12:43:51 +0000
+Reviewed-on: https://review.opendev.org/738404
+Project: x/charm-ovn-central
+Branch: refs/heads/master
