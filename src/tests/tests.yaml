@@ -1,11 +1,11 @@
 charm_name: ovn-central
 gate_bundles:
 - bionic-train
-- eoan
+- bionic-ussuri
 - focal
-- bionic-ussuri
+- focal-victoria
 smoke_bundles:
-- bionic-ussuri
+- focal
 dev_bundles:
 - groovy
 target_deploy_status:
