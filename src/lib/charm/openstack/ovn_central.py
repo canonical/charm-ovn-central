@@ -310,20 +310,26 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
         tls_objects = self.get_certs_and_keys(
             certificates_interface=certificates_interface)
 
-        for tls_object in tls_objects:
-            with open(
-                    self.options.ovn_ca_cert, 'w') as crt:
-                chain = tls_object.get('chain')
-                if chain:
-                    crt.write(tls_object['ca'] + os.linesep + chain)
-                else:
-                    crt.write(tls_object['ca'])
+        with charms_openstack.charm.utils.is_data_changed(
+                'configure_tls.tls_objects', tls_objects) as changed:
+            for tls_object in tls_objects:
+                with open(
+                        self.options.ovn_ca_cert, 'w') as crt:
+                    chain = tls_object.get('chain')
+                    if chain:
+                        crt.write(tls_object['ca'] + os.linesep + chain)
+                    else:
+                        crt.write(tls_object['ca'])
 
-            self.configure_cert(self.ovn_sysconfdir(),
-                                tls_object['cert'],
-                                tls_object['key'],
-                                cn='host')
-            break
+                self.configure_cert(self.ovn_sysconfdir(),
+                                    tls_object['cert'],
+                                    tls_object['key'],
+                                    cn='host')
+                if changed:
+                    # The `ovn-northd` daemon will not detect changes to the
+                    # certificate data and needs to be restarted. LP: #1895303
+                    self.service_reload('ovn-northd')
+                break
 
     def configure_ovn_listener(self, db, port_map):
         """Create or update OVN listener configuration.

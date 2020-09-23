@@ -226,6 +226,10 @@ class TestOVNCentralCharm(Helper):
             'ca': 'fakeca',
             'chain': 'fakechain',
         }]
+        self.patch_target('service_reload')
+        self.patch('charms_openstack.charm.utils.is_data_changed',
+                   name='is_data_changed')
+        self.is_data_changed().__enter__.return_value = False
         with mock.patch('builtins.open', create=True) as mocked_open:
             mocked_file = mock.MagicMock(spec=io.FileIO)
             mocked_open.return_value = mocked_file
@@ -240,6 +244,10 @@ class TestOVNCentralCharm(Helper):
                 'fakecert',
                 'fakekey',
                 cn='host')
+            self.assertFalse(self.service_reload.called)
+            self.is_data_changed().__enter__.return_value = True
+            self.target.configure_tls()
+            self.service_reload.assert_called_once_with('ovn-northd')
 
     def test_configure_ovn_listener(self):
         self.patch_object(ovn_central.ch_ovsdb, 'SimpleOVSDB')
