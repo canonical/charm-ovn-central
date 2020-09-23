@@ -30,7 +30,7 @@ charm.use_defaults(
 )
 
 
-@reactive.when_none('charm.firewall_initialized')
+@reactive.when_none('is-update-status-hook', 'charm.firewall_initialized')
 def initialize_firewall():
     """Do one-time initialization of firewall."""
     with charm.provide_charm_instance() as ovn_charm:
@@ -38,7 +38,9 @@ def initialize_firewall():
         reactive.set_flag('charm.firewall_initialized')
 
 
-@reactive.when_none('leadership.set.nb_cid', 'leadership.set.sb_cid')
+@reactive.when_none('is-update-status-hook',
+                    'leadership.set.nb_cid',
+                    'leadership.set.sb_cid')
 @reactive.when('config.rendered',
                'certificates.connected',
                'certificates.available',
@@ -76,7 +78,7 @@ def announce_leader_ready():
         })
 
 
-@reactive.when_none('run-default-update-status', 'leadership.set.nb_cid',
+@reactive.when_none('is-update-status-hook', 'leadership.set.nb_cid',
                     'leadership.set.sb_cid')
 @reactive.when('charm.installed', 'leadership.is_leader',
                'ovsdb-peer.connected')
@@ -97,7 +99,7 @@ def initialize_ovsdbs():
         ovn_charm.assess_status()
 
 
-@reactive.when_none('run-default-update-status', 'leadership.is_leader')
+@reactive.when_none('is-update-status-hook', 'leadership.is_leader')
 @reactive.when('charm.installed')
 def enable_default_certificates():
     # belated enablement of default certificates handler due to the
@@ -106,7 +108,7 @@ def enable_default_certificates():
     charm.use_defaults('certificates.available')
 
 
-@reactive.when_none('run-default-update-status')
+@reactive.when_none('is-update-status-hook')
 @reactive.when('ovsdb-peer.available')
 def configure_firewall():
     ovsdb_peer = reactive.endpoint_from_flag('ovsdb-peer.available')
@@ -126,7 +128,7 @@ def configure_firewall():
         ovn_charm.assess_status()
 
 
-@reactive.when_none('run-default-update-status')
+@reactive.when_none('is-update-status-hook')
 @reactive.when('ovsdb-peer.available',
                'leadership.set.nb_cid',
                'leadership.set.sb_cid',
@@ -141,7 +143,7 @@ def publish_addr_to_clients():
         ep.publish_cluster_local_addr(ovsdb_peer.cluster_local_addr)
 
 
-@reactive.when_none('run-default-update-status')
+@reactive.when_none('is-update-status-hook')
 @reactive.when('config.changed.source', 'ovsdb-peer.available')
 def maybe_do_upgrade():
     ovsdb_peer = reactive.endpoint_from_flag('ovsdb-peer.available')
@@ -152,7 +154,7 @@ def maybe_do_upgrade():
         ovn_charm.assess_status()
 
 
-@reactive.when_none('run-default-update-status')
+@reactive.when_none('is-update-status-hook')
 @reactive.when('ovsdb-peer.available',
                'leadership.set.nb_cid',
                'leadership.set.sb_cid',

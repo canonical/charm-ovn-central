@@ -31,18 +31,20 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
         ]
         hook_set = {
             'when_none': {
-                'announce_leader_ready': ('leadership.set.nb_cid',
+                'announce_leader_ready': ('is-update-status-hook',
+                                          'leadership.set.nb_cid',
                                           'leadership.set.sb_cid'),
-                'configure_firewall': ('run-default-update-status',),
-                'enable_default_certificates': ('run-default-update-status',
+                'configure_firewall': ('is-update-status-hook',),
+                'enable_default_certificates': ('is-update-status-hook',
                                                 'leadership.is_leader',),
-                'initialize_firewall': ('charm.firewall_initialized',),
-                'initialize_ovsdbs': ('run-default-update-status',
+                'initialize_firewall': ('is-update-status-hook',
+                                        'charm.firewall_initialized',),
+                'initialize_ovsdbs': ('is-update-status-hook',
                                       'leadership.set.nb_cid',
                                       'leadership.set.sb_cid',),
-                'maybe_do_upgrade': ('run-default-update-status',),
-                'publish_addr_to_clients': ('run-default-update-status',),
-                'render': ('run-default-update-status',),
+                'maybe_do_upgrade': ('is-update-status-hook',),
+                'publish_addr_to_clients': ('is-update-status-hook',),
+                'render': ('is-update-status-hook',),
             },
             'when': {
                 'announce_leader_ready': ('config.rendered',
