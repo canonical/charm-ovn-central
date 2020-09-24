@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9f560f44_386ce5ce",
+        "filename": "src/tests/tests.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 31289
+      },
+      "writtenOn": "2020-09-24T07:33:36Z",
+      "side": 1,
+      "message": "I know you didn\u0027t touch this but I think this should be named focal-ussuri",
+      "revId": "8d714e1b7b6225cd6d12175ec53607cdf4cb46fe",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9f560f44_78693dbc",
+        "filename": "src/tests/tests.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 31289
+      },
+      "writtenOn": "2020-09-24T07:33:36Z",
+      "side": 1,
+      "message": "should be named groovy-victoria?",
+      "revId": "8d714e1b7b6225cd6d12175ec53607cdf4cb46fe",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543",
+      "unresolved": false
+    }
+  ]
+}
