@@ -43,6 +43,7 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
                 'maybe_do_upgrade': ('run-default-update-status',),
                 'publish_addr_to_clients': ('run-default-update-status',),
                 'render': ('run-default-update-status',),
+                'configure_nrpe': ('charm.paused', 'is-update-status-hook',),
             },
             'when': {
                 'announce_leader_ready': ('config.rendered',
@@ -69,6 +70,13 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
                            'leadership.set.sb_cid',
                            'certificates.connected',
                            'certificates.available',),
+                'configure_nrpe': ('config.rendered',),
+            },
+            'when_any': {
+                'configure_nrpe': ('config.changed.nagios_context',
+                                   'config.changed.nagios_servicegroups',
+                                   'endpoint.nrpe-external-master.changed',
+                                   'nrpe-external-master.available',),
             },
         }
         # test that the hooks were registered via the

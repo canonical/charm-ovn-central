@@ -17,6 +17,7 @@ import os
 import subprocess
 
 import charmhelpers.core as ch_core
+import charmhelpers.contrib.charmsupport.nrpe as nrpe
 import charmhelpers.contrib.network.ovs.ovn as ch_ovn
 import charmhelpers.contrib.network.ovs.ovsdb as ch_ovsdb
 from charmhelpers.contrib.network import ufw as ch_ufw
@@ -464,6 +465,18 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
                     delete_rules.append(num)
         for rule in sorted(delete_rules, reverse=True):
             ch_ufw.modify_access(None, dst=None, action='delete', index=rule)
+
+    def render_nrpe(self):
+        """Configure Nagios NRPE checks."""
+        hostname = nrpe.get_nagios_hostname()
+        current_unit = nrpe.get_nagios_unit_name()
+        charm_nrpe = nrpe.NRPE(hostname=hostname)
+        check_services = list(set(self.services))  # deduplicate
+        check_services.remove('ovn-central')  # ovn-central is a one-shot
+        check_services.append('ovn-northd')
+        nrpe.add_init_service_checks(
+            charm_nrpe, check_services, current_unit)
+        charm_nrpe.write()
 
 
 class TrainOVNCentralCharm(BaseOVNCentralCharm):

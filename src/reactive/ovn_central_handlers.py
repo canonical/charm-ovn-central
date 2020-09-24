@@ -196,3 +196,15 @@ def render():
                 ovsdb_peer.db_sb_admin_port)
             reactive.set_flag('config.rendered')
         ovn_charm.assess_status()
+
+
+@reactive.when_none('charm.paused', 'is-update-status-hook')
+@reactive.when('config.rendered')
+@reactive.when_any('config.changed.nagios_context',
+                   'config.changed.nagios_servicegroups',
+                   'endpoint.nrpe-external-master.changed',
+                   'nrpe-external-master.available')
+def configure_nrpe():
+    """Handle config-changed for NRPE options."""
+    with charm.provide_charm_instance() as charm_instance:
+        charm_instance.render_nrpe()

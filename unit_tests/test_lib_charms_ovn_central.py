@@ -402,3 +402,19 @@ class TestOVNCentralCharm(Helper):
         self.ch_ufw.modify_access.assert_has_calls([
             mock.call(None, dst=None, action='delete', index=42)
         ])
+
+    def test_render_nrpe(self):
+        self.patch_object(ovn_central.nrpe, 'NRPE')
+        self.patch_object(ovn_central.nrpe, 'add_init_service_checks')
+        self.target.render_nrpe()
+        # Note that this list is valid for Ussuri
+        self.add_init_service_checks.assert_has_calls([
+            mock.call().add_init_service_checks(
+                mock.ANY,
+                ['ovn-ovsdb-server-nb', 'ovn-ovsdb-server-sb', 'ovn-northd'],
+                mock.ANY
+            ),
+        ])
+        self.NRPE.assert_has_calls([
+            mock.call().write(),
+        ])
