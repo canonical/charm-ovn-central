@@ -48,6 +48,10 @@ applications:
       - '5'
       - '6'
 
+  nrpe:
+    charm: cs:nrpe
+
+
 relations:
 
   - - 'vault:shared-db'
@@ -57,3 +61,5 @@ relations:
 
   - - 'ovn-central:certificates'
     - 'vault:certificates'
+  - - 'nrpe:nrpe-external-master'
+    - 'ovn-central:nrpe-external-master'

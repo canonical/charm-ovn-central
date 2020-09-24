@@ -4,6 +4,8 @@ relations:
   - mysql:shared-db
 - - ovn-central:certificates
   - vault:certificates
+- - 'nrpe:nrpe-external-master'
+  - 'ovn-central:nrpe-external-master'
 applications:
   mysql:
     charm: cs:~openstack-charmers-next/percona-cluster
@@ -17,3 +19,5 @@ applications:
     num_units: 3
     options:
       source: cloud:bionic-train
+  nrpe:
+    charm: cs:nrpe

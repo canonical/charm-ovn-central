@@ -35,6 +35,9 @@ provides:
     interface: ovsdb-cms
   ovsdb-server:
     interface: ovsdb-cluster
+  nrpe-external-master:
+    interface: nrpe-external-master
+    scope: container
 peers:
   ovsdb-peer:
     interface: ovsdb-cluster
