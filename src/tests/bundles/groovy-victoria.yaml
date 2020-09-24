@@ -6,6 +6,8 @@ relations:
   - vault-mysql-router:shared-db
 - - ovn-central:certificates
   - vault:certificates
+- - 'nrpe:nrpe-external-master'
+  - 'ovn-central:nrpe-external-master'
 applications:
   mysql-innodb-cluster:
     charm: cs:~openstack-charmers-next/mysql-innodb-cluster
@@ -19,3 +21,5 @@ applications:
     series: groovy
     charm: cs:~openstack-charmers-next/ovn-central
     num_units: 3
+  nrpe:
+    charm: cs:nrpe

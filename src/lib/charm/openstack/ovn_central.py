@@ -17,6 +17,7 @@ import os
 import subprocess
 
 import charmhelpers.core as ch_core
+import charmhelpers.contrib.charmsupport.nrpe as nrpe
 import charmhelpers.contrib.network.ovs.ovn as ch_ovn
 import charmhelpers.contrib.network.ovs.ovsdb as ch_ovsdb
 from charmhelpers.contrib.network import ufw as ch_ufw
@@ -65,6 +66,7 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
     name = 'ovn-central'
     packages = ['ovn-central']
     services = ['ovn-central']
+    nrpe_check_services = []
     release_pkg = 'ovn-central'
     configuration_class = OVNCentralConfigurationAdapter
     required_relations = [PEER_RELATION, CERT_RELATION]
@@ -471,6 +473,15 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
         for rule in sorted(delete_rules, reverse=True):
             ch_ufw.modify_access(None, dst=None, action='delete', index=rule)
 
+    def render_nrpe(self):
+        """Configure Nagios NRPE checks."""
+        hostname = nrpe.get_nagios_hostname()
+        current_unit = nrpe.get_nagios_unit_name()
+        charm_nrpe = nrpe.NRPE(hostname=hostname)
+        nrpe.add_init_service_checks(
+            charm_nrpe, self.nrpe_check_services, current_unit)
+        charm_nrpe.write()
+
 
 class TrainOVNCentralCharm(BaseOVNCentralCharm):
     # OpenvSwitch and OVN is distributed as part of the Ubuntu Cloud Archive
@@ -507,6 +518,11 @@ class TrainOVNCentralCharm(BaseOVNCentralCharm):
             '/lib/systemd/system/ovn-nb-ovsdb.service': [],
             '/lib/systemd/system/ovn-sb-ovsdb.service': [],
         })
+        self.nrpe_check_services = [
+            'ovn-northd',
+            'ovn-nb-ovsdb',
+            'ovn-sb-ovsdb',
+        ]
 
     def install(self):
         """Override charm install method.
@@ -546,6 +562,11 @@ class UssuriOVNCentralCharm(BaseOVNCentralCharm):
             'ovn-ovsdb-server-nb',
             'ovn-ovsdb-server-sb',
         ])
+        self.nrpe_check_services = [
+            'ovn-northd',
+            'ovn-ovsdb-server-nb',
+            'ovn-ovsdb-server-sb',
+        ]
 
     def install(self):
         """Override charm install method."""
