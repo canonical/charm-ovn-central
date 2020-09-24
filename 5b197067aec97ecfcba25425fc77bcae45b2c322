@@ -1,0 +1,9 @@
+Code-Review+2: Aurelien Lourot <aurelien.lourot@canonical.com>
+Verified+1: Canonical CI <uosci-testing-bot@ubuntu.com>
+Workflow+1: Aurelien Lourot <aurelien.lourot@canonical.com>
+Verified+2: Zuul
+Submitted-by: Zuul
+Submitted-at: Thu, 24 Sep 2020 15:45:29 +0000
+Reviewed-on: https://review.opendev.org/753537
+Project: x/charm-ovn-central
+Branch: refs/heads/master
