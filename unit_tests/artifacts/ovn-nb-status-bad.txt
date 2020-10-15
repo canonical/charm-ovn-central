@@ -1,0 +1,20 @@
+e8c5
+Name: OVN_Northbound
+Cluster ID: 6a8f (6a8f9149-3368-4bae-88c5-d6fe2be9b847)
+Server ID: e8c5 (e8c5232f-864c-4e61-990d-e54c666be4bc)
+Address: ssl:10.5.0.24:6643
+Status: mock bad status
+Role: leader
+Term: 25
+Leader: self
+Vote: self
+
+Election timer: 1000
+Log: [2, 29]
+Entries not yet committed: 0
+Entries not yet applied: 0
+Connections: ->f4d0 ->70dc <-f4d0 <-70dc
+Servers:
+    f4d0 (f4d0 at ssl:10.5.0.4:6643) next_index=29 match_index=28
+    70dc (70dc at ssl:10.5.0.20:6643) next_index=29 match_index=28
+    e8c5 (e8c5 at ssl:10.5.0.24:6643) (self) next_index=28 match_index=28

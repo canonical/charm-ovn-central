@@ -15,6 +15,7 @@
 import collections
 import operator
 import os
+import shutil
 import subprocess
 import time
 
@@ -34,6 +35,14 @@ charms_openstack.charm.use_defaults('charm.default-select-release')
 
 PEER_RELATION = 'ovsdb-peer'
 CERT_RELATION = 'certificates'
+SUDOERS_DIR = "/etc/sudoers.d"
+SUDOERS_MODE = 0o100440
+SUDOERS_UID = 0
+SUDOERS_GID = 0
+NRPE_PLUGINS_DIR = "/usr/local/lib/nagios/plugins"
+NRPE_PLUGINS_MODE = 0o100755
+NRPE_PLUGINS_UID = 0
+NRPE_PLUGINS_GID = 0
 
 
 # NOTE(fnordahl): We should split the ``OVNConfigurationAdapter`` in
@@ -84,6 +93,9 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
             os.path.join(self.ovn_sysconfdir(),
                          'ovn-northd-db-params.conf'): ['ovn-northd'],
         }
+        self._files_dir = os.path.join(ch_core.hookenv.charm_dir(), 'files')
+        self._sudoer_file = 'ovn-central-ovn-sudoers'
+        self._nrpe_script = 'check_ovn_status.py'
         super().__init__(**kwargs)
 
     def install(self, service_masks=None):
@@ -607,9 +619,45 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
         hostname = nrpe.get_nagios_hostname()
         current_unit = nrpe.get_nagios_unit_name()
         charm_nrpe = nrpe.NRPE(hostname=hostname)
+        # add nrpe service checks
         nrpe.add_init_service_checks(
             charm_nrpe, self.nrpe_check_services, current_unit)
+
+        # Install a sudoers file so the plugin can execute queries
+        self._install_file(os.path.join(self._files_dir, self._sudoer_file),
+                           SUDOERS_DIR,
+                           SUDOERS_MODE,
+                           SUDOERS_UID,
+                           SUDOERS_GID)
+        # Install Nagios plugins
+        self._install_file(os.path.join(self._files_dir, self._nrpe_script),
+                           NRPE_PLUGINS_DIR,
+                           NRPE_PLUGINS_MODE,
+                           NRPE_PLUGINS_UID,
+                           NRPE_PLUGINS_GID)
+
+        charm_nrpe.add_check(
+            'ovn_nb_db_state',
+            'OVN Northbound DB status',
+            'check_ovn_status.py --db nb',
+        )
+        charm_nrpe.add_check(
+            'ovn_sb_db_state',
+            'OVN Southbound DB status',
+            'check_ovn_status.py --db sb',
+        )
+
         charm_nrpe.write()
+
+    def _install_file(self, src, target, mode, uid, gid):
+        """Install a file."""
+        dst = shutil.copy(src, target)
+        os.chmod(dst, mode)
+        os.chown(dst, uid=uid, gid=gid)
+        ch_core.hookenv.log(
+            "File installed at {}".format(dst),
+            ch_core.hookenv.DEBUG,
+        )
 
 
 class TrainOVNCentralCharm(BaseOVNCentralCharm):
@@ -652,6 +700,7 @@ class TrainOVNCentralCharm(BaseOVNCentralCharm):
             'ovn-nb-ovsdb',
             'ovn-sb-ovsdb',
         ]
+        self._sudoer_file = 'ovn-central-ovs-sudoers'
 
     def install(self):
         """Override charm install method.
