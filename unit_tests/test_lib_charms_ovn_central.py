@@ -414,6 +414,10 @@ class TestOVNCentralCharm(Helper):
     def test_render_nrpe(self):
         self.patch_object(ovn_central.nrpe, 'NRPE')
         self.patch_object(ovn_central.nrpe, 'add_init_service_checks')
+        self.patch_object(ovn_central.nrpe, 'add_check')
+        self.patch_object(ovn_central.shutil, 'copy')
+        self.patch_object(ovn_central.os, 'chmod')
+        self.patch_object(ovn_central.os, 'chown')
         self.target.render_nrpe()
         # Note that this list is valid for Ussuri
         self.add_init_service_checks.assert_has_calls([
@@ -424,5 +428,16 @@ class TestOVNCentralCharm(Helper):
             ),
         ])
         self.NRPE.assert_has_calls([
+            mock.call().add_check('ovn_nb_db_state',
+                                  'OVN Northbound DB status',
+                                  'check_ovn_status.py --db nb'),
+            mock.call().add_check('ovn_sb_db_state',
+                                  'OVN Southbound DB status',
+                                  'check_ovn_status.py --db sb'),
             mock.call().write(),
         ])
+        self.copy.assert_has_calls([
+            mock.call('/tmp/files/ovn-central-ovn-sudoers', '/etc/sudoers.d'),
+            mock.call('/tmp/files/check_ovn_status.py',
+                      '/usr/local/lib/nagios/plugins'),
+        ], any_order=True)
