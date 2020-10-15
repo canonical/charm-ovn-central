@@ -1,0 +1,20 @@
+e7b1
+Name: OVN_Southbound
+Cluster ID: 7ecc (7ecc9c7a-f5c0-409f-8847-18d4cbf53adb)
+Server ID: e7b1 (e7b1de75-ed45-4c99-8f8c-9e79b5a696a3)
+Address: ssl:10.5.0.24:6644
+Status: cluster member
+Role: leader
+Term: 26
+Leader: self
+Vote: self
+
+Election timer: 1000
+Log: [2, 32]
+Entries not yet committed: 0
+Entries not yet applied: 0
+Connections: ->6639 ->0860 <-6639 <-0860
+Servers:
+    e7b1 (e7b1 at ssl:10.5.0.24:6644) (self) next_index=31 match_index=31
+    6639 (6639 at ssl:10.5.0.20:6644) next_index=32 match_index=31
+    0860 (0860 at ssl:10.5.0.4:6644) next_index=32 match_index=31
