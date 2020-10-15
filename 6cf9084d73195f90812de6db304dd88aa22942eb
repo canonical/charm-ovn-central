@@ -1,0 +1,84 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7f6b1bfe_2970b5a5",
+        "filename": "src/files/check_ovn_status.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2020-10-15T10:59:39Z",
+      "side": 1,
+      "message": "fwiw; there is an API available to parse the cluster status for you [0], but it might be difficult to use here as the nrpe check executes on the system which does not have c-h installed.\n\n(c-h is distributed as part of the charms wheelhouse and is only available to code executing within its virtualenv.)\n\nSo I guess your approach makes sense, just mentioning for awareness.\n\n0: https://github.com/juju/charm-helpers/blob/master/charmhelpers/contrib/network/ovs/ovn.py",
+      "revId": "6cf9084d73195f90812de6db304dd88aa22942eb",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7f6b1bfe_0faa19d3",
+        "filename": "src/files/check_ovn_status.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2020-10-15T10:59:39Z",
+      "side": 1,
+      "message": "Would it work to store the prefix/path to the folder containing control socket in a variable and use that with \u0027\u0027.format() instead of the repetition?",
+      "range": {
+        "startLine": 43,
+        "startChar": 1,
+        "endLine": 61,
+        "endChar": 13
+      },
+      "revId": "6cf9084d73195f90812de6db304dd88aa22942eb",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7f6b1bfe_2fcc35bb",
+        "filename": "src/lib/charm/openstack/ovn_central.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2020-10-15T10:59:39Z",
+      "side": 1,
+      "message": "nit: mostly a style mismatch thing, the other class variables are lower case.\n\nGlobal constants as you can see on top of the file are upper case. If you reckon these won\u0027t change between releases it\u0027s fine to just put them at the top of the file as global constants.",
+      "range": {
+        "startLine": 76,
+        "startChar": 4,
+        "endLine": 83,
+        "endChar": 24
+      },
+      "revId": "6cf9084d73195f90812de6db304dd88aa22942eb",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7f6b1bfe_493891d2",
+        "filename": "unit_tests/test_check_ovn_status.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2020-10-15T10:59:39Z",
+      "side": 1,
+      "message": "I would suggest to just include this test artifact as a multi-line string in this file. To help with formatting you could use ``textwrap.dedent``.\n\nI.e.\n\ngood_status \u003d textwrap.dedent(\"\"\"\\\n    large artfiact\n    but not so large it won\u0027t go into the code itself\"\"\")",
+      "revId": "6cf9084d73195f90812de6db304dd88aa22942eb",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543",
+      "unresolved": false
+    }
+  ]
+}
