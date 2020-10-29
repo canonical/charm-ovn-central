@@ -13,8 +13,10 @@
 # limitations under the License.
 
 import collections
+import operator
 import os
 import subprocess
+import time
 
 import charmhelpers.core as ch_core
 import charmhelpers.contrib.charmsupport.nrpe as nrpe
@@ -389,6 +391,79 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
                             level=ch_core.hookenv.DEBUG)
                         connections.set(str(connection['_uuid']), k, v)
 
+    def configure_ovsdb_election_timer(self, db, tgt_timer):
+        """Set the OVSDB cluster Raft election timer.
+
+        Note that the OVSDB Server will refuse to increase this value to more
+        than 2x the current value, however we should let the end user of the
+        charm set this to whatever they want. Paper over this reality by
+        iteratively increasing the value in a safepace.
+
+        :param db: Database to operate on, 'nb' or 'sb'
+        :type db: str
+        :param tgt_timer: Target value for election timer in ms
+        :type tgt_timer: int
+        :raises: ValueError
+        """
+        if db not in ('nb', 'sb'):
+            raise ValueError
+        ovn_db = 'ovn{}_db'.format(db)
+        ovn_schema = 'OVN_Northbound' if db == 'nb' else 'OVN_Southbound'
+        status = self.cluster_status(ovn_db)
+        if status and status.is_cluster_leader:
+            ch_core.hookenv.log('is_cluster_leader {}'.format(db),
+                                level=ch_core.hookenv.DEBUG)
+            cur_timer = status.election_timer
+            if tgt_timer == cur_timer:
+                ch_core.hookenv.log('Election timer already set to target '
+                                    'value: {} == {}'
+                                    .format(tgt_timer, cur_timer),
+                                    level=ch_core.hookenv.DEBUG)
+                return
+            # to be able to reuse the change loop to both increase and decrease
+            # the timer we assign the operators used to variables
+            if tgt_timer > cur_timer:
+                # when increasing timer, loop should run while current timer
+                # is less than target timer
+                relative_op = operator.lt
+                # when increasing timer, we will multiply the value
+                change_op = operator.mul
+                # when increasing timer, we want the smaller between target
+                # value and current value multiplied with 2
+                change_select = min
+            else:
+                # when decreasing timer, loop should run while current timer
+                # is larger than target timer
+                relative_op = operator.gt
+                # when decreasing timer, we will divide the value and do not
+                # want fractional values
+                change_op = operator.floordiv
+                # when decreasing timer, we want the larger of target value and
+                # current value divided by 2
+                change_select = max
+            while status and status.is_cluster_leader and relative_op(
+                    status.election_timer, tgt_timer):
+                # election timer decrease/increase cannot be more than 2x
+                # current value per iteration
+                change_timer = change_select(
+                    change_op(cur_timer, 2), tgt_timer)
+                ch_core.hookenv.status_set(
+                    'maintenance',
+                    'change {} election timer {}ms -> {}ms'
+                    .format(ovn_schema, cur_timer, change_timer))
+                ch_ovn.ovn_appctl(
+                    ovn_db, (
+                        'cluster/change-election-timer',
+                        ovn_schema,
+                        str(change_timer),
+                    ),
+                    use_ovs_appctl=(self.release == 'train'))
+                # wait for a election window to pass before changing the value
+                # again
+                time.sleep((cur_timer + change_timer) / 1000)
+                cur_timer = change_timer
+                status = self.cluster_status(ovn_db)
+
     def configure_ovn(self, nb_port, sb_port, sb_admin_port):
         """Create or update OVN listener configuration.
 
@@ -421,6 +496,11 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
                     'inactivity_probe': inactivity_probe,
                 },
             })
+
+        election_timer = int(
+            self.config['ovsdb-server-election-timer']) * 1000
+        self.configure_ovsdb_election_timer('nb', election_timer)
+        self.configure_ovsdb_election_timer('sb', election_timer)
 
     @staticmethod
     def initialize_firewall():

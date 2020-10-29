@@ -284,18 +284,103 @@ class TestOVNCentralCharm(Helper):
             mock.call('fake-uuid', 'role', 'ovn-controller')
         ])
 
+    def test_configure_ovsdb_election_timer(self):
+        with self.assertRaises(ValueError):
+            self.target.configure_ovsdb_election_timer('aDb', 42)
+        self.patch_target('cluster_status')
+
+        _election_timer = 1
+
+        class FakeClusterStatus(object):
+
+            def __init__(self):
+                self.is_cluster_leader = True
+
+            @property
+            def election_timer(self):
+                nonlocal _election_timer
+                return _election_timer
+
+        def fake_ovn_appctl(db, cmd, **kwargs):
+            nonlocal _election_timer
+            _election_timer = int(cmd[2])
+
+        cluster_status = FakeClusterStatus()
+        self.cluster_status.return_value = cluster_status
+        self.patch_object(ovn_central.ch_ovn, 'ovn_appctl')
+        self.ovn_appctl.side_effect = fake_ovn_appctl
+        self.target.configure_ovsdb_election_timer('sb', 42)
+        self.ovn_appctl.assert_has_calls([
+            mock.call(
+                'ovnsb_db',
+                ('cluster/change-election-timer', 'OVN_Southbound', '2'),
+                use_ovs_appctl=False),
+            mock.call(
+                'ovnsb_db',
+                ('cluster/change-election-timer', 'OVN_Southbound', '4'),
+                use_ovs_appctl=False),
+            mock.call(
+                'ovnsb_db',
+                ('cluster/change-election-timer', 'OVN_Southbound', '8'),
+                use_ovs_appctl=False),
+            mock.call(
+                'ovnsb_db',
+                ('cluster/change-election-timer', 'OVN_Southbound', '16'),
+                use_ovs_appctl=False),
+            mock.call(
+                'ovnsb_db',
+                ('cluster/change-election-timer', 'OVN_Southbound', '32'),
+                use_ovs_appctl=False),
+            mock.call(
+                'ovnsb_db',
+                ('cluster/change-election-timer', 'OVN_Southbound', '42'),
+                use_ovs_appctl=False)
+        ])
+        _election_timer = 42
+        self.ovn_appctl.reset_mock()
+        self.target.configure_ovsdb_election_timer('sb', 1)
+        self.ovn_appctl.assert_has_calls([
+            mock.call(
+                'ovnsb_db',
+                ('cluster/change-election-timer', 'OVN_Southbound', '21'),
+                use_ovs_appctl=False),
+            mock.call(
+                'ovnsb_db',
+                ('cluster/change-election-timer', 'OVN_Southbound', '10'),
+                use_ovs_appctl=False),
+            mock.call(
+                'ovnsb_db',
+                ('cluster/change-election-timer', 'OVN_Southbound', '5'),
+                use_ovs_appctl=False),
+            mock.call(
+                'ovnsb_db',
+                ('cluster/change-election-timer', 'OVN_Southbound', '2'),
+                use_ovs_appctl=False),
+            mock.call(
+                'ovnsb_db',
+                ('cluster/change-election-timer', 'OVN_Southbound', '1'),
+                use_ovs_appctl=False),
+        ])
+
     def test_configure_ovn(self):
         self.patch_target('config')
         self.config.__getitem__.return_value = 42
         self.patch_target('configure_ovn_listener')
+        self.patch_target('configure_ovsdb_election_timer')
         self.target.configure_ovn(1, 2, 3)
-        self.config.__getitem__.assert_called_once_with(
-            'ovsdb-server-inactivity-probe')
+        self.config.__getitem__.assert_has_calls([
+            mock.call('ovsdb-server-inactivity-probe'),
+            mock.call('ovsdb-server-election-timer'),
+        ])
         self.configure_ovn_listener.assert_has_calls([
             mock.call('nb', {1: {'inactivity_probe': 42000}}),
             mock.call('sb', {2: {'role': 'ovn-controller',
                                  'inactivity_probe': 42000}}),
             mock.call('sb', {3: {'inactivity_probe': 42000}}),
+        ])
+        self.configure_ovsdb_election_timer.assert_has_calls([
+            mock.call('nb', 42000),
+            mock.call('sb', 42000),
         ])
 
     def test_initialize_firewall(self):
