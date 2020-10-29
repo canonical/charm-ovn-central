@@ -13,8 +13,10 @@
 # limitations under the License.
 
 import collections
+import operator
 import os
 import subprocess
+import time
 
 import charmhelpers.core as ch_core
 import charmhelpers.contrib.charmsupport.nrpe as nrpe
@@ -187,21 +189,35 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
         """
         return self._default_port_list()
 
-    def custom_assess_status_last_check(self):
-        """Add clustered DB status to status message."""
-        db_leader = []
-        for db in ('ovnnb_db', 'ovnsb_db',):
-            status = self.cluster_status(db)
-            if status and status.is_cluster_leader:
-                db_leader.append(db)
+    def validate_config(self):
+        """Validate configuration and inform user of any issues.
 
-        msg = []
-        if db_leader:
-            msg.append('leader: {}'.format(', '.join(db_leader)))
-        if self.is_northd_active():
-            msg.append('northd: active')
-        if msg:
-            return ('active', 'Unit is ready ({})'.format(' '.join(msg)))
+        :returns: Tuple with status and message describing configuration issue.
+        :rtype: Tuple[Optional[str],Optional[str]]
+        """
+        if self.config['ovsdb-server-election-timer'] < 1:
+            return (
+                'blocked',
+                "Invalid configuration: 'ovsdb-server-election-timer' must be "
+                ">= 1.")
+        return None, None
+
+    def custom_assess_status_last_check(self):
+        """Customize charm status output.
+
+        Checks and notifies for invalid config and adds clustered DB status to
+        status message.
+
+        :returns: Tuple with workload status and message.
+        :rtype: Tuple[Optional[str],Optional[str]]
+        """
+        invalid_config = self.validate_config()
+        if invalid_config != (None, None):
+            return invalid_config
+
+        cluster_str = self.cluster_status_message()
+        if cluster_str:
+            return ('active', 'Unit is ready ({})'.format(cluster_str))
         return None, None
 
     def enable_services(self):
@@ -236,6 +252,25 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
                                 'not ready yet?: {}'.format(e),
                                 level=ch_core.hookenv.DEBUG)
             return
+
+    def cluster_status_message(self):
+        """Get cluster status message suitable for use as workload message.
+
+        :returns: Textual representation of local unit db and northd status.
+        :rtype: str
+        """
+        db_leader = []
+        for db in ('ovnnb_db', 'ovnsb_db',):
+            status = self.cluster_status(db)
+            if status and status.is_cluster_leader:
+                db_leader.append(db)
+
+        msg = []
+        if db_leader:
+            msg.append('leader: {}'.format(', '.join(db_leader)))
+        if self.is_northd_active():
+            msg.append('northd: active')
+        return ' '.join(msg)
 
     def is_northd_active(self):
         """OVN version agnostic is_northd_active helper.
@@ -389,6 +424,82 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
                             level=ch_core.hookenv.DEBUG)
                         connections.set(str(connection['_uuid']), k, v)
 
+    def configure_ovsdb_election_timer(self, db, tgt_timer):
+        """Set the OVSDB cluster Raft election timer.
+
+        Note that the OVSDB Server will refuse to decrease or increase this
+        value more than 2x the current value, however we should let the end
+        user of the charm set this to whatever they want. Paper over the
+        reality by iteratively decreasing / increasing the value in a safe
+        pace.
+
+        :param db: Database to operate on, 'nb' or 'sb'
+        :type db: str
+        :param tgt_timer: Target value for election timer in ms
+        :type tgt_timer: int
+        :raises: ValueError
+        """
+        if db not in ('nb', 'sb'):
+            raise ValueError
+        if tgt_timer < 1:
+            # Invalid target timer, log error as well as inform user through
+            # workload status+message, please refer to
+            # `custom_assess_status_last_check` for implementation detail.
+            ch_core.hookenv.log('Attempt to set election timer to < 1: {}'
+                                .format(tgt_timer),
+                                level=ch_core.hookenv.ERROR)
+            return
+        ovn_db = 'ovn{}_db'.format(db)
+        ovn_schema = 'OVN_Northbound' if db == 'nb' else 'OVN_Southbound'
+        status = self.cluster_status(ovn_db)
+        if status and status.is_cluster_leader:
+            ch_core.hookenv.log('is_cluster_leader {}'.format(db),
+                                level=ch_core.hookenv.DEBUG)
+            cur_timer = status.election_timer
+            if tgt_timer == cur_timer:
+                ch_core.hookenv.log('Election timer already set to target '
+                                    'value: {} == {}'
+                                    .format(tgt_timer, cur_timer),
+                                    level=ch_core.hookenv.DEBUG)
+                return
+            # to be able to reuse the change loop to both increase and decrease
+            # the timer we assign the operators used to variables
+            if tgt_timer > cur_timer:
+                # when increasing timer, we will multiply the value
+                change_op = operator.mul
+                # when increasing timer, we want the smaller between target
+                # value and current value multiplied with 2
+                change_select = min
+            else:
+                # when decreasing timer, we will divide the value and do not
+                # want fractional values
+                change_op = operator.floordiv
+                # when decreasing timer, we want the larger of target value and
+                # current value divided by 2
+                change_select = max
+            while status and status.is_cluster_leader and (
+                    status.election_timer != tgt_timer):
+                # election timer decrease/increase cannot be more than 2x
+                # current value per iteration
+                change_timer = change_select(
+                    change_op(cur_timer, 2), tgt_timer)
+                ch_core.hookenv.status_set(
+                    'maintenance',
+                    'change {} election timer {}ms -> {}ms'
+                    .format(ovn_schema, cur_timer, change_timer))
+                ch_ovn.ovn_appctl(
+                    ovn_db, (
+                        'cluster/change-election-timer',
+                        ovn_schema,
+                        str(change_timer),
+                    ),
+                    use_ovs_appctl=(self.release == 'train'))
+                # wait for an election window to pass before changing the value
+                # again
+                time.sleep((cur_timer + change_timer) / 1000)
+                cur_timer = change_timer
+                status = self.cluster_status(ovn_db)
+
     def configure_ovn(self, nb_port, sb_port, sb_admin_port):
         """Create or update OVN listener configuration.
 
@@ -421,6 +532,11 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
                     'inactivity_probe': inactivity_probe,
                 },
             })
+
+        election_timer = int(
+            self.config['ovsdb-server-election-timer']) * 1000
+        self.configure_ovsdb_election_timer('nb', election_timer)
+        self.configure_ovsdb_election_timer('sb', election_timer)
 
     @staticmethod
     def initialize_firewall():
