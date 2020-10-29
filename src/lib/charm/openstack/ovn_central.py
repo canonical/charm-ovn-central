@@ -15,6 +15,7 @@
 import collections
 import os
 import subprocess
+import time
 
 import charmhelpers.core as ch_core
 import charmhelpers.contrib.charmsupport.nrpe as nrpe
@@ -389,6 +390,55 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
                             level=ch_core.hookenv.DEBUG)
                         connections.set(str(connection['_uuid']), k, v)
 
+    def configure_ovsdb_election_timer(self, db, tgt_timer):
+        """Set the OVSDB cluster Raft election timer.
+
+        Note that the OVSDB Server will refuse to increase this value to more
+        than 2x the current value, however we should let the end user of the
+        charm set this to whatever they want. Paper over this reality by
+        iteratively increasing the value in a safepace.
+
+        :param db: Database to operate on, 'nb' or 'sb'
+        :type db: str
+        :param tgt_timer: Target value for election timer in ms
+        :type tgt_timer: int
+        :raises: ValueError
+        """
+        if db not in ('nb', 'sb'):
+            raise ValueError
+        ovn_db = 'ovn{}_db'.format(db)
+        ovn_schema = 'OVN_Northbound' if db == 'nb' else 'OVN_Southbound'
+        status = self.cluster_status(ovn_db)
+        if status and status.is_cluster_leader:
+            ch_core.hookenv.log('is_cluster_leader {}'.format(db),
+                                level=ch_core.hookenv.DEBUG)
+            cur_timer = status.election_timer
+            if tgt_timer == cur_timer:
+                ch_core.hookenv.log('Election timer already set to target '
+                                    'value: {} == {}'
+                                    .format(tgt_timer, cur_timer),
+                                    level=ch_core.hookenv.DEBUG)
+                return
+            while cur_timer < tgt_timer:
+                # election timer increase cannot be more than 2x current value
+                # per iteration
+                change_timer = min(cur_timer * 2, tgt_timer)
+                ch_core.hookenv.status_set(
+                    'maintenance',
+                    'change OVSDB cluster election timer {} -> {}'
+                    .format(cur_timer, change_timer))
+                ch_ovn.ovn_appctl(
+                    ovn_db, (
+                        'cluster/change-election-timer',
+                        ovn_schema,
+                        str(change_timer),
+                    ),
+                    use_ovs_appctl=(self.release == 'train'))
+                # XXX: Check if it is possible to monitor the output from
+                # cluster_status for this instead of sleeping.
+                time.sleep(10)
+                cur_timer = change_timer
+
     def configure_ovn(self, nb_port, sb_port, sb_admin_port):
         """Create or update OVN listener configuration.
 
@@ -421,6 +471,11 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
                     'inactivity_probe': inactivity_probe,
                 },
             })
+
+        election_timer = int(
+            self.config['ovsdb-server-election-timer']) * 1000
+        self.configure_ovsdb_election_timer('nb', election_timer)
+        self.configure_ovsdb_election_timer('sb', election_timer)
 
     @staticmethod
     def initialize_firewall():
