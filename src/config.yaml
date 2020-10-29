@@ -21,6 +21,24 @@ options:
       Note that updating this setting to a source that is known to
       provide a later version of Ceph will trigger a software
       upgrade.
+  ovsdb-server-election-timer:
+    default: 1
+    type: int
+    description: |
+      Raft leader election timeout in seconds.
+      .
+      The Open vSwitch ovsdb-server default of 1 second may not be sufficient
+      for a loaded cluster where the database server may be too busy serving
+      requests to respond to elections in time.
+      .
+      Using a higher value will increase the time to discover a real failure,
+      but you must weigh that against the risk of spurious leader flapping and
+      the unwanted churn that entails.
+      .
+      NOTE: The ovsdb-server will refuse to decrease or increase the value of
+      this timer more than 2x the current value. The charm will compensate for
+      this and decrease / increase the timer in increments, but care should be
+      taken to not decrease / increase the value too much in one operation.
   ovsdb-server-inactivity-probe:
     default: 60
     type: int
