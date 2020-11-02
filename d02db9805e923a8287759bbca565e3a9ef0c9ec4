@@ -1,0 +1,8 @@
+Code-Review+2: Alex Kavanagh (tinwood) <alex.kavanagh@canonical.com>
+Workflow+1: Alex Kavanagh (tinwood) <alex.kavanagh@canonical.com>
+Verified+2: Zuul
+Submitted-by: Zuul
+Submitted-at: Mon, 02 Nov 2020 12:24:13 +0000
+Reviewed-on: https://review.opendev.org/760869
+Project: x/charm-ovn-central
+Branch: refs/heads/stable/20.10
