@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1f621f24_25d24cd3",
+        "filename": "src/lib/charm/openstack/ovn_central.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 408,
+      "author": {
+        "id": 31289
+      },
+      "writtenOn": "2020-11-05T15:11:28Z",
+      "side": 1,
+      "message": "we also need to raise ValueError if tgt_timer is a negative number, otherwise we\u0027ll end up in an infinite loop",
+      "revId": "8674b729f4af004ce64aca8a977306b682bd7f5a",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1f621f24_c5f39872",
+        "filename": "src/lib/charm/openstack/ovn_central.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 429,
+      "author": {
+        "id": 31289
+      },
+      "writtenOn": "2020-11-05T15:11:28Z",
+      "side": 1,
+      "message": "nitpick: you could just use the operator !\u003d in both cases. so you don\u0027t need to define a relative_op()",
+      "revId": "8674b729f4af004ce64aca8a977306b682bd7f5a",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1f621f24_e595f4e5",
+        "filename": "src/lib/charm/openstack/ovn_central.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 462,
+      "author": {
+        "id": 31289
+      },
+      "writtenOn": "2020-11-05T15:11:28Z",
+      "side": 1,
+      "message": "s/a election/an election/",
+      "revId": "8674b729f4af004ce64aca8a977306b682bd7f5a",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543",
+      "unresolved": false
+    }
+  ]
+}
