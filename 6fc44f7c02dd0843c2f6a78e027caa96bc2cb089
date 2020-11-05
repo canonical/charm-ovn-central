@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1f621f24_80722e10",
+        "filename": "src/lib/charm/openstack/ovn_central.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 444,
+      "author": {
+        "id": 8992
+      },
+      "writtenOn": "2020-11-05T16:01:39Z",
+      "side": 1,
+      "message": "Should this be tgt_timer \u003c 1000, since the value specified should be in ms? I don\u0027t think we want the election timer to be set to something like ms, unintentionally.",
+      "revId": "6fc44f7c02dd0843c2f6a78e027caa96bc2cb089",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1f621f24_00ee1e87",
+        "filename": "src/lib/charm/openstack/ovn_central.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 480,
+      "author": {
+        "id": 8992
+      },
+      "writtenOn": "2020-11-05T16:01:39Z",
+      "side": 1,
+      "message": "Do we want to consider a max time period here/adjustment? If a user unintentionally specifies seconds as milliseconds, yes it is a user error - but this will spin for a loooong time.",
+      "revId": "6fc44f7c02dd0843c2f6a78e027caa96bc2cb089",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543",
+      "unresolved": false
+    }
+  ]
+}
