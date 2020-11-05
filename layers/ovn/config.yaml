@@ -1,0 +1,245 @@
+options:
+  source:
+    default: distro
+    type: string
+    description: |
+      Repository from which to install OVS+OVN
+
+      May be one of the following:
+
+        distro (default)
+        ppa:somecustom/ppa (PPA name must include UCA OpenStack Release name)
+        deb url sources entry|key id
+        or a supported Ubuntu Cloud Archive pocket.
+
+      Supported Ubuntu Cloud Archive pockets include:
+
+        cloud:xenial-pike
+        cloud:xenial-queens
+        cloud:bionic-rocky
+
+      Note that updating this setting to a source that is known to
+      provide a later version of Ceph will trigger a software
+      upgrade.
+  bridge-interface-mappings:
+    type: string
+    default:
+    description: >
+      A space-delimited list of key-value pairs that map a network interface
+      MAC address or name to a local ovs bridge to which it should be
+      connected.
+
+      Note: MAC addresses of physical interfaces that belong to a bond will be
+      resolved to the bond name and the bond will be added to the ovs bridge.
+
+      Bridges referenced here must be mentioned in the `ovn-bridge-mappings`
+      configuration option.
+
+      If a match is found the bridge will be created if it does not already
+      exist, the matched interface will be added to it and the mapping found in
+      `ovn-bridge-mappings` will be added to the local OVSDB under the
+      `external_ids:ovn-bridge-mappings` key in the Open_vSwitch table.
+
+      An example value mapping two network interface mac address to two ovs
+      bridges would be:
+
+          br-internet:00:00:5e:00:00:42 br-provider:enp3s0f0
+
+
+      Note: OVN gives you distributed East/West and highly available
+      North/South routing by default.  You do not need to add provider networks
+      for use with external Layer3 connectivity to all chassis.
+
+      Doing so will create a scaling problem at the physical network layer
+      that needs to be resolved with globally shared Layer2 (does not scale) or
+      tunneling at the top-of-rack switch layer (adds complexity) and is
+      generally not a recommended configuration.
+
+      Add provider networks for use with external Layer3 connectivity to
+      individual chassis located near the datacenter border gateways by adding
+      the MAC address of the physical interfaces of those units.
+  dpdk-bond-mappings:
+    type: string
+    default:
+    description: |
+      Space-delimited list of bond:port mappings. The DPDK assigned ports will
+      be added to their corresponding bond, which in turn will be put into the
+      bridge as specified in data-port.
+      .
+      This option is supported only when enable-dpdk is true.
+  dpdk-bond-config:
+    type: string
+    default: ":balance-tcp:active:fast"
+    description: |
+      Space delimited list of bond:mode:lacp:lacp-time, where the arguments meaning is:
+      .
+          * bond - the bond name. If not specified the configuration applies to all bonds
+          * mode - the bond mode of operation. Possible values are:
+            - active-backup - No load balancing is offered in this mode and only one of
+                              the member ports is active/used at a time.
+            - balance-slb - Considered as a static load-balancing mode. Traffic is load
+                            balanced between member ports based on the source MAC and VLAN.
+            - balance-tcp - This is the preferred bonding mode. It offers traffic load
+                            balancing based on 5-tuple header fields. LACP must be enabled
+                            at both endpoints to use this mode. The aggregate link will
+                            fall back to default mode (active-passive) in the event of LACP
+                            negotiation failure.
+          * lacp - active, passive or off
+          * lacp-time - fast or slow. LACP negotiation time interval - 30 ms or 1 second
+  enable-dpdk:
+    type: boolean
+    default: false
+    description: |
+      Enable DPDK fast userspace networking; this requires use of DPDK
+      supported network interface drivers and must be used in conjunction with
+      the data-port configuration option to configure each bridge with an
+      appropriate DPDK enabled network device.
+  dpdk-socket-memory:
+    type: int
+    default: 1024
+    description: |
+      Amount of hugepage memory in MB to allocate per NUMA socket in deployed
+      systems.
+      .
+      Only used when DPDK is enabled.
+  dpdk-socket-cores:
+    type: int
+    default: 1
+    description: |
+      Number of cores to allocate to DPDK per NUMA socket in deployed systems.
+      .
+      Only used when DPDK is enabled.
+  dpdk-driver:
+    type: string
+    default:
+    description: |
+      Kernel userspace device driver to use for DPDK devices, valid values
+      include:
+      .
+        vfio-pci
+        uio_pci_generic
+      .
+      Only used when DPDK is enabled.
+  enable-hardware-offload:
+    type: boolean
+    default: false
+    description: |
+      NOTE: Support for hardware offload in conjunction with OVN is a
+      experimental feature.
+      .
+      Enable support for hardware offload of flows from Open vSwitch to
+      supported network adapters.  This feature has only been tested on
+      Mellanox ConnectX 5 adapters.
+      .
+      Enabling this option will make use of the sriov-numvfs option to
+      configure the VF functions of the physical network adapters detected in
+      each unit.
+      .
+      This option must not be enabled with either enable-sriov or enable-dpdk.
+  enable-sriov:
+    type: boolean
+    default: false
+    description: |
+      Enable SR-IOV NIC agent on deployed units; use with sriov-device-mappings
+      to map SR-IOV devices to underlying provider networks. Enabling this
+      option allows instances to be plugged into directly into SR-IOV VF
+      devices connected to underlying provider networks alongside the default
+      Open vSwitch networking options.
+  networking-tools-source:
+    type: string
+    default: ppa:openstack-charmers/networking-tools
+    description: |
+      Package archive source to use for utilities associated with configuring
+      SR-IOV VF's and switchdev mode in Mellanox network adapters.
+      .
+      This PPA can be mirrored for offline deployments.
+  ovn-bridge-mappings:
+    type: string
+    default:
+    description: >
+      A space-delimited list of key-value pairs that map a physical network
+      name to a local ovs bridge that provides connectivity to that network.
+
+      The physical network name can be referenced when the administrator
+      programs the OVN logical flows either by talking directly to the
+      Northbound database or by interfacing with a Cloud Management System
+      (CMS).
+
+      Each charm unit will evaluate each key-value pair and determine if the
+      configuration is relevant for the host it is running on based on matches
+      found in the `bridge-interface-mappings` configuration option.
+
+      If a match is found the bridge will be created if it does not already
+      exist, the matched interface will be added to it and the mapping will be
+      added to the local OVSDB under the `external_ids:ovn-bridge-mappings` key
+      in the Open_vSwitch table.
+
+      An example value mapping two physical network names to two ovs bridges
+      would be:
+
+          physnet1:br-internet physnet2:br-provider
+
+      NOTE: Values in this configuration option will only have effect for units
+      that have a interface referenced in the `bridge-interface-mappings`
+      configuration option.
+  sriov-device-mappings:
+    type: string
+    default:
+    description: |
+      Space-delimited list of SR-IOV device mappings with format
+      .
+        <provider>:<interface>
+      .
+      Multiple mappings can be provided, delimited by spaces.
+  sriov-numvfs:
+    type: string
+    default: auto
+    description: |
+      Number of VF's to configure each PF with; by default, each SR-IOV PF will
+      be configured with the maximum number of VF's it can support. In the case
+      sriov-device-mappings is set, only the devices in the mapping are configured.
+      Either use a single integer to apply the same VF configuration to all
+      detected SR-IOV devices or use a per-device configuration in the following
+      format
+      .
+        <device>:<numvfs>
+      .
+      Multiple devices can be configured by providing multi values delimited by
+      spaces.
+      .
+      NOTE: Changing this value will disrupt networking on all SR-IOV capable
+      interfaces for blanket configuration or listed interfaces when per-device
+      configuration is used.
+  new-units-paused:
+    type: boolean
+    default: false
+    description: |
+      Start new units of the application as paused.
+      .
+      When set to 'true' newly deployed units of the application will install
+      the charm and any packages required on the sytem, but keep any services
+      from actually starting.
+      .
+      To start the services the operator must run the `resume` action on each
+      unit.
+      .
+      This is useful for use with OpenStack for controlled unit by unit
+      migration of deployments from the legacy Neutron ML2 OVS topology to the
+      OVN topology. Both topologies make use of Open vSwitch and the 'br-int'
+      integration bridge on the hypervisor and during a migration the operator
+      may want to shut down and clean up after the ML2 OVS components before
+      the `ovn-controller` takes over and reprograms the bridge flow rules.
+  nagios_context:
+    default: "juju"
+    type: string
+    description: |
+      A string that will be prepended to instance name to set the host name
+      in nagios. So for instance the hostname would be something like:
+          juju-myservice-0
+      If you're running multiple environments with the same services in them
+      this allows you to differentiate between them.
+  nagios_servicegroups:
+    default: ""
+    type: string
+    description: |
+      Comma separated list of nagios servicegroups for the service checks.

@@ -1,0 +1,5 @@
+interfaces:
+  {% for interface, numvfs in options.sriov_device.items() -%}
+  {{ interface }}:
+    num_vfs: {{ numvfs }}
+  {% endfor -%}

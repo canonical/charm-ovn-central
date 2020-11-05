@@ -1,0 +1,4 @@
+# Requirements to build the layer
+charm-tools
+simplejson
+flake8

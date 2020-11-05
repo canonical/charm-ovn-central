@@ -1,0 +1,22 @@
+[Unit]
+Description=Neutron OVN Metadata Agent
+
+
+
+
+[Service]
+User=root
+Group=root
+Type=simple
+WorkingDirectory=~
+RuntimeDirectory=neutron lock/neutron
+CacheDirectory=neutron
+ExecStart=/etc/init.d/neutron-ovn-metadata-agent systemd-start
+Restart=on-failure
+LimitNOFILE=65535
+TimeoutStopSec=15
+
+
+[Install]
+WantedBy=multi-user.target
+

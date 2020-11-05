@@ -1,0 +1,18 @@
+name: layer-ovn
+summary: Base layer for Open Virtual Network Charms
+maintainer: OpenStack Charmers <openstack-charmers@lists.ubuntu.com>
+description: |
+  This layer provides shared code, configuration options and dependencies
+  for authoring OVN Charms.
+tags:
+- openstack
+- networking
+series: []
+requires:
+  amqp:
+    interface: rabbitmq
+provides:
+  nrpe-external-master:
+    interface: nrpe-external-master
+    scope: container
+
