@@ -4,10 +4,9 @@ gate_bundles:
 - bionic-ussuri
 - focal-ussuri
 - focal-victoria
+- groovy-victoria
 smoke_bundles:
 - focal-ussuri
-dev_bundles:
-- groovy-victoria
 target_deploy_status:
   ovn-central:
     workload-status: waiting

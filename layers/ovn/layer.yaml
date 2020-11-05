@@ -1,0 +1,28 @@
+includes:
+  - layer:openstack
+  - interface:ovsdb
+  - interface:rabbitmq
+  - interface:nrpe-external-master
+exclude: 
+  - .gitignore
+  - .stestr.conf
+  - .travis.yml
+  - README.md
+  - requirements.txt
+  - test-requirements.txt
+  - tests
+  - tox.ini
+  - unit_tests
+options:
+  basic:
+    use_venv: true
+    include_system_packages: false
+repo: https://github.com/openstack-charmers/charm-layer-ovn
+config:
+  deletes:
+    - ssl_ca
+    - ssl_cert
+    - ssl_key
+    - use-internal-endpoints
+    - use-syslog
+    - verbose
