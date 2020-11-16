@@ -22,7 +22,7 @@ options:
       provide a later version of Ceph will trigger a software
       upgrade.
   ovsdb-server-election-timer:
-    default: 1
+    default: 4
     type: int
     description: |
       Raft leader election timeout in seconds. The charm allows a value between
