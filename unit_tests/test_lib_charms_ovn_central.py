@@ -326,26 +326,32 @@ class TestOVNCentralCharm(Helper):
             mock.call(
                 'ovnsb_db',
                 ('cluster/change-election-timer', 'OVN_Southbound', '2000'),
+                rundir='/var/run/ovn',
                 use_ovs_appctl=False),
             mock.call(
                 'ovnsb_db',
                 ('cluster/change-election-timer', 'OVN_Southbound', '4000'),
+                rundir='/var/run/ovn',
                 use_ovs_appctl=False),
             mock.call(
                 'ovnsb_db',
                 ('cluster/change-election-timer', 'OVN_Southbound', '8000'),
+                rundir='/var/run/ovn',
                 use_ovs_appctl=False),
             mock.call(
                 'ovnsb_db',
                 ('cluster/change-election-timer', 'OVN_Southbound', '16000'),
+                rundir='/var/run/ovn',
                 use_ovs_appctl=False),
             mock.call(
                 'ovnsb_db',
                 ('cluster/change-election-timer', 'OVN_Southbound', '32000'),
+                rundir='/var/run/ovn',
                 use_ovs_appctl=False),
             mock.call(
                 'ovnsb_db',
                 ('cluster/change-election-timer', 'OVN_Southbound', '42000'),
+                rundir='/var/run/ovn',
                 use_ovs_appctl=False)
         ])
         _election_timer = 42000
@@ -355,26 +361,32 @@ class TestOVNCentralCharm(Helper):
             mock.call(
                 'ovnsb_db',
                 ('cluster/change-election-timer', 'OVN_Southbound', '21000'),
+                rundir='/var/run/ovn',
                 use_ovs_appctl=False),
             mock.call(
                 'ovnsb_db',
                 ('cluster/change-election-timer', 'OVN_Southbound', '10500'),
+                rundir='/var/run/ovn',
                 use_ovs_appctl=False),
             mock.call(
                 'ovnsb_db',
                 ('cluster/change-election-timer', 'OVN_Southbound', '5250'),
+                rundir='/var/run/ovn',
                 use_ovs_appctl=False),
             mock.call(
                 'ovnsb_db',
                 ('cluster/change-election-timer', 'OVN_Southbound', '2625'),
+                rundir='/var/run/ovn',
                 use_ovs_appctl=False),
             mock.call(
                 'ovnsb_db',
                 ('cluster/change-election-timer', 'OVN_Southbound', '1312'),
+                rundir='/var/run/ovn',
                 use_ovs_appctl=False),
             mock.call(
                 'ovnsb_db',
                 ('cluster/change-election-timer', 'OVN_Southbound', '1000'),
+                rundir='/var/run/ovn',
                 use_ovs_appctl=False),
         ])
 

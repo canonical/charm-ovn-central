@@ -506,6 +506,7 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
                         ovn_schema,
                         str(change_timer),
                     ),
+                    rundir=self.ovn_rundir(),
                     use_ovs_appctl=(self.release == 'train'))
                 # wait for an election window to pass before changing the value
                 # again
