@@ -1,0 +1,10 @@
+Verified+1: Canonical CI <uosci-testing-bot@ubuntu.com>
+Verified+2: Zuul
+Code-Review+2: Chris MacNaughton <chris.macnaughton@canonical.com>
+Code-Review+2: gnuoy <liam.young@canonical.com>
+Workflow+1: gnuoy <liam.young@canonical.com>
+Submitted-by: Zuul
+Submitted-at: Thu, 03 Dec 2020 09:41:43 +0000
+Reviewed-on: https://review.opendev.org/c/x/charm-ovn-central/+/764884
+Project: x/charm-ovn-central
+Branch: refs/heads/stable/20.10
