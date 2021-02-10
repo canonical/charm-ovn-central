@@ -10,16 +10,16 @@ relations:
   - 'ovn-central:nrpe-external-master'
 applications:
   mysql-innodb-cluster:
-    charm: cs:~openstack-charmers-next/mysql-innodb-cluster
+    charm: cs:~openstack-charmers/mysql-innodb-cluster
     num_units: 3
   vault-mysql-router:
-    charm: cs:~openstack-charmers-next/mysql-router
+    charm: cs:~openstack-charmers/mysql-router
   vault:
-    charm: cs:~openstack-charmers-next/vault
+    charm: cs:~openstack-charmers/vault
     num_units: 1
   ovn-central:
     series: groovy
-    charm: cs:~openstack-charmers-next/ovn-central
+    charm: cs:~openstack-charmers/ovn-central
     num_units: 3
   nrpe:
     charm: cs:nrpe
