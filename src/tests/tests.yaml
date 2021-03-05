@@ -1,12 +1,19 @@
 charm_name: ovn-central
+
 gate_bundles:
 - bionic-train
 - bionic-ussuri
 - focal-ussuri
 - focal-victoria
+- focal-wallaby
 - groovy-victoria
+- hirsute-wallaby
+
 smoke_bundles:
 - focal-ussuri
+
+dev_bundles:
+
 target_deploy_status:
   ovn-central:
     workload-status: waiting
@@ -22,9 +29,12 @@ target_deploy_status:
 # neutron-api-plugin-ovn and octavia charm gates
 configure:
 - zaza.openstack.charm_tests.vault.setup.auto_initialize_no_validation
+
 tests:
 - zaza.openstack.charm_tests.ovn.tests.OVNCentralDeferredRestartTest
 - zaza.openstack.charm_tests.ovn.tests.CentralCharmOperationTest
+
 tests_options:
   force_deploy:
-    - groovy-victoria
+    - groovy-victoria # groovy-victoria is on the force list because cs:nrpe does not support groovy.
+    - hirsute-wallaby
