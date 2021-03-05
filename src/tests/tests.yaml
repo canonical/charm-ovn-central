@@ -4,7 +4,9 @@ gate_bundles:
 - bionic-ussuri
 - focal-ussuri
 - focal-victoria
+- focal-wallaby
 - groovy-victoria
+- hirsute-wallaby
 smoke_bundles:
 - focal-ussuri
 target_deploy_status:
@@ -26,4 +28,4 @@ tests:
 - zaza.openstack.charm_tests.ovn.tests.CentralCharmOperationTest
 tests_options:
   force_deploy:
-    - groovy-victoria
+    - hirsute-wallaby
