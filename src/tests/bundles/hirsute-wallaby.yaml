@@ -1,7 +1,7 @@
 variables:
   openstack-origin: &openstack-origin distro
 
-series: groovy
+series: hirsute
 
 comment:
 - 'machines section to decide order of deployment. database sooner = faster'
@@ -20,7 +20,7 @@ machines:
 applications:
 
   mysql-innodb-cluster:
-    charm: cs:~openstack-charmers/mysql-innodb-cluster
+    charm: cs:~openstack-charmers-next/mysql-innodb-cluster
     num_units: 3
     options:
       source: *openstack-origin
@@ -30,25 +30,16 @@ applications:
       - '2'
 
   vault-mysql-router:
-<<<<<<< HEAD   (a9c6e3 rebuild - restore proxy env vars for add-apt-repository)
-    charm: cs:~openstack-charmers/mysql-router
-=======
     charm: cs:~openstack-charmers-next/mysql-router
 
->>>>>>> CHANGE (3b8224 Test bundles for focal-wallaby and hirsute-wallaby)
   vault:
-    charm: cs:~openstack-charmers/vault
+    charm: cs:~openstack-charmers-next/vault
     num_units: 1
     to:
       - '3'
 
   ovn-central:
-<<<<<<< HEAD   (a9c6e3 rebuild - restore proxy env vars for add-apt-repository)
-    series: groovy
-    charm: cs:~openstack-charmers/ovn-central
-=======
     charm: cs:~openstack-charmers-next/ovn-central
->>>>>>> CHANGE (3b8224 Test bundles for focal-wallaby and hirsute-wallaby)
     num_units: 3
     options:
       source: *openstack-origin
