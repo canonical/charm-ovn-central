@@ -23,6 +23,7 @@ import charmhelpers.contrib.charmsupport.nrpe as nrpe
 import charmhelpers.contrib.network.ovs.ovn as ch_ovn
 import charmhelpers.contrib.network.ovs.ovsdb as ch_ovsdb
 from charmhelpers.contrib.network import ufw as ch_ufw
+import charmhelpers.contrib.openstack.deferred_events as deferred_events
 
 import charms.reactive as reactive
 
@@ -92,6 +93,49 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
         }
         super().__init__(**kwargs)
 
+    def restart_on_change(self):
+        """Restart the services in the self.restart_map{} attribute if any of
+        the files identified by the keys changes for the wrapped call.
+
+        Usage:
+
+           @restart_on_change(restart_map, ...)
+           def function_that_might_trigger_a_restart(...)
+               ...
+
+        Or:
+
+           with restart_on_change(restart_map, ...):
+               do_stuff_that_might_trigger_a_restart()
+               ...
+        """
+        return ch_core.host.restart_on_change(
+            self.full_restart_map,
+            stopstart=True,
+            restart_functions=getattr(self, 'restart_functions', None),
+            can_restart_now_f=deferred_events.check_and_record_restart_request,
+            post_svc_restart_f=deferred_events.process_svc_restart)
+
+    @property
+    def deferable_services(self):
+        """Services which should be stopped from restarting.
+
+        All services from self.services are deferable. But the charm may
+        install a package which install a service that the charm does not add
+        to its restart_map. In that case it will be missing from
+        self.services. However one of the jobs of deferred events is to ensure
+        that packages updates outside of charms also do not restart services.
+        To ensure there is a complete list take the services from self.services
+        and also add in a known list of networking services.
+
+        NOTE: It does not matter if one of the services in the list is not
+        installed on the system.
+        """
+        svcs = self.services[:]
+        svcs.extend(['ovn-ovsdb-server-nb', 'ovn-ovsdb-server-nb',
+                     'ovn-northd', 'ovn-central'])
+        return list(set(svcs))
+
     def install(self, service_masks=None):
         """Extend the default install method.
 
@@ -115,6 +159,16 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
                 os.symlink('/dev/null', abs_path_svc)
         self.configure_source()
         super().install()
+
+    def configure_deferred_restarts(self):
+        if 'enable-auto-restarts' in ch_core.hookenv.config().keys():
+            deferred_events.configure_deferred_restarts(
+                self.deferable_services)
+            # Reactive charms execute perm missing.
+            os.chmod(
+                '/var/lib/charm/{}/policy-rc.d'.format(
+                    ch_core.hookenv.service_name()),
+                0o755)
 
     def states_to_check(self, required_relations=None):
         """Override parent method to add custom messaging.
@@ -616,6 +670,33 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
         nrpe.add_init_service_checks(
             charm_nrpe, self.nrpe_check_services, current_unit)
         charm_nrpe.write()
+
+    def custom_assess_status_check(self):
+        """Report deferred events in charm status message."""
+        state = None
+        message = None
+        deferred_events.check_restart_timestamps()
+        events = collections.defaultdict(set)
+        for e in deferred_events.get_deferred_events():
+            events[e.action].add(e.service)
+        for action, svcs in events.items():
+            svc_msg = "Services queued for {}: {}".format(
+                action, ', '.join(sorted(svcs)))
+            state = 'active'
+            if message:
+                message = "{}. {}".format(message, svc_msg)
+            else:
+                message = svc_msg
+        deferred_hooks = deferred_events.get_deferred_hooks()
+        if deferred_hooks:
+            state = 'active'
+            svc_msg = "Hooks skipped due to disabled auto restarts: {}".format(
+                ', '.join(sorted(deferred_hooks)))
+            if message:
+                message = "{}. {}".format(message, svc_msg)
+            else:
+                message = svc_msg
+        return state, message
 
 
 class TrainOVNCentralCharm(BaseOVNCentralCharm):

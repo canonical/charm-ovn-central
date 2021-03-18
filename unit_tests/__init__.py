@@ -37,6 +37,8 @@ sys.modules['charmhelpers.contrib.network.ovs'] = mock.MagicMock()
 sys.modules['charmhelpers.contrib.network.ovs.ovn'] = mock.MagicMock()
 sys.modules['charmhelpers.contrib.network.ovs.ovsdb'] = mock.MagicMock()
 sys.modules['charmhelpers.contrib.charmsupport.nrpe'] = mock.MagicMock()
+sys.modules[
+    'charmhelpers.contrib.openstack.deferred_events'] = mock.MagicMock()
 charms = mock.MagicMock()
 sys.modules['charms'] = charms
 charms.leadership = mock.MagicMock()
@@ -66,6 +68,8 @@ charms.ovn = mock.MagicMock()
 sys.modules['charms.ovn'] = charms.ovn
 charms.ovn_charm = mock.MagicMock()
 sys.modules['charms.ovn_charm'] = charms.ovn
+charms.layer = mock.MagicMock()
+sys.modules['charms.layer'] = charms.layer
 keystoneauth1 = mock.MagicMock()
 sys.modules['keystoneauth1'] = keystoneauth1
 netaddr = mock.MagicMock()

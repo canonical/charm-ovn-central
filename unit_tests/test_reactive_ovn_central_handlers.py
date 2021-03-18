@@ -80,6 +80,9 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
                                    'endpoint.nrpe-external-master.changed',
                                    'nrpe-external-master.available',),
             },
+            'when_not': {
+                'configure_deferred_restarts': ('is-update-status-hook',),
+            },
         }
         # test that the hooks were registered via the
         # reactive.ovn_handlers

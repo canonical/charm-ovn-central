@@ -539,3 +539,36 @@ class TestOVNCentralCharm(Helper):
         self.NRPE.assert_has_calls([
             mock.call().write(),
         ])
+
+    def test_configure_deferred_restarts(self):
+        self.patch_object(
+            ovn_central.ch_core.hookenv,
+            'config',
+            return_value={'enable-auto-restarts': True})
+        self.patch_object(
+            ovn_central.ch_core.hookenv,
+            'service_name',
+            return_value='myapp')
+        self.patch_object(
+            ovn_central.deferred_events,
+            'configure_deferred_restarts')
+        self.patch_object(ovn_central.os, 'chmod')
+        self.target.configure_deferred_restarts()
+        self.configure_deferred_restarts.assert_called_once_with(
+            ['ovn-central', 'ovn-ovsdb-server-nb', 'ovn-northd',
+             'ovn-ovsdb-server-sb'])
+
+        self.chmod.assert_called_once_with(
+            '/var/lib/charm/myapp/policy-rc.d',
+            493)
+
+    def test_configure_deferred_restarts_unsupported(self):
+        self.patch_object(
+            ovn_central.ch_core.hookenv,
+            'config',
+            return_value={})
+        self.patch_object(
+            ovn_central.deferred_events,
+            'configure_deferred_restarts')
+        self.target.configure_deferred_restarts()
+        self.assertFalse(self.configure_deferred_restarts.called)

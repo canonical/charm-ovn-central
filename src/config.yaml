@@ -63,3 +63,9 @@ options:
     type: string
     description: |
       Comma separated list of nagios servicegroups for the service checks.
+  enable-auto-restarts:
+    type: boolean
+    default: True
+    description: |
+      Allow the charm and packages to restart services automatically when
+      required.

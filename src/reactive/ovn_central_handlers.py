@@ -210,3 +210,9 @@ def configure_nrpe():
     """Handle config-changed for NRPE options."""
     with charm.provide_charm_instance() as charm_instance:
         charm_instance.render_nrpe()
+
+
+@reactive.when_not('is-update-status-hook')
+def configure_deferred_restarts():
+    with charm.provide_charm_instance() as instance:
+        instance.configure_deferred_restarts()
