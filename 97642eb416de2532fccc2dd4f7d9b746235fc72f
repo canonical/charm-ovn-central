@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e73c094a_2ad00cf8",
+        "filename": "src/lib/charm/openstack/ovn_central.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 20870
+      },
+      "writtenOn": "2021-04-14T08:27:35Z",
+      "side": 1,
+      "message": "I\u0027m not sure the comment matches the function?  i.e. it looks like it can\u0027t be used as decorator as that would need to happen at module load time.  I think it could be used like this, but I\u0027m not entirely sure?\n\n    with self.restart_on_change(...):\n        do_stuff(..)\n\nShould it be a @classmethod; I suspect not due to full_restart_map being a property?",
+      "range": {
+        "startLine": 97,
+        "startChar": 7,
+        "endLine": 110,
+        "endChar": 18
+      },
+      "revId": "97642eb416de2532fccc2dd4f7d9b746235fc72f",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543",
+      "unresolved": true
+    }
+  ]
+}
