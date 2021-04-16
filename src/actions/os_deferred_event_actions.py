@@ -32,6 +32,18 @@ import charms.reactive as reactive
 charms_openstack.bus.discover()
 
 
+def handle_package_updates():
+    """Ensure DB services are restarted PKG update."""
+    for event in deferred_events.get_deferred_events():
+        if (event.reason == 'Package update' and
+                event.service.startswith('ovn-central')):
+            os_utils.restart_services_action(services=[
+                'ovn-central',
+                'ovn-northd',
+                'ovn-ovsdb-server-nb',
+                'ovn-ovsdb-server-sb'])
+
+
 def restart_services(args):
     """Restart services.
 
@@ -48,6 +60,7 @@ def restart_services(args):
         hookenv.action_fail("Please specify deferred-only or services")
         return
     if deferred_only:
+        handle_package_updates()
         os_utils.restart_services_action(deferred_only=True)
     else:
         os_utils.restart_services_action(services=services)
