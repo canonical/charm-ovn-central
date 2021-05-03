@@ -1,0 +1,9 @@
+Verified+1: Canonical CI <uosci-testing-bot@ubuntu.com>
+Verified+2: Zuul
+Code-Review+2: David Ames <david.ames@canonical.com>
+Workflow+1: David Ames <david.ames@canonical.com>
+Submitted-by: Zuul
+Submitted-at: Mon, 03 May 2021 23:11:47 +0000
+Reviewed-on: https://review.opendev.org/c/x/charm-ovn-central/+/789353
+Project: x/charm-ovn-central
+Branch: refs/heads/master
