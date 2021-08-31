@@ -1,0 +1,12 @@
+Verified+1: Canonical CI <uosci-testing-bot@ubuntu.com>
+Verified+2: Zuul
+Code-Review+2: Alex Kavanagh <alex.kavanagh@canonical.com>
+Code-Review+1: Aurelien Lourot <aurelien.lourot@canonical.com>
+Code-Review+1: Luciano Lo Giudice <luciano.logiudice@canonical.com>
+Code-Review+2: Felipe Reyes <felipe.reyes@canonical.com>
+Workflow+1: Felipe Reyes <felipe.reyes@canonical.com>
+Submitted-by: Zuul
+Submitted-at: Tue, 31 Aug 2021 17:10:49 +0000
+Reviewed-on: https://review.opendev.org/c/x/charm-ovn-central/+/806369
+Project: x/charm-ovn-central
+Branch: refs/heads/stable/21.04
