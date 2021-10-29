@@ -14,7 +14,9 @@ smoke_bundles:
 
 dev_bundles:
 - focal-xena
+- focal-yoga
 - impish-xena
+- jammy-yoga
 
 target_deploy_status:
   ovn-central:
@@ -41,3 +43,4 @@ tests_options:
     - groovy-victoria # groovy-victoria is on the force list because cs:nrpe does not support groovy.
     - hirsute-wallaby # hirsute-wallaby is on the force list because cs:nrpe does not support groovy.
     - impish-xena
+    - jammy-yoga
