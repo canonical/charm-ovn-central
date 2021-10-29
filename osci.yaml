@@ -9,11 +9,12 @@
       - focal-ussuri
       - focal-victoria
       - focal-wallaby
-      - focal-xena:
+      - focal-xena
+      - focal-yoga:
           voting: false
-      - groovy-victoria
       - hirsute-wallaby
-      - impish-xena:
+      - impish-xena
+      - jammy-yoga:
           voting: false
     vars:
       needs_charm_build: true
