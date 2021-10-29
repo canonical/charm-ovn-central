@@ -11,9 +11,13 @@
       - focal-wallaby
       - focal-xena:
           voting: false
+      - focal-yoga:
+          voting: false
       - groovy-victoria
       - hirsute-wallaby
       - impish-xena:
+          voting: false
+      - jammy-yoga:
           voting: false
     vars:
       needs_charm_build: true
