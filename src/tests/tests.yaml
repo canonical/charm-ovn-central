@@ -1,20 +1,21 @@
 charm_name: ovn-central
 
 gate_bundles:
-- bionic-train
 - bionic-ussuri
 - focal-ussuri
 - focal-victoria
 - focal-wallaby
-- groovy-victoria
+- focal-xena
 - hirsute-wallaby
+- impish-xena
 
 smoke_bundles:
 - focal-ussuri
 
 dev_bundles:
-- focal-xena
-- impish-xena
+- bionic-train
+- focal-yoga
+- jammy-yoga
 
 target_deploy_status:
   ovn-central:
@@ -38,6 +39,6 @@ tests:
 
 tests_options:
   force_deploy:
-    - groovy-victoria # groovy-victoria is on the force list because cs:nrpe does not support groovy.
-    - hirsute-wallaby # hirsute-wallaby is on the force list because cs:nrpe does not support groovy.
+    - hirsute-wallaby
     - impish-xena
+    - jammy-yoga
