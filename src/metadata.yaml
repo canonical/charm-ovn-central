@@ -29,6 +29,7 @@ series:
 - groovy
 - hirsute
 - impish
+- jammy
 subordinate: false
 provides:
   ovsdb:
