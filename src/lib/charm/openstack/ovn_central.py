@@ -789,3 +789,10 @@ class UssuriOVNCentralCharm(BaseOVNCentralCharm):
             'ovn-ovsdb-server-sb.service',
         ]
         super().install(service_masks=service_masks)
+
+
+class WallabyOVNCentralCharm(UssuriOVNCentralCharm):
+    # OpenvSwitch and OVN is distributed as part of the Ubuntu Cloud Archive
+    # Pockets get their name from OpenStack releases
+    release = 'wallaby'
+    packages = ['ovn-central', 'openstack-release']
