@@ -16,6 +16,23 @@
       "message": "WARNING certificates-relation-changed dns.resolver.NoNameservers: All nameservers failed to answer the query 136.0.16.172.in-addr.arpa. IN PTR: Server 127.0.0.53 UDP port 53 answered SERVFAIL\n\nDNS issues I assume",
       "revId": "e93a05de52b11e3330faadfcdbf2901160a9c97c",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e6408c94_813ab5af",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11805
+      },
+      "writtenOn": "2021-11-19T18:45:54Z",
+      "side": 1,
+      "message": "charm-recheck",
+      "revId": "e93a05de52b11e3330faadfcdbf2901160a9c97c",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
