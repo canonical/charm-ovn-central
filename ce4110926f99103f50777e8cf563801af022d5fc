@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "834eb484_ce3bb1dd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 13
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 31289
+      },
+      "writtenOn": "2021-11-22T11:02:46Z",
+      "side": 1,
+      "message": "The CI failure is a DNS resolution hiccup. Plus a dependent change passed CI: https://review.opendev.org/c/x/charm-ovn-central/+/818594",
+      "revId": "ce4110926f99103f50777e8cf563801af022d5fc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    }
+  ]
+}
