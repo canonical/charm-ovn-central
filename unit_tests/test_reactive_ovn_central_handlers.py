@@ -73,6 +73,7 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
                            'certificates.connected',
                            'certificates.available',),
                 'configure_nrpe': ('config.rendered',),
+                'remove_nrpe_config': ('nrpe-external-master.configured',),
             },
             'when_any': {
                 'configure_nrpe': ('config.changed.nagios_context',
@@ -82,6 +83,8 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
             },
             'when_not': {
                 'configure_deferred_restarts': ('is-update-status-hook',),
+                'remove_nrpe_config': ('nrpe-external-master.available',),
+                'configure_nrpe': ('nrpe-external-master.configured',),
             },
         }
         # test that the hooks were registered via the
