@@ -1,0 +1,136 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e0c6295e_5c1af412",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 27345
+      },
+      "writtenOn": "2021-12-14T18:05:45Z",
+      "side": 1,
+      "message": "A few nitpicking comments but it\u0027s good.\n\nThe tests are very thorough :). ",
+      "revId": "34ccd2d5742e581f31f1fb1992de76b220f613db",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1168e4a9_14501e7c",
+        "filename": "src/files/run_ovn_db_connections_check.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 27345
+      },
+      "writtenOn": "2021-12-14T18:05:45Z",
+      "side": 1,
+      "message": "Maybe we can help them by explicitly saying what we expect it to be? So a better worded version of \"role is \u0027foo\u0027 but is expected to be \"\".\nAs it is, I think the next question the responder would have is: what role should be assigned to the target?",
+      "range": {
+        "startLine": 76,
+        "startChar": 24,
+        "endLine": 76,
+        "endChar": 64
+      },
+      "revId": "34ccd2d5742e581f31f1fb1992de76b220f613db",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "133e0269_2a1b855c",
+        "filename": "src/files/run_ovn_db_connections_check.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 27345
+      },
+      "writtenOn": "2021-12-14T18:05:45Z",
+      "side": 1,
+      "message": "nitpick: is the \"not False\" intentional here? I\u0027d usually go with something like:\n\n  if connection[\"read_only\"]:\n    CRIT\n  else\n    OK\n\nbut you might also be trying to be explicit.",
+      "range": {
+        "startLine": 87,
+        "startChar": 7,
+        "endLine": 87,
+        "endChar": 44
+      },
+      "revId": "34ccd2d5742e581f31f1fb1992de76b220f613db",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e2c3710a_9af6b813",
+        "filename": "src/files/run_ovn_db_connections_check.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 27345
+      },
+      "writtenOn": "2021-12-14T18:05:45Z",
+      "side": 1,
+      "message": "Since we\u0027ve defined EXPECTED_CONNECTIONS, we can probably use it here for consistency?\nThe alert could also go out of sync with EXPECTED_CONNECTIONS if it\u0027s updated.",
+      "range": {
+        "startLine": 105,
+        "startChar": 26,
+        "endLine": 105,
+        "endChar": 27
+      },
+      "revId": "34ccd2d5742e581f31f1fb1992de76b220f613db",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a9b2089e_c5a27fe1",
+        "filename": "src/files/run_ovn_db_connections_check.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 27345
+      },
+      "writtenOn": "2021-12-14T18:05:45Z",
+      "side": 1,
+      "message": "Very nice and concise :)",
+      "range": {
+        "startLine": 129,
+        "startChar": 0,
+        "endLine": 129,
+        "endChar": 22
+      },
+      "revId": "34ccd2d5742e581f31f1fb1992de76b220f613db",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d090ee09_c9acba48",
+        "filename": "src/files/run_ovn_db_connections_check.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 27345
+      },
+      "writtenOn": "2021-12-14T18:05:45Z",
+      "side": 1,
+      "message": "another style nitpick: Instead of keeping count, I think we can probably get these from len of the respective lists after iterating through the alerts?",
+      "range": {
+        "startLine": 180,
+        "startChar": 0,
+        "endLine": 181,
+        "endChar": 18
+      },
+      "revId": "34ccd2d5742e581f31f1fb1992de76b220f613db",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    }
+  ]
+}
