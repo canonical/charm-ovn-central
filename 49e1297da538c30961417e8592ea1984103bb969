@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3e6407cf_2c6dad27",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 20870
+      },
+      "writtenOn": "2021-12-14T13:14:51Z",
+      "side": 1,
+      "message": "LGTM and passed its tests; thanks Frode!",
+      "revId": "49e1297da538c30961417e8592ea1984103bb969",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    }
+  ]
+}
