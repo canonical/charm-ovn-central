@@ -16,6 +16,23 @@
       "message": "charm-recheck",
       "revId": "1d77a2cfbccea33ae5652a843d170bc4315d769d",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5495f762_531482f0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 31289
+      },
+      "writtenOn": "2022-01-20T09:11:31Z",
+      "side": 1,
+      "message": "charm-recheck\n\ninfra issues - MachineError",
+      "revId": "1d77a2cfbccea33ae5652a843d170bc4315d769d",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
