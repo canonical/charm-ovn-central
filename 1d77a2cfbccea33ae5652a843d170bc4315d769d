@@ -67,6 +67,23 @@
       "message": "charm-recheck",
       "revId": "1d77a2cfbccea33ae5652a843d170bc4315d769d",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "958c129d_0534fe4a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 31289
+      },
+      "writtenOn": "2022-01-21T08:50:03Z",
+      "side": 1,
+      "message": "LGTM, this is green enough for this non-risky patch IMHO, thanks!",
+      "revId": "1d77a2cfbccea33ae5652a843d170bc4315d769d",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
