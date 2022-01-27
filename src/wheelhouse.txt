@@ -1,5 +1,7 @@
 dnspython
 psutil
+poetry-core
+six
 
 git+https://github.com/openstack/charms.openstack.git#egg=charms.openstack
 
