@@ -1,11 +1,10 @@
 - project:
     templates:
-      - charm-yoga-unit-jobs
+      - charm-unit-jobs-py38
+      - charm-unit-jobs-py39
       - charm-yoga-functional-jobs
       - charm-xena-functional-jobs
       - charm-wallaby-functional-jobs
-      - charm-victoria-functional-jobs
-      - charm-ussuri-functional-jobs
     vars:
       needs_charm_build: true
       charm_build_name: ovn-central
