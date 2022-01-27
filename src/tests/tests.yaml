@@ -1,32 +1,26 @@
 charm_name: ovn-central
 
 gate_bundles:
-- bionic-ussuri
-- focal-ussuri
-- focal-victoria
-- focal-wallaby
 - focal-xena
-- hirsute-wallaby
 - impish-xena
 
 smoke_bundles:
-- focal-ussuri
+- focal-xena
 
 dev_bundles:
-- bionic-train
 - focal-yoga
 - jammy-yoga
 
 target_deploy_status:
   ovn-central:
     workload-status: waiting
-    workload-status-message: "'ovsdb-peer' incomplete, 'certificates' awaiting server certificate data"
+    workload-status-message-prefix: "'ovsdb-peer' incomplete, 'certificates' awaiting server certificate data"
   vault:
     workload-status: blocked
-    workload-status-message: Vault needs to be initialized
+    workload-status-message-prefix: Vault needs to be initialized
   nrpe:
     workload-status: blocked
-    workload-status-message: "Nagios server not configured or related"
+    workload-status-message-prefix: "Nagios server not configured or related"
 
 # Note that full end to end tests are performed with OVN in the
 # neutron-api-plugin-ovn and octavia charm gates
@@ -39,6 +33,5 @@ tests:
 
 tests_options:
   force_deploy:
-    - hirsute-wallaby
     - impish-xena
     - jammy-yoga
