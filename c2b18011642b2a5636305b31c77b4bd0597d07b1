@@ -33,6 +33,23 @@
       "message": "charm-recheck",
       "revId": "c2b18011642b2a5636305b31c77b4bd0597d07b1",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "027f9e08_69c5aa97",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 31289
+      },
+      "writtenOn": "2022-02-07T09:47:03Z",
+      "side": 1,
+      "message": "charm-recheck\n\nspurious charmcraft build failure?",
+      "revId": "c2b18011642b2a5636305b31c77b4bd0597d07b1",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
