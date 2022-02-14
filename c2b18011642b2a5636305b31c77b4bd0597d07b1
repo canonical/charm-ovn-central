@@ -67,6 +67,23 @@
       "message": "It seems like the charmbuild failure is related to tempita.",
       "revId": "c2b18011642b2a5636305b31c77b4bd0597d07b1",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a6aa0862_cf7ef006",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11805
+      },
+      "writtenOn": "2022-02-14T18:54:50Z",
+      "side": 1,
+      "message": "charm-recheck\n\nSeems the tempita issue has been fixed in charm-helpers: https://github.com/juju/charm-helpers/pull/674",
+      "revId": "c2b18011642b2a5636305b31c77b4bd0597d07b1",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
