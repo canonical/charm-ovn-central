@@ -84,6 +84,23 @@
       "message": "charm-recheck\n\nSeems the tempita issue has been fixed in charm-helpers: https://github.com/juju/charm-helpers/pull/674",
       "revId": "c2b18011642b2a5636305b31c77b4bd0597d07b1",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2b60d1c9_635f101f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 12549
+      },
+      "writtenOn": "2022-02-15T14:13:21Z",
+      "side": 1,
+      "message": "looking into this one now",
+      "revId": "c2b18011642b2a5636305b31c77b4bd0597d07b1",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
