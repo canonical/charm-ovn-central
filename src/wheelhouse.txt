@@ -3,6 +3,6 @@ psutil
 poetry-core
 six
 
-git+https://github.com/openstack/charms.openstack.git#egg=charms.openstack
+git+https://review.opendev.org/openstack/charms.openstack@refs/changes/16/830616/2#egg=charms.openstack
 
 git+https://github.com/juju/charm-helpers.git#egg=charmhelpers
