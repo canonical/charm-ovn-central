@@ -50,6 +50,24 @@
       "message": "Worked through the charms.openstack change with Alex. What would you think about landing the rebuild to pick up the changes?",
       "revId": "d653b58bcdfa5fa717ebb11192e59bdca42918bb",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2ccc603f_e814fd7f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11805
+      },
+      "writtenOn": "2022-02-25T20:43:02Z",
+      "side": 1,
+      "message": "Thanks for all the changes!",
+      "parentUuid": "65fb8efa_5ba4b178",
+      "revId": "d653b58bcdfa5fa717ebb11192e59bdca42918bb",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
