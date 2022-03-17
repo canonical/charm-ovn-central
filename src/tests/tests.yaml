@@ -1,20 +1,13 @@
 charm_name: ovn-central
 
 gate_bundles:
-- bionic-train
-- bionic-ussuri
-- focal-ussuri
-- focal-victoria
 - focal-wallaby
-- groovy-victoria
-- hirsute-wallaby
+- focal-xena
 
 smoke_bundles:
-- focal-ussuri
+- focal-xena
 
 dev_bundles:
-- focal-xena
-- impish-xena
 
 target_deploy_status:
   ovn-central:
@@ -37,7 +30,4 @@ tests:
 - zaza.openstack.charm_tests.ovn.tests.CentralCharmOperationTest
 
 tests_options:
-  force_deploy:
-    - groovy-victoria # groovy-victoria is on the force list because cs:nrpe does not support groovy.
-    - hirsute-wallaby # hirsute-wallaby is on the force list because cs:nrpe does not support groovy.
-    - impish-xena
+  force_deploy: []
