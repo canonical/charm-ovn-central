@@ -1,23 +1,55 @@
+local_overlay_enabled: False
+
+variables:
+  openstack-origin: &openstack-origin cloud:bionic-ussuri
+
 series: bionic
-relations:
-- - vault:shared-db
-  - mysql:shared-db
-- - ovn-central:certificates
-  - vault:certificates
-- - 'nrpe:nrpe-external-master'
-  - 'ovn-central:nrpe-external-master'
+
+comment:
+- 'machines section to decide order of deployment. database sooner = faster'
+machines:
+  '0':
+    constraints: mem=3072M
+  '1':
+  '2':
+  '3':
+  '4':
+
 applications:
+
   mysql:
-    charm: cs:~openstack-charmers/percona-cluster
+    charm: ch:percona-cluster
     num_units: 1
+    to:
+      - '0'
+    channel: 5.7/edge
+
   vault:
-    charm: cs:~openstack-charmers/vault
+    charm: ch:vault
     num_units: 1
+    to:
+      - '1'
+    channel: 1.7/edge
+
   ovn-central:
-    series: bionic
-    charm: cs:~openstack-charmers/ovn-central
+    charm: ../../../ovn-central.charm
     num_units: 3
     options:
-      source: cloud:bionic-ussuri/proposed
+      source: *openstack-origin
+    to:
+      - '2'
+      - '3'
+      - '4'
+
   nrpe:
     charm: cs:nrpe
+
+relations:
+
+  - - 'vault:shared-db'
+    - 'mysql:shared-db'
+
+  - - 'ovn-central:certificates'
+    - 'vault:certificates'
+  - - 'nrpe:nrpe-external-master'
+    - 'ovn-central:nrpe-external-master'
