@@ -1,20 +1,13 @@
 - project:
     templates:
-      - charm-unit-jobs
+      - charm-unit-jobs-py36
+      - charm-unit-jobs-py38
     check:
       jobs:
-      - charm-build
-      - bionic-train
       - bionic-ussuri
       - focal-ussuri
       - focal-victoria
-      - focal-wallaby
-      - focal-xena:
-          voting: false
-      - groovy-victoria
-      - hirsute-wallaby
-      - impish-xena:
-          voting: false
     vars:
       needs_charm_build: true
       charm_build_name: ovn-central
+      build_type: charmcraft
