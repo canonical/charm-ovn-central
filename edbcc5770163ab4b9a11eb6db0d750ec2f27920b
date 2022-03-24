@@ -1,0 +1,9 @@
+Verified+1: Canonical CI <uosci-testing-bot@ubuntu.com>
+Verified+2: Zuul
+Code-Review+2: Billy Olsen <billy.olsen@canonical.com>
+Workflow+1: Billy Olsen <billy.olsen@canonical.com>
+Submitted-by: Zuul
+Submitted-at: Thu, 24 Mar 2022 22:40:12 +0000
+Reviewed-on: https://review.opendev.org/c/x/charm-ovn-central/+/834965
+Project: x/charm-ovn-central
+Branch: refs/heads/stable/21.09
