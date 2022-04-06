@@ -16,6 +16,23 @@
       "message": "charm-recheck",
       "revId": "fbfc06f47b6438d01ddb4b8a6e6a992ae86f53ca",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "45db0eb4_5f58ed17",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2022-04-06T13:12:49Z",
+      "side": 1,
+      "message": "We should probably change the default source configuration option too to mimic the changes done for the OpenStack charms: https://review.opendev.org/q/topic:charmhub-migration-yoga\n\nThere is aparently some magic which will make that work both for focal and jammy, will confirm that now.",
+      "revId": "fbfc06f47b6438d01ddb4b8a6e6a992ae86f53ca",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
