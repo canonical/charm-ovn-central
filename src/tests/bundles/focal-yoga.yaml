@@ -47,7 +47,6 @@ applications:
     charm: ../../../ovn-central.charm
     num_units: 3
     options:
-      source: *openstack-origin
     to:
       - '4'
       - '5'

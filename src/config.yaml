@@ -1,6 +1,6 @@
 options:
   source:
-    default: distro
+    default: yoga
     type: string
     description: |
       Repository from which to install OVS+OVN
