@@ -25,7 +25,7 @@ tags:
 - networking
 series:
 - focal
-- impish
+- jammy
 subordinate: false
 provides:
   ovsdb:
