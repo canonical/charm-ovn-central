@@ -18,6 +18,14 @@
     },
     {
       "type": "layer",
+      "item": "layer:ovn",
+      "url": "https://github.com/openstack-charmers/charm-layer-ovn",
+      "vcs": null,
+      "branch": "refs/heads/master",
+      "commit": "0e971cb542ba79e3ad3b7c3e47d967764d5fc101"
+    },
+    {
+      "type": "layer",
       "item": "layer:openstack",
       "url": "https://github.com/openstack/charm-layer-openstack",
       "vcs": null,
