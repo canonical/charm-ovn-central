@@ -1,0 +1,9 @@
+Verified+1: Canonical CI <uosci-testing-bot@ubuntu.com>
+Verified+2: Zuul
+Code-Review+2: gnuoy <liam.young@canonical.com>
+Workflow+1: gnuoy <liam.young@canonical.com>
+Submitted-by: Zuul
+Submitted-at: Tue, 19 Apr 2022 15:09:53 +0000
+Reviewed-on: https://review.opendev.org/c/x/charm-ovn-central/+/837894
+Project: x/charm-ovn-central
+Branch: refs/heads/stable/22.03
