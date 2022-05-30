@@ -527,18 +527,31 @@ class TestOVNCentralCharm(Helper):
     def test_render_nrpe(self):
         self.patch_object(ovn_central.nrpe, 'NRPE')
         self.patch_object(ovn_central.nrpe, 'add_init_service_checks')
-        self.target.render_nrpe()
-        # Note that this list is valid for Ussuri
-        self.add_init_service_checks.assert_has_calls([
-            mock.call().add_init_service_checks(
-                mock.ANY,
-                ['ovn-northd', 'ovn-ovsdb-server-nb', 'ovn-ovsdb-server-sb'],
-                mock.ANY
-            ),
-        ])
-        self.NRPE.assert_has_calls([
-            mock.call().write(),
-        ])
+
+        with mock.patch('builtins.open', create=True) as mocked_open:
+            mocked_file = mock.MagicMock(spec=io.FileIO)
+            mocked_open.return_value = mocked_file
+
+            self.target.render_nrpe()
+
+            # Note that this list is valid for Ussuri
+            self.add_init_service_checks.assert_has_calls([
+                mock.call().add_init_service_checks(
+                    mock.ANY,
+                    ['ovn-northd', 'ovn-ovsdb-server-nb',
+                     'ovn-ovsdb-server-sb'],
+                    mock.ANY
+                ),
+            ])
+            self.NRPE.assert_has_calls([
+                mock.call().write(),
+            ])
+            mocked_file.__enter__().write.assert_called_once_with(
+                '# Juju generated - DO NOT EDIT\n'
+                '*/5 * * * * '
+                'root /usr/local/bin/run_ovn_db_connections_check.py '
+                '| logger -p local0.notice\n\n'
+            )
 
     def test_configure_deferred_restarts(self):
         self.patch_object(

@@ -202,6 +202,7 @@ def render():
 
 @reactive.when_none('charm.paused', 'is-update-status-hook')
 @reactive.when('config.rendered')
+@reactive.when_not('nrpe-external-master.configured')
 @reactive.when_any('config.changed.nagios_context',
                    'config.changed.nagios_servicegroups',
                    'endpoint.nrpe-external-master.changed',
@@ -210,6 +211,16 @@ def configure_nrpe():
     """Handle config-changed for NRPE options."""
     with charm.provide_charm_instance() as charm_instance:
         charm_instance.render_nrpe()
+    reactive.set_flag('nrpe-external-master.configured')
+
+
+@reactive.when_not('nrpe-external-master.available')
+@reactive.when('nrpe-external-master.configured')
+def remove_nrpe_config():
+    """Remove NRPE configuration."""
+    with charm.provide_charm_instance() as charm_instance:
+        charm_instance.remove_nrpe()
+    reactive.clear_flag('nrpe-external-master.configured')
 
 
 @reactive.when_not('is-update-status-hook')
