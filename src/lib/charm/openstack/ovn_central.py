@@ -38,6 +38,10 @@ charms_openstack.charm.use_defaults('charm.default-select-release')
 PEER_RELATION = 'ovsdb-peer'
 CERT_RELATION = 'certificates'
 
+NAGIOS_PLUGINS_PATH = '/usr/local/lib/nagios/plugins'
+SCRIPTS_DIR = '/usr/local/bin'
+NRPE_CRON_FILE = '/etc/cron.d/run_ovn_db_checks'
+
 
 # NOTE(fnordahl): We should split the ``OVNConfigurationAdapter`` in
 # ``layer-ovn`` into common and chassis specific parts so we can re-use the
@@ -656,14 +660,77 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
         for rule in sorted(delete_rules, reverse=True):
             ch_ufw.modify_access(None, dst=None, action='delete', index=rule)
 
+    def generate_cron_command(self, file_name):
+        """Generate cron line to run NRPE checks periodically."""
+        cron_script = os.path.join(
+            ch_core.hookenv.charm_dir(), "files", file_name
+        )
+        ch_core.host.rsync(cron_script, SCRIPTS_DIR,
+                           options=["--executability"])
+        cron_cmd = os.path.join(SCRIPTS_DIR, file_name)
+        cron_line = "*/5 * * * * root {} | logger -p local0.notice".format(
+            cron_cmd
+        )
+
+        return cron_line
+
     def render_nrpe(self):
         """Configure Nagios NRPE checks."""
         hostname = nrpe.get_nagios_hostname()
         current_unit = nrpe.get_nagios_unit_name()
         charm_nrpe = nrpe.NRPE(hostname=hostname)
-        nrpe.add_init_service_checks(
-            charm_nrpe, self.nrpe_check_services, current_unit)
+        nrpe.add_init_service_checks(charm_nrpe,
+                                     self.nrpe_check_services,
+                                     current_unit)
+
+        nrpe_files_path = os.path.join(ch_core.hookenv.charm_dir(), "files")
+        nrpe.copy_nrpe_checks(nrpe_files_dir=nrpe_files_path)
+
+        cron_line_connection = self.generate_cron_command(
+            "run_ovn_db_connections_check.py"
+        )
+        cron_line_status = self.generate_cron_command(
+            "run_ovn_db_status_check.py"
+        )
+
+        with open(NRPE_CRON_FILE, "w") as fd:
+            fd.write("# Juju generated - DO NOT EDIT\n{}\n{}\n\n"
+                     .format(cron_line_connection, cron_line_status))
+
+        charm_nrpe.add_check(shortname="ovn_sb_db_connections",
+                             description="Check OVN Southbound DB connections",
+                             check_cmd="check_ovn_sb_db_connections.py")
+        charm_nrpe.add_check(shortname="ovn_nb_db_connections",
+                             description="Check OVN Northbound DB connections",
+                             check_cmd="check_ovn_nb_db_connections.py")
+        charm_nrpe.add_check(shortname="ovn_sb_db_status",
+                             description="Check OVN Southbound DB status",
+                             check_cmd="check_ovn_sb_db_status.py")
+        charm_nrpe.add_check(shortname="ovn_nb_db_status",
+                             description="Check OVN Northbound DB status",
+                             check_cmd="check_ovn_nb_db_status.py")
         charm_nrpe.write()
+
+    def remove_nrpe(self):
+        """Remove no longer needed NRPE configuration and cronfiles"""
+        hostname = nrpe.get_nagios_hostname()
+        charm_nrpe = nrpe.NRPE(hostname=hostname)
+        for svc in self.nrpe_check_services:
+            charm_nrpe.remove_check(shortname=svc)
+        charm_nrpe.remove_check(shortname="ovn_sb_db_connections")
+        charm_nrpe.remove_check(shortname="ovn_nb_db_connections")
+        charm_nrpe.remove_check(shortname="ovn_sb_db_status")
+        charm_nrpe.remove_check(shortname="ovn_nb_db_status")
+        charm_nrpe.write()
+
+        files = [
+            NRPE_CRON_FILE,
+            os.path.join(SCRIPTS_DIR, "run_ovn_db_connections_check.py"),
+            os.path.join(SCRIPTS_DIR, "run_ovn_db_status_check.py"),
+        ]
+        for filename in files:
+            if os.path.exists(filename):
+                os.unlink(filename)
 
     def custom_assess_status_check(self):
         """Report deferred events in charm status message."""
