@@ -16,6 +16,7 @@ import sys
 
 sys.path.append('src')
 sys.path.append('src/lib')
+sys.path.append('src/files')
 
 # Mock out charmhelpers so that we can test without it.
 import charms_openstack.test_mocks  # noqa
@@ -82,3 +83,10 @@ sys.modules['neutron_lib'] = neutron_lib
 sys.modules['neutron_lib.constants'] = neutron_lib.constants
 novaclient = mock.MagicMock()
 sys.modules['novaclient'] = novaclient
+nagios_plugin3 = mock.MagicMock()
+nagios_plugin3.UnknownError = Exception
+nagios_plugin3.WarnError = Exception
+nagios_plugin3.CriticalError = Exception
+nagios_plugin3.check_file_freshness = mock.MagicMock()
+nagios_plugin3.try_check = mock.MagicMock()
+sys.modules['nagios_plugin3'] = nagios_plugin3
