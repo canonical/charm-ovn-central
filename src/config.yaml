@@ -1,6 +1,6 @@
 options:
   source:
-    default: yoga
+    default: zed
     type: string
     description: |
       Repository from which to install OVS+OVN
