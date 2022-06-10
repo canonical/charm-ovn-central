@@ -24,8 +24,8 @@ description: |
 tags:
 - networking
 series:
-- focal
 - jammy
+- kinetic
 subordinate: false
 provides:
   ovsdb:
