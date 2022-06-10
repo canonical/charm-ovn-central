@@ -1,14 +1,16 @@
 charm_name: ovn-central
 
 gate_bundles:
-- focal-xena
 - focal-yoga
 
 smoke_bundles:
 - focal-yoga
 
 dev_bundles:
+- focal-yoga
+- jammy-zed
 - jammy-yoga
+- kinetic-zed
 
 target_deploy_status:
   ovn-central:
@@ -32,4 +34,4 @@ tests:
 
 tests_options:
   force_deploy:
-    - jammy-yoga
+    - kinetic-zed

@@ -26,6 +26,7 @@ tags:
 series:
 - focal
 - jammy
+- kinetic
 subordinate: false
 provides:
   ovsdb:
