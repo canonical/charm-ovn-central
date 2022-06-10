@@ -1,9 +1,9 @@
 variables:
-  openstack-origin: &openstack-origin cloud:focal-yoga
+  openstack-origin: &openstack-origin cloud:jammy-zed
 
 local_overlay_enabled: False
 
-series: focal
+series: jammy
 
 comment:
 - 'machines section to decide order of deployment. database sooner = faster'
@@ -52,9 +52,6 @@ applications:
       - '5'
       - '6'
 
-  nrpe:
-    charm: cs:nrpe
-
 relations:
 
   - - 'vault:shared-db'
@@ -64,5 +61,3 @@ relations:
 
   - - 'ovn-central:certificates'
     - 'vault:certificates'
-  - - 'nrpe:nrpe-external-master'
-    - 'ovn-central:nrpe-external-master'

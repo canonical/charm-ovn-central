@@ -23,9 +23,6 @@ description: |
   automatically choose a single active instance.
 tags:
 - networking
-series:
-- focal
-- jammy
 subordinate: false
 provides:
   ovsdb:
