@@ -245,7 +245,6 @@ class TestOVNCentralCharm(Helper):
             self.assertFalse(self.service_reload.called)
             self.is_data_changed().__enter__.return_value = True
             self.target.configure_tls()
-            self.service_reload.assert_called_once_with('ovn-northd')
 
     def test_configure_ovn_listener(self):
         self.patch_object(ovn_central.ch_ovsdb, 'SimpleOVSDB')
