@@ -421,10 +421,6 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
                                     tls_object['cert'],
                                     tls_object['key'],
                                     cn='host')
-                if changed:
-                    # The `ovn-northd` daemon will not detect changes to the
-                    # certificate data and needs to be restarted. LP: #1895303
-                    self.service_reload('ovn-northd')
                 break
 
     def configure_ovn_listener(self, db, port_map):
