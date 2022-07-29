@@ -16,6 +16,23 @@
       "message": "charm-recheck",
       "revId": "87fe7cc6aefce1bc0d4dc875c8dc1928bf65af6c",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "964c181a_f9c3a55f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 20870
+      },
+      "writtenOn": "2022-07-29T11:50:19Z",
+      "side": 1,
+      "message": "LGTM; 20.03 hasn\u0027t been released as a track to stable yet, so a single +2 is enough to land it at this time.",
+      "revId": "87fe7cc6aefce1bc0d4dc875c8dc1928bf65af6c",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
