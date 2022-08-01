@@ -16,6 +16,23 @@
       "message": "Transient issue:\n2022-08-01 13:12:44.117887 | xenial-medium | 2022-08-01 13:12:44.117 :: fatal: unable to access \u0027https://github.com/openstack/charm-layer-openstack/\u0027: Could not resolve host: github.com",
       "revId": "79513f8a3f9b542bedcafa7e45c56089a372f1c4",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f049e1e8_41c3277a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2022-08-01T13:22:29Z",
+      "side": 1,
+      "message": "charm-recheck",
+      "revId": "79513f8a3f9b542bedcafa7e45c56089a372f1c4",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
