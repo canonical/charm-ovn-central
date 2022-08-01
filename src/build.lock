@@ -137,9 +137,9 @@
     {
       "type": "python_module",
       "package": "charms.openstack",
-      "url": "git+https://github.com/openstack/charms.openstack.git",
-      "branch": "stable/xena",
-      "version": "10627ee5f991c268f174d6d100e218a0e1867af1",
+      "url": "git+https://opendev.org/openstack/charms.openstack.git",
+      "branch": "refs/changes/39/851539/2",
+      "version": "6d3722c2e9857a738e5b0f07172052d92b83f771",
       "vcs": "git"
     },
     {
