@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2c736db5_02a3e848",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 12549
+      },
+      "writtenOn": "2022-08-02T15:55:38Z",
+      "side": 1,
+      "message": "Thank you for all your work on this, it is much appreciated. However, I think we should avoid adding new nrpe checks when a new alerting solution is being worked on. I think @dmitriis would really appreciate your input in making sure the prometheus based solution covers everything you need.",
+      "revId": "74b732d4fa173e81a03aedb5982f0fc291547623",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    }
+  ]
+}
