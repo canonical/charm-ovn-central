@@ -1,6 +1,7 @@
 includes:
   - layer:openstack
   - layer:leadership
+  - layer:snap
   - interface:nrpe-external-master
   - interface:ovsdb
   - interface:ovsdb-cluster

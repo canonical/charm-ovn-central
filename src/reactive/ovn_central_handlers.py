@@ -12,12 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import charms.reactive as reactive
 import charms.leadership as leadership
+import charms.reactive as reactive
 
 import charms_openstack.bus
 import charms_openstack.charm as charm
 
+from charms.layer import snap
 
 charms_openstack.bus.discover()
 
@@ -216,3 +217,25 @@ def configure_nrpe():
 def configure_deferred_restarts():
     with charm.provide_charm_instance() as instance:
         instance.configure_deferred_restarts()
+
+
+@reactive.when_any('config.changed.ovn-exporter-channel',
+                   'snap.installed.prometheus-ovn-exporter')
+def reassess_exporter():
+    is_installed = snap.is_installed('prometheus-ovn-exporter')
+    channel = None
+    with charm.provide_charm_instance() as instance:
+        channel = instance.options.ovn_exporter_snap_channel
+
+    if channel is None:
+        # Attempt to remove the snap if it is present, the snap command
+        # returns 0 if the snap is not installed.
+        snap.remove('prometheus-ovn-exporter')
+        return
+
+    if is_installed:
+        snap.refresh('prometheus-ovn-exporter', channel=channel,
+                     devmode=True)
+    else:
+        snap.install('prometheus-ovn-exporter', channel=channel,
+                     devmode=True)

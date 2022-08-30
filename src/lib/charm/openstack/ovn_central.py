@@ -63,6 +63,23 @@ class OVNCentralConfigurationAdapter(
     def is_charm_leader(self):
         return reactive.is_flag_set('leadership.is_leader')
 
+    @property
+    def ovn_exporter_snap_channel(self):
+        """Validate a provided snap channel and return it
+
+        Any prefix is ignored ('0.10' in '0.10/stable' for example). If
+        a config value is empty it means that the snap does not need to
+        be installed.
+        """
+        channel = self.ovn_exporter_channel
+        if not channel:
+            return None
+
+        channel_suffix = channel.split('/')[-1]
+        if channel_suffix not in ('stable', 'candidate', 'beta', 'edge'):
+            return 'stable'
+        return channel_suffix
+
 
 class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
     abstract_class = True

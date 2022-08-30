@@ -79,6 +79,9 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
                                    'config.changed.nagios_servicegroups',
                                    'endpoint.nrpe-external-master.changed',
                                    'nrpe-external-master.available',),
+                'reassess_exporter': (
+                    'config.changed.ovn-exporter-channel',
+                    'snap.installed.prometheus-ovn-exporter'),
             },
             'when_not': {
                 'configure_deferred_restarts': ('is-update-status-hook',),
