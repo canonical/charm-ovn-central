@@ -5,42 +5,12 @@ local_overlay_enabled: False
 
 series: focal
 
-comment:
-- 'machines section to decide order of deployment. database sooner = faster'
-machines:
-  '0':
-    constraints: mem=3072M
-  '1':
-    constraints: mem=3072M
-  '2':
-    constraints: mem=3072M
-  '3':
-  '4':
-  '5':
-  '6':
-
 applications:
-
-  mysql-innodb-cluster:
-    charm: ch:mysql-innodb-cluster
-    num_units: 3
-    options:
-      source: *openstack-origin
-    to:
-      - '0'
-      - '1'
-      - '2'
-    channel: latest/edge
-
-  vault-mysql-router:
-    charm: ch:mysql-router
-    channel: latest/edge
 
   vault:
     charm: ch:vault
     num_units: 1
-    to:
-      - '3'
+    series: jammy
     channel: latest/edge
 
   ovn-central:
@@ -48,20 +18,11 @@ applications:
     num_units: 3
     options:
       source: *openstack-origin
-    to:
-      - '4'
-      - '5'
-      - '6'
 
   nrpe:
     charm: cs:nrpe
 
 relations:
-
-  - - 'vault:shared-db'
-    - 'vault-mysql-router:shared-db'
-  - - 'vault-mysql-router:db-router'
-    - 'mysql-innodb-cluster:db-router'
 
   - - 'ovn-central:certificates'
     - 'vault:certificates'
