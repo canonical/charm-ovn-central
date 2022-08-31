@@ -16,6 +16,23 @@
       "message": "Last failure appear to for a different charm and unrelated to the change at hand.",
       "revId": "ed2d975ea99768c89d72cbd1d6485a0a067d27f2",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9cd3f8ab_89643cd2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2022-08-31T08:51:39Z",
+      "side": 1,
+      "message": "charm-recheck",
+      "revId": "ed2d975ea99768c89d72cbd1d6485a0a067d27f2",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
