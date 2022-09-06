@@ -33,6 +33,23 @@
       "message": "This time a vault unit is in the error state:\n\n2022-09-06 15:08:51.517969 | focal-medium | zaza.model.UnitError: Units vault/0 in error state\n",
       "revId": "2af5cf4dbd11d5ec6a6bb6a71faf019d2538de5f",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c97743e4_1d95a1b4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 16
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 24824
+      },
+      "writtenOn": "2022-09-06T18:34:36Z",
+      "side": 1,
+      "message": "https://paste.opendev.org/show/bhB6k9hvp3KpBeAsQJqu/\n\n2022-09-06 15:08:22 WARNING unit.vault/0.shared-db-relation-changed logger.go:60     raise exceptions.InternalServerError(\n2022-09-06 15:08:22 WARNING unit.vault/0.shared-db-relation-changed logger.go:60 hvac.exceptions.InternalServerError: core: barrier reports initialized but no seal configuration found, on get http://127.0.0.1:8220/v1/sys/seal-status\n2022-09-06 15:08:22 ERROR juju.worker.uniter.operation runhook.go:140 hook \"shared-db-relation-changed\" (via explicit, bespoke hook script) failed: exit status 1",
+      "revId": "2af5cf4dbd11d5ec6a6bb6a71faf019d2538de5f",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
