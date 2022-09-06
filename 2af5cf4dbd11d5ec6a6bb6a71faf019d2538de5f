@@ -50,6 +50,23 @@
       "message": "https://paste.opendev.org/show/bhB6k9hvp3KpBeAsQJqu/\n\n2022-09-06 15:08:22 WARNING unit.vault/0.shared-db-relation-changed logger.go:60     raise exceptions.InternalServerError(\n2022-09-06 15:08:22 WARNING unit.vault/0.shared-db-relation-changed logger.go:60 hvac.exceptions.InternalServerError: core: barrier reports initialized but no seal configuration found, on get http://127.0.0.1:8220/v1/sys/seal-status\n2022-09-06 15:08:22 ERROR juju.worker.uniter.operation runhook.go:140 hook \"shared-db-relation-changed\" (via explicit, bespoke hook script) failed: exit status 1",
       "revId": "2af5cf4dbd11d5ec6a6bb6a71faf019d2538de5f",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "034e8723_7e241a16",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 16
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 24824
+      },
+      "writtenOn": "2022-09-06T18:34:43Z",
+      "side": 1,
+      "message": "recheck",
+      "revId": "2af5cf4dbd11d5ec6a6bb6a71faf019d2538de5f",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
