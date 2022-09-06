@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4b9545e1_38c29f82",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 14
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 24824
+      },
+      "writtenOn": "2022-09-06T13:33:16Z",
+      "side": 1,
+      "message": "Compared to https://review.opendev.org/c/x/charm-ovn-chassis/+/847507 here a different dependency causes the dependency issue with setuptools. It\u0027s the zipp package that requires a newer version (see below).\n\nThe zipp version that would be OK with setuptools 41.6.0 is quite old compared to what\u0027s in the log:\n\nhttps://github.com/jaraco/zipp/blob/v1.2.0/pyproject.toml setuptools\u003e\u003d34.4\nhttps://github.com/jaraco/zipp/blob/v2.0.0/pyproject.toml setuptools\u003e\u003d42\n\n2022-08-27 06:14:35.367281 | focal-medium | 2022-08-27 06:14:35 [ERROR] unit-ovn-central-1.log: 2022-08-27 06:13:31 DEBUG unit.ovn-central/1.install logger.go:60 Processing ./wheelhouse/zipp-3.6.0.tar.gz\n2022-08-27 06:14:35.367415 | focal-medium | 2022-08-27 06:14:35 [ERROR] unit-ovn-central-1.log: 2022-08-27 06:13:31 DEBUG unit.ovn-central/1.install logger.go:60   Installing build dependencies: started\n2022-08-27 06:14:35.367500 | focal-medium | 2022-08-27 06:14:35 [ERROR] unit-ovn-central-1.log: 2022-08-27 06:13:33 DEBUG unit.ovn-central/1.install logger.go:60   Installing build dependencies: finished with status \u0027error\u0027\n2022-08-27 06:14:35.367624 | focal-medium | 2022-08-27 06:14:35 [ERROR] unit-ovn-central-1.log: 2022-08-27 06:13:33 WARNING unit.ovn-central/1.install logger.go:60   error: subprocess-exited-with-error\n2022-08-27 06:14:35.367780 | focal-medium | 2022-08-27 06:14:35 [ERROR] unit-ovn-central-1.log: 2022-08-27 06:13:33 WARNING unit.ovn-central/1.install logger.go:60\n2022-08-27 06:14:35.367881 | focal-medium | 2022-08-27 06:14:35 [ERROR] unit-ovn-central-1.log: 2022-08-27 06:13:33 WARNING unit.ovn-central/1.install logger.go:60   Ã— pip subprocess to install build dependencies did not run successfully.\n2022-08-27 06:14:35.367966 | focal-medium | 2022-08-27 06:14:35 [ERROR] unit-ovn-central-1.log: 2022-08-27 06:13:33 WARNING unit.ovn-central/1.install logger.go:60   â”‚ exit code: 1\n2022-08-27 06:14:35.368048 | focal-medium | 2022-08-27 06:14:35 [ERROR] unit-ovn-central-1.log: 2022-08-27 06:13:33 WARNING unit.ovn-central/1.install logger.go:60   â•°â”€\u003e [3 lines of output]\n2022-08-27 06:14:35.368134 | focal-medium | 2022-08-27 06:14:35 [ERROR] unit-ovn-central-1.log: 2022-08-27 06:13:33 WARNING unit.ovn-central/1.install logger.go:60       Looking in links: wheelhouse\n2022-08-27 06:14:35.368259 | focal-medium | 2022-08-27 06:14:35 [ERROR] unit-ovn-central-1.log: 2022-08-27 06:13:33 WARNING unit.ovn-central/1.install logger.go:60       ERROR: Could not find a version that satisfies the requirement setuptools\u003e\u003d56 (from versions: 41.6.0)\n2022-08-27 06:14:35.368353 | focal-medium | 2022-08-27 06:14:35 [ERROR] unit-ovn-central-1.log: 2022-08-27 06:13:33 WARNING unit.ovn-central/1.install logger.go:60       ERROR: No matching distribution found for setuptools\u003e\u003d56\n",
+      "revId": "5d1effecbf780022c6b20a40d6fb98e70ce081c5",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    }
+  ]
+}
