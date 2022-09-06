@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "93616baa_bc507de0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 16
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 24824
+      },
+      "writtenOn": "2022-09-06T14:28:20Z",
+      "side": 1,
+      "message": "Extra changes in 15 got in by accident during rebasing. Removed them in 16 so this diff is what was intended:\n\nhttps://review.opendev.org/c/x/charm-ovn-central/+/847506/14..16/src/wheelhouse.txt",
+      "revId": "2af5cf4dbd11d5ec6a6bb6a71faf019d2538de5f",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    }
+  ]
+}
