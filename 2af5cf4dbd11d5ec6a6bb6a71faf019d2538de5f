@@ -135,6 +135,23 @@
       "message": "The need for a retrieval of a release pair stems from: \n\nhttps://github.com/openstack-charmers/zaza-openstack-tests/blob/a53ad38e755c8ab24c399096abe49285f46ea050/zaza/openstack/charm_tests/ovn/tests.py#L45",
       "revId": "2af5cf4dbd11d5ec6a6bb6a71faf019d2538de5f",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "942c1ca3_6ecb4032",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 16
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 2424
+      },
+      "writtenOn": "2022-09-06T22:25:30Z",
+      "side": 1,
+      "message": "charm-recheck\n\nmerged https://github.com/openstack-charmers/zaza-openstack-tests/pull/884",
+      "revId": "2af5cf4dbd11d5ec6a6bb6a71faf019d2538de5f",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
