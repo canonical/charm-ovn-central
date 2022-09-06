@@ -67,6 +67,23 @@
       "message": "recheck",
       "revId": "2af5cf4dbd11d5ec6a6bb6a71faf019d2538de5f",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c03bac42_d3b4de03",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 16
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 24824
+      },
+      "writtenOn": "2022-09-06T20:19:49Z",
+      "side": 1,
+      "message": "2022-09-06 19:16:09.517849 | focal-medium | requests.exceptions.ConnectionError: (\u0027Connection aborted.\u0027, RemoteDisconnected(\u0027Remote end closed connection without response\u0027))\n",
+      "revId": "2af5cf4dbd11d5ec6a6bb6a71faf019d2538de5f",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
