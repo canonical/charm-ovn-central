@@ -16,6 +16,23 @@
       "message": "Extra changes in 15 got in by accident during rebasing. Removed them in 16 so this diff is what was intended:\n\nhttps://review.opendev.org/c/x/charm-ovn-central/+/847506/14..16/src/wheelhouse.txt",
       "revId": "2af5cf4dbd11d5ec6a6bb6a71faf019d2538de5f",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fa112f11_a43ec8e9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 16
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 24824
+      },
+      "writtenOn": "2022-09-06T16:23:05Z",
+      "side": 1,
+      "message": "This time a vault unit is in the error state:\n\n2022-09-06 15:08:51.517969 | focal-medium | zaza.model.UnitError: Units vault/0 in error state\n",
+      "revId": "2af5cf4dbd11d5ec6a6bb6a71faf019d2538de5f",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
