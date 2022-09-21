@@ -152,6 +152,23 @@
       "message": "charm-recheck\n\nmerged https://github.com/openstack-charmers/zaza-openstack-tests/pull/884",
       "revId": "2af5cf4dbd11d5ec6a6bb6a71faf019d2538de5f",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d7f8553f_00524404",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 16
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11805
+      },
+      "writtenOn": "2022-09-21T12:20:55Z",
+      "side": 1,
+      "message": "charm-recheck\n\novn-dedicated-chassis landed",
+      "revId": "2af5cf4dbd11d5ec6a6bb6a71faf019d2538de5f",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
