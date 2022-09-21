@@ -169,6 +169,29 @@
       "message": "charm-recheck\n\novn-dedicated-chassis landed",
       "revId": "2af5cf4dbd11d5ec6a6bb6a71faf019d2538de5f",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "de46ae8b_2e5fdb16",
+        "filename": "charmcraft.yaml",
+        "patchSetId": 16
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 20870
+      },
+      "writtenOn": "2022-09-21T16:21:09Z",
+      "side": 1,
+      "message": "Is the master branch going to support 22.10 on a different patch, or is it an omission?  Thanks!",
+      "range": {
+        "startLine": 21,
+        "startChar": 8,
+        "endLine": 22,
+        "endChar": 53
+      },
+      "revId": "2af5cf4dbd11d5ec6a6bb6a71faf019d2538de5f",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
