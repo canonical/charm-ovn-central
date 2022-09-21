@@ -192,6 +192,30 @@
       },
       "revId": "2af5cf4dbd11d5ec6a6bb6a71faf019d2538de5f",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c852a455_9bc67ca0",
+        "filename": "charmcraft.yaml",
+        "patchSetId": 16
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 11805
+      },
+      "writtenOn": "2022-09-21T16:48:40Z",
+      "side": 1,
+      "message": "I believe that is needed in this patch.",
+      "parentUuid": "de46ae8b_2e5fdb16",
+      "range": {
+        "startLine": 21,
+        "startChar": 8,
+        "endLine": 22,
+        "endChar": 53
+      },
+      "revId": "2af5cf4dbd11d5ec6a6bb6a71faf019d2538de5f",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
