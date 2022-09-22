@@ -1,0 +1,24 @@
+variables:
+  openstack-origin: &openstack-origin distro
+
+local_overlay_enabled: False
+
+applications:
+
+  vault:
+    charm: ch:vault
+    num_units: 1
+    channel: latest/edge
+    series: jammy
+
+  ovn-central:
+    charm: ../../../ovn-central.charm
+    num_units: 3
+    options:
+      source: *openstack-origin
+    series: focal
+
+relations:
+
+  - - 'ovn-central:certificates'
+    - 'vault:certificates'
