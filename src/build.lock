@@ -169,9 +169,9 @@
     {
       "type": "python_module",
       "package": "charmhelpers",
-      "url": "git+https://github.com/juju/charm-helpers.git",
-      "branch": "refs/heads/stable/yoga",
-      "version": "971ac5117c96bd1cb4a6a520787e4509564da582",
+      "url": "git+https://github.com/fnordahl/charm-helpers.git",
+      "branch": "refs/heads/ovn-uca-stable/yoga",
+      "version": "06fbc89e0ef9c15f60516d5f6f3b0c4e17d2e8b6",
       "vcs": "git"
     },
     {
