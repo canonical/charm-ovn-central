@@ -3,7 +3,7 @@ options:
     default: yoga
     type: string
     description: |
-      Repository from which to install OVS+OVN
+      Repository from which to install packages.
 
       May be one of the following:
 
@@ -20,6 +20,27 @@ options:
 
       Note that updating this setting to a source that is known to
       provide a later version of Ceph will trigger a software
+      upgrade.
+  ovn-source:
+    default: ''
+    type: string
+    description: |
+      Overlay repository from which to install OVS+OVN.
+
+      The default for this configuration option is determined at charm
+      runtime.
+
+      When charm is deployed into a fresh environment on Ubuntu
+      20.04 (Focal Fossa), the default will be 'focal-ovn-22.03'.
+
+      When charm is upgraded or deployed into a fresh environment
+      on a different series the default will be to not use the
+      overlay repository.
+
+      To disable the overlay repository, set this option to 'distro'.
+
+      Note that updating this setting to a source that is known to
+      provide a later version of OVN will trigger a software
       upgrade.
   ovsdb-server-election-timer:
     default: 4
