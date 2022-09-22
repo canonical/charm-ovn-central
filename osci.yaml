@@ -1,7 +1,12 @@
 - project:
     templates:
+      - charm-unit-jobs-py38
       - charm-unit-jobs-py310
-      - charm-zed-functional-jobs
+    check:
+      jobs:
+      - focal-ussuri
+      - jammy-yoga
+      - jammy-zed
     vars:
       needs_charm_build: true
       charm_build_name: ovn-central
