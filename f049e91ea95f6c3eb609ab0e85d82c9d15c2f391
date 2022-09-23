@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e6a38c1f_ea0c6d7b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2022-09-23T10:41:35Z",
+      "side": 1,
+      "message": "Successful functional test on focal can be viewed in: https://review.opendev.org/c/x/charm-ovn-central/+/859062",
+      "revId": "f049e91ea95f6c3eb609ab0e85d82c9d15c2f391",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    }
+  ]
+}
