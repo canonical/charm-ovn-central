@@ -626,3 +626,125 @@ class TestOVNCentralCharm(Helper):
             'configure_deferred_restarts')
         self.target.configure_deferred_restarts()
         self.assertFalse(self.configure_deferred_restarts.called)
+
+    def test_cluster_leave_ok(self):
+        """Test successfully leaving OVN cluster."""
+        self.patch_object(
+            ovn_central.ch_ovn,
+            'ovn_appctl'
+        )
+        expected_calls = [
+            mock.call("ovnsb_db", ("cluster/leave", "OVN_Southbound")),
+            mock.call("ovnnb_db", ("cluster/leave", "OVN_Northbound")),
+        ]
+
+        self.target.leave_cluster()
+
+        ovn_central.ch_ovn.ovn_appctl.assert_has_calls(expected_calls)
+
+    def test_cluster_leave_fail(self):
+        """Test failure during leaving of OVN cluster."""
+        self.patch_object(
+            ovn_central.ch_ovn,
+            'ovn_appctl'
+        )
+        self.patch_object(
+            ovn_central.ch_core.hookenv,
+            'log'
+        )
+        expected_err = ovn_central.subprocess.CalledProcessError(1, "foo")
+        ovn_central.ch_ovn.ovn_appctl.side_effect = expected_err
+        error_msg = (
+            "Failed to leave {} cluster. You can use 'cluster-kick' juju "
+            "action on remaining units to remove lingering cluster members."
+        )
+        expected_ovn_calls = [
+            mock.call("ovnsb_db", ("cluster/leave", "OVN_Southbound")),
+            mock.call("ovnnb_db", ("cluster/leave", "OVN_Northbound")),
+        ]
+        expected_log_calls = [
+            mock.call(
+                error_msg.format("Southbound"),
+                ovn_central.ch_core.hookenv.ERROR
+            ),
+            mock.call(
+                error_msg.format("Northbound"),
+                ovn_central.ch_core.hookenv.ERROR
+            ),
+
+        ]
+
+        self.target.leave_cluster()
+
+        ovn_central.ch_ovn.ovn_appctl.assert_has_calls(expected_ovn_calls)
+        ovn_central.ch_core.hookenv.log.assert_has_calls(expected_log_calls,
+                                                         any_order=True)
+
+    def test_server_in_cluster(self):
+        """Test detection of server in cluster."""
+        ipv4_in_cluster = "10.0.0.10"
+        ipv6_in_cluster = "2001:db8:3333:4444:5555:6666:7777:8888"
+        not_in_cluster = "10.0.0.1"
+        servers = [
+            ("aa11", "ssl:{}:6644".format(ipv4_in_cluster)),
+            ("bb22", "ssl:{}:6644".format(ipv6_in_cluster)),
+            ("cc33", "ssl:10.0.0.12:6644"),
+        ]
+        cluster_status = self.FakeClusterStatus(is_cluster_leader=True)
+        cluster_status.servers = servers
+
+        # Find expected IPv4 address in server list
+        self.assertTrue(
+            self.target.is_server_in_cluster(ipv4_in_cluster, cluster_status)
+        )
+
+        # Find expected IPv6 address in server list
+        self.assertTrue(
+            self.target.is_server_in_cluster(ipv6_in_cluster, cluster_status)
+        )
+
+        # Don't find unexpected IP in server list
+        self.assertFalse(
+            self.target.is_server_in_cluster(not_in_cluster, cluster_status)
+        )
+
+    def test_wait_for_server_leave_fail(self):
+        """Test waiting until server leaves cluster.
+
+        This test verifies scenario when server does not leave cluster
+        before timeout.
+        """
+        self.patch_object(ovn_central.time, "sleep")
+        self.patch_target("is_server_in_cluster", return_value=True)
+        self.patch_target("cluster_status")
+        timeout = 30
+        expected_retries = 6
+        expected_calls = []
+        for i in range(expected_retries):
+            expected_calls.append(mock.call("ovnsb_db"))
+            expected_calls.append(mock.call("ovnnb_db"))
+
+        result = self.target.wait_for_server_leave("10.0.0.1", timeout)
+
+        self.assertFalse(result)
+        self.target.cluster_status.assert_has_calls(expected_calls)
+
+    def test_wait_for_server_leave_true(self):
+        """Test waiting until server leaves cluster.
+
+        This test verifies scenario when server successfully leaves
+        cluster during the timeout period.
+        """
+        self.patch_object(ovn_central.time, "sleep")
+        self.patch_target("is_server_in_cluster", return_value=False)
+        self.patch_target("cluster_status")
+        timeout = 30
+        expected_calls = [
+            mock.call("ovnsb_db"),
+            mock.call("ovnnb_db"),
+        ]
+
+        result = self.target.wait_for_server_leave("10.0.0.1", timeout)
+
+        self.assertTrue(result)
+        self.target.cluster_status.assert_has_calls(expected_calls)
