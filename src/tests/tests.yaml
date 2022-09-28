@@ -30,6 +30,7 @@ configure:
 tests:
 - zaza.openstack.charm_tests.ovn.tests.OVNCentralDeferredRestartTest
 - zaza.openstack.charm_tests.ovn.tests.CentralCharmOperationTest
+- zaza.openstack.charm_tests.ovn.tests.OVNCentralDownscaleTests
 
 tests_options:
   force_deploy:

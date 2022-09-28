@@ -25,3 +25,42 @@ run-deferred-hooks:
 show-deferred-events:
     descrpition: |
         Show the outstanding restarts
+cluster-status:
+  description: |
+    Show status of an OVN cluster. Action result will contain two keys,
+    "southbound-cluster" and "northbound-cluster" and each of these keys will contain
+    yaml structure with data from "ovn-appctl cluster/status" command. In
+    addition, each server in "Servers" field will contain "Unit" key so the user can
+    easily match servers to the juju unit on which they run. In case the action is
+    unable to pair server to a unit (e.g. if unit was removed), it will display
+    "UNKNOWN" as a unit name.
+
+cluster-kick:
+  description: |
+    Request removal of a server from the cluster. This action is equivalent to running
+    "ovn-appctl cluster/kick" command and can be run on any unit connected to the
+    cluster. This action takes ID of a server in southbound or northbound cluster
+    (or both) as an argument. At least one of these arguments must be specified. To get
+    the list of servers (and their IDs) connected to the cluster, user can run
+    "cluster-status" action.
+  params:
+    sb-server-id:
+      type:
+        - string
+        - number
+      default: ""
+      description: |
+        ID of a server to kick from Southbound cluster
+    nb-server-id:
+      type:
+        - string
+        - number
+      default: ""
+      description: |
+        ID of a server to kick from Northbound cluster
+    i-really-mean-it:
+      type: boolean
+      description: |
+        Confirmation by user to really perform this destructive action
+  required:
+    - i-really-mean-it

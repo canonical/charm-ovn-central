@@ -37,7 +37,8 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
                                           'coordinator.requested.upgrade',
                                           'config.changed.source',
                                           'config.changed.ovn-source'),
-                'configure_firewall': ('is-update-status-hook',),
+                'configure_firewall': ('is-update-status-hook',
+                                       'endpoint.ovsdb-peer.departed'),
                 'enable_default_certificates': ('is-update-status-hook',
                                                 'leadership.is_leader',),
                 'initialize_firewall': ('is-update-status-hook',
@@ -54,7 +55,8 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
                            'coordinator.granted.upgrade',
                            'coordinator.requested.upgrade',
                            'config.changed.source',
-                           'config.changed.ovn-source'),
+                           'config.changed.ovn-source',
+                           'endpoint.ovsdb-peer.departed'),
                 'configure_nrpe': ('charm.paused', 'is-update-status-hook',),
                 'stamp_fresh_deployment': ('charm.installed',
                                            'leadership.set.install_stamp'),
@@ -108,6 +110,7 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
                     'charm.installed',
                     'metrics-endpoint.available',
                 ),
+                'handle_cluster_downscale': ('endpoint.ovsdb-peer.departed',),
             },
             'when_any': {
                 'configure_nrpe': ('config.changed.nagios_context',
@@ -127,6 +130,9 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
                 'maybe_clear_metrics_endpoint': (
                     'snap.installed.prometheus-ovn-exporter',
                 ),
+            },
+            'hook': {
+                'leave_cluster': ('certificates-relation-broken',),
             },
         }
         # test that the hooks were registered via the
@@ -271,3 +277,98 @@ class TestOvnCentralHandlers(test_utils.PatchHelper):
         self.target.enable_services.return_value = True
         handlers.render()
         self.set_flag.assert_called_once_with('config.rendered')
+
+    def test_handle_cluster_downscale_leaving(self):
+        """Test actions during departure of a peer unit.
+
+        This scenario tests actions of a unit that is departing the cluster.
+        """
+        self.patch_object(handlers.reactive, 'is_flag_set')
+        self.is_flag_set.side_effect = [False, True]
+        self.patch_object(handlers.reactive, 'set_flag')
+        unit_name = 'ovn-central/3'
+        self.patch_object(
+            handlers.hookenv,
+            'departing_unit',
+            return_value=unit_name
+        )
+        self.patch_object(
+            handlers.hookenv,
+            'local_unit',
+            return_value=unit_name
+        )
+
+        handlers.handle_cluster_downscale()
+
+        self.target.leave_cluster.assert_called_once_with()
+        self.set_flag.assert_called_once_with('ovsdb-peer.left_cluster')
+
+        # subsequent calls do not trigger leave_cluster_calls()
+        handlers.handle_cluster_downscale()
+        self.target.leave_cluster.assert_called_once_with()
+
+        # unit that is leaving does not attempt to wait for remote
+        # unit to leave cluster.
+        self.target.wait_for_server_leave.assert_not_called()
+
+    def test_handle_cluster_downscale_not_leaving(self):
+        """Test actions during departure of a peer unit.
+
+        This scenario tests actions of a unit whose peer is departing the
+        cluster.
+        """
+        self.patch_object(handlers.reactive, 'is_flag_set', return_value=False)
+        self.patch_object(handlers.reactive, 'endpoint_from_name')
+        self.patch_object(handlers.reactive, 'set_flag')
+        self.patch_object(handlers, 'configure_firewall')
+        self.patch_object(handlers.hookenv, 'log')
+        local_unit_name = 'ovn-central/0'
+        departing_unit_name = 'ovn-central/3'
+        departing_unit_ip = '10.0.0.10'
+        departing_unit = mock.MagicMock()
+        departing_unit.received = {'bound-address': departing_unit_ip}
+        self.patch_object(
+            handlers.hookenv,
+            'departing_unit',
+            return_value=departing_unit_name
+        )
+        self.patch_object(
+            handlers.hookenv,
+            'local_unit',
+            return_value=local_unit_name
+        )
+        ovsdb_peer = mock.MagicMock()
+        ovsdb_peer.all_departed_units = {departing_unit_name: departing_unit}
+        self.endpoint_from_name.return_value = ovsdb_peer
+        ok_msg = ("Departing unit {} successfully disconnected from "
+                  "cluster.".format(departing_unit_name)
+                  )
+        fail_msg = (
+            "Departing unit {} failed to remove itself from cluster. "
+            "Please use action `cluster-kick` to remove straggling "
+            "servers from OVN cluster.".format(departing_unit_name)
+        )
+        # Test departing unit successfully leaving
+        self.target.wait_for_server_leave.return_value = True
+        handlers.handle_cluster_downscale()
+
+        self.target.wait_for_server_leave.assert_called_once_with(
+            departing_unit_ip
+        )
+        self.configure_firewall.assert_called_once_with()
+        self.log.assert_called_once_with(ok_msg, handlers.hookenv.INFO)
+
+        # Reset mocks
+        self.target.wait_for_server_leave.reset_mock()
+        self.configure_firewall.reset_mock()
+        self.log.reset_mock()
+
+        # Test departing unit failed to leave
+        self.target.wait_for_server_leave.return_value = False
+        handlers.handle_cluster_downscale()
+
+        self.target.wait_for_server_leave.assert_called_once_with(
+            departing_unit_ip
+        )
+        self.configure_firewall.assert_called_once_with()
+        self.log.assert_called_once_with(fail_msg, handlers.hookenv.WARNING)
