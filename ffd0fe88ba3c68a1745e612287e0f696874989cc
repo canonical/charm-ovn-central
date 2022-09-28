@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b06b73ae_fb22809b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 32288
+      },
+      "writtenOn": "2022-09-28T21:09:27Z",
+      "side": 1,
+      "message": "The current build issue seems to be caused by `charmcraft` installing `charms 3.0`. Locally I was able to solve this by changing charmcraft.yaml from\n```\nparts:\n  charm:\n    build-snaps:\n      - charm\n```\nto\n```\nparts:\n  charm:\n    build-snaps:\n      - charm/2.x/stable\n```\nbut I\u0027m not sure if it\u0027s appropriate to include this fix in this PR.",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    }
+  ]
+}
