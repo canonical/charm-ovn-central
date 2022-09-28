@@ -19,6 +19,8 @@ import charms.coordinator as coordinator
 import charms_openstack.bus
 import charms_openstack.charm as charm
 
+from charmhelpers.core import hookenv
+
 
 charms_openstack.bus.discover()
 
@@ -155,7 +157,7 @@ def enable_default_certificates():
     charm.use_defaults('certificates.available')
 
 
-@reactive.when_none('is-update-status-hook')
+@reactive.when_none('is-update-status-hook', 'endpoint.ovsdb-peer.departed')
 @reactive.when('ovsdb-peer.available')
 def configure_firewall():
     ovsdb_peer = reactive.endpoint_from_flag('ovsdb-peer.available')
@@ -220,7 +222,8 @@ def maybe_do_upgrade():
                     'coordinator.granted.upgrade',
                     'coordinator.requested.upgrade',
                     'config.changed.source',
-                    'config.changed.ovn-source')
+                    'config.changed.ovn-source',
+                    'endpoint.ovsdb-peer.departed')
 @reactive.when('ovsdb-peer.available',
                'leadership.set.nb_cid',
                'leadership.set.sb_cid',
@@ -322,3 +325,54 @@ def maybe_clear_metrics_endpoint():
         return
 
     metrics_endpoint.clear_job(job_name)
+
+
+@reactive.when('endpoint.ovsdb-peer.departed')
+def handle_cluster_downscale():
+    """Handle OVN cluster's downscaling when unit is removed.
+
+    There are two branches of code in this function. If it's executed on a
+    unit that is being removed, It should trigger "cluster/leave" message.
+    If, on the other hand, this code is executed on a unit that's remaining,
+    it should wait before the departing unit can send out the "cluster/leave"
+    command before reconfiguring firewall and closing off ports.
+    """
+    if reactive.is_flag_set("ovsdb-peer.left_cluster"):
+        # Departing unit already left cluster
+        hookenv.log("Servers already left the cluster.", hookenv.INFO)
+        return
+
+    departing_unit = hookenv.departing_unit()
+    is_departing_unit = hookenv.local_unit() == departing_unit
+
+    if is_departing_unit:
+        # Departing unit must attempt to gracefully leave OVN cluster.
+        with charm.provide_charm_instance() as ovn:
+            ovn.leave_cluster()
+
+        reactive.set_flag("ovsdb-peer.left_cluster")
+    else:
+        # unit that remains in cluster should wait for departing unit to
+        # gracefully leave cluster before reconfiguring firewall
+        peers = reactive.endpoint_from_name("ovsdb-peer")
+        remote_unit_ip = peers.all_departed_units[
+            departing_unit
+        ].received["bound-address"]
+
+        with charm.provide_charm_instance() as ovn:
+            departed = ovn.wait_for_server_leave(remote_unit_ip)
+
+        if departed:
+            hookenv.log(
+                "Departing unit {} successfully disconnected from "
+                "cluster.".format(departing_unit),
+                hookenv.INFO
+            )
+        else:
+            hookenv.log(
+                "Departing unit {} failed to remove itself from cluster. "
+                "Please use action `cluster-kick` to remove straggling "
+                "servers from OVN cluster.".format(departing_unit),
+                hookenv.WARNING
+            )
+        configure_firewall()

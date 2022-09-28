@@ -816,6 +816,107 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
             snap.install('prometheus-ovn-exporter', channel=channel,
                          devmode=True)
 
+    @staticmethod
+    def leave_cluster():
+        """Run commands to remove servers running on this unit from cluster.
+
+        In case the commands fail, an ERROR message will be logged.
+        :return: None
+        :rtype: None
+        """
+        try:
+            ch_core.hookenv.log(
+                "Removing self from Southbound cluster",
+                ch_core.hookenv.INFO
+            )
+            ch_ovn.ovn_appctl("ovnsb_db", ("cluster/leave", "OVN_Southbound"))
+        except subprocess.CalledProcessError:
+            ch_core.hookenv.log(
+                "Failed to leave Southbound cluster. You can use "
+                "'cluster-kick' juju action on remaining units to "
+                "remove lingering cluster members.",
+                ch_core.hookenv.ERROR
+            )
+
+        try:
+            ch_core.hookenv.log(
+                "Removing self from Northbound cluster",
+                ch_core.hookenv.INFO
+            )
+            ch_ovn.ovn_appctl("ovnnb_db", ("cluster/leave", "OVN_Northbound"))
+        except subprocess.CalledProcessError:
+            ch_core.hookenv.log(
+                "Failed to leave Northbound cluster. You can use "
+                "'cluster-kick' juju action on remaining units to "
+                "remove lingering cluster members.",
+                ch_core.hookenv.ERROR
+            )
+
+    @staticmethod
+    def is_server_in_cluster(server_ip, cluster_status):
+        """Parse cluster status and find if server with given IP is part of it.
+
+        :param server_ip: IP of a server to search.
+        :type server_ip: str
+        :param cluster_status: Cluster status to parse.
+        :type cluster_status: ch_ovn.OVNClusterStatus
+        :return: True if server is part of the cluster. Otherwise, False.
+        :rtype: bool
+        """
+        remote_unit_url = "ssl:{}:".format(server_ip)
+        return any(
+            list(server)[1].startswith(remote_unit_url)
+            for server in cluster_status.servers
+        )
+
+    def wait_for_server_leave(self, server_ip, timeout=30):
+        """Wait for servers with specified IP to leave SB and NB clusters.
+
+        :param server_ip: IP of the server that should no longer be part of
+            the clusters.
+        :type server_ip: str
+        :param timeout: How many seconds should this function wait for the
+            servers to leave. The timeout should be an increment of 5.
+        :return: True if servers from selected unit departed within the
+            timeout window. Otherwise, it returns False.
+        :rtype: bool
+        """
+        tick = 5
+        timer = 0
+        unit_in_sb_cluster = unit_in_nb_cluster = True
+        servers_left = False
+        wait_sb_msg = "Waiting for {} to leave Southbound cluster".format(
+            server_ip
+        )
+        wait_nb_msg = "Waiting for {} to leave Northbound cluster".format(
+            server_ip
+        )
+        while timer < timeout:
+            if unit_in_sb_cluster:
+                ch_core.hookenv.log(wait_sb_msg, ch_core.hookenv.INFO)
+                unit_in_sb_cluster = self.is_server_in_cluster(
+                    server_ip,
+                    self.cluster_status("ovnsb_db")
+                )
+            if unit_in_nb_cluster:
+                ch_core.hookenv.log(wait_nb_msg, ch_core.hookenv.INFO)
+                unit_in_nb_cluster = self.is_server_in_cluster(
+                    server_ip,
+                    self.cluster_status("ovnnb_db")
+                )
+            if not unit_in_sb_cluster and not unit_in_nb_cluster:
+                servers_left = True
+                ch_core.hookenv.log(
+                    "{} servers left Northbound and Southbound OVN "
+                    "clusters.".format(server_ip),
+                    ch_core.hookenv.INFO
+                )
+                break
+            time.sleep(tick)
+            timer += tick
+
+        return servers_left
+
 
 class TrainOVNCentralCharm(BaseOVNCentralCharm):
     # OpenvSwitch and OVN is distributed as part of the Ubuntu Cloud Archive
