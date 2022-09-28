@@ -11,12 +11,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import subprocess
 
 import charms.reactive as reactive
 import charms.leadership as leadership
 
 import charms_openstack.bus
 import charms_openstack.charm as charm
+
+from charmhelpers.core import hookenv
+from charmhelpers.contrib.network.ovs.ovn import ovn_appctl
 
 
 charms_openstack.bus.discover()
@@ -249,3 +253,31 @@ def configure_nrpe():
 def configure_deferred_restarts():
     with charm.provide_charm_instance() as instance:
         instance.configure_deferred_restarts()
+
+
+@reactive.hook("certificates-relation-broken")
+def leave_cluster(_):
+    """Attempt to gracefully leave OVN cluster.
+
+    Unit should attempt to remove itself from the cluster when certificates
+    relation is broken as the communication can't continue without the
+    certificates. Proper cluster exit is not guaranteed and in such case, other
+    units will still see the departing unit in the cluster status. If this
+    occurs, please use "cluster-kick" action to remove departed unit
+    from the cluster.
+    """
+    try:
+        hookenv.log("Removing self from Southbound cluster", hookenv.INFO)
+        ovn_appctl("ovnsb_db", ("cluster/leave", "OVN_Southbound"))
+    except subprocess.CalledProcessError:
+        hookenv.log("Failed to leave Southbound cluster. You can use "
+                    "'cluster-kick' juju action on remaining units to remove "
+                    "lingering cluster members.", hookenv.ERROR)
+
+    try:
+        hookenv.log("Removing self from Northbound cluster", hookenv.INFO)
+        ovn_appctl("ovnnb_db", ("cluster/leave", "OVN_Northbound"))
+    except subprocess.CalledProcessError:
+        hookenv.log("Failed to leave Northbound cluster. You can use "
+                    "'cluster-kick' juju action on remaining units to remove "
+                    "lingering cluster members.", hookenv.ERROR)

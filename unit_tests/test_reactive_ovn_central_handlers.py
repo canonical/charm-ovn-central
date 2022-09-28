@@ -93,6 +93,9 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
             'when_not': {
                 'configure_deferred_restarts': ('is-update-status-hook',),
             },
+            'hook': {
+                'leave_cluster': ('certificates-relation-broken',),
+            },
         }
         # test that the hooks were registered via the
         # reactive.ovn_handlers
