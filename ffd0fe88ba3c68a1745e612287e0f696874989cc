@@ -51,6 +51,23 @@
       "parentUuid": "b06b73ae_fb22809b",
       "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cb2947ae_f53018c3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2022-09-29T02:59:25Z",
+      "side": 1,
+      "message": "Background on last failure: https://chat.canonical.com/canonical/pl/on4khn1c1jnqip751min3d1gtr",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
