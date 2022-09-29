@@ -24,7 +24,6 @@ import charmhelpers.contrib.network.ovs.ovn as ch_ovn
 import charmhelpers.contrib.network.ovs.ovsdb as ch_ovsdb
 from charmhelpers.contrib.network import ufw as ch_ufw
 import charmhelpers.contrib.openstack.deferred_events as deferred_events
-import charmhelpers.fetch as ch_fetch
 
 import charms.reactive as reactive
 
@@ -63,14 +62,6 @@ class OVNCentralConfigurationAdapter(
     @property
     def is_charm_leader(self):
         return reactive.is_flag_set('leadership.is_leader')
-
-    @property
-    def _ovn_source(self):
-        if (not self.ovn_source
-                and reactive.is_flag_set('leadership.set.install_stamp')
-                and ch_core.host.lsb_release()['DISTRIB_CODENAME'] == 'focal'):
-            return 'cloud:focal-ovn-22.03'
-        return self.ovn_source
 
 
 class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
@@ -160,16 +151,6 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
             abs_path_svc = os.path.join('/etc/systemd/system', service_file)
             if not os.path.islink(abs_path_svc):
                 os.symlink('/dev/null', abs_path_svc)
-        # for `ovn-source` configuration option
-        if self.options.ovn_source:
-            # The end user has added configuration
-            self.configure_source(config_key='ovn-source')
-        elif self.options._ovn_source:
-            # The end user has not added configuration and we want to use the
-            # runtime determined default value.
-            ch_fetch.add_source(self.options._ovn_source)
-            ch_fetch.apt_update(fatal=True)
-        # for `source` configuration option
         self.configure_source()
         super().install()
 

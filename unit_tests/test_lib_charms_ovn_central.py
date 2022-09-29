@@ -39,52 +39,6 @@ class Helper(test_utils.PatchHelper):
         setattr(self, attr, started)
 
 
-class TestOVNCentralConfigurationAdapter(test_utils.PatchHelper):
-
-    def setUp(self):
-        super().setUp()
-        self.charm_instance = mock.MagicMock()
-        self.charm_instance.ovn_sysconfdir.return_value = '/etc/path'
-        self.target = ovn_central.OVNCentralConfigurationAdapter(
-            charm_instance=self.charm_instance)
-
-    def test__ovn_source(self):
-        self.patch_object(ovn_central.reactive, 'is_flag_set',
-                          return_value=True)
-        self.patch_object(ovn_central.ch_core.host, 'lsb_release',
-                          return_value={'DISTRIB_CODENAME': 'focal'})
-        # User has supplied a ovn-source config
-        m = mock.patch.object(ovn_central.ch_core.hookenv, 'config',
-                              return_value={'ovn-source': 'fake-source'})
-        m.start()
-        self.target = ovn_central.OVNCentralConfigurationAdapter(
-            charm_instance=self.charm_instance)
-        m.stop()
-        setattr(self, 'config', None)
-        self.assertEquals('fake-source', self.target._ovn_source)
-
-        # User has not supplied a ovn-source config, charm was installed at
-        # this version on focal
-        m = mock.patch.object(ovn_central.ch_core.hookenv, 'config',
-                              return_value={'ovn-source': ''})
-        m.start()
-        self.target = ovn_central.OVNCentralConfigurationAdapter(
-            charm_instance=self.charm_instance)
-        m.stop()
-        setattr(self, 'config', None)
-        self.assertEquals('cloud:focal-ovn-22.03', self.target._ovn_source)
-
-        # User has not supplied a ovn-source config, charm was upgraded
-        self.is_flag_set.return_value = False
-        self.assertEquals('', self.target._ovn_source)
-
-        # User has not supplied a ovn-source config, charm was installed at
-        # this version on jammy
-        self.is_flag_set.return_value = True
-        self.lsb_release.return_value = {'DISTRIB_CODENAME': 'jammy'}
-        self.assertEquals('', self.target._ovn_source)
-
-
 class TestOVNCentralCharm(Helper):
 
     class FakeClusterStatus(object):
@@ -94,8 +48,6 @@ class TestOVNCentralCharm(Helper):
 
     def test_install_train(self):
         self.patch_release(ovn_central.TrainOVNCentralCharm.release)
-        self.patch_object(ovn_central.ch_core.hookenv, 'config',
-                          return_value={'ovn-source': ''})
         self.target = ovn_central.TrainOVNCentralCharm()
         self.patch_object(ovn_central.charms_openstack.charm.OpenStackCharm,
                           'install')
@@ -122,8 +74,6 @@ class TestOVNCentralCharm(Helper):
         self.configure_source.assert_called_once_with()
 
     def test_install(self):
-        self.patch_object(ovn_central.ch_core.hookenv, 'config',
-                          return_value={'ovn-source': ''})
         self.patch_object(ovn_central.charms_openstack.charm.OpenStackCharm,
                           'install')
         self.patch_object(ovn_central.os.path, 'islink')
@@ -148,26 +98,6 @@ class TestOVNCentralCharm(Helper):
         self.symlink.assert_has_calls(calls)
         self.install.assert_called_once_with()
         self.configure_source.assert_called_once_with()
-
-    def test_install_focal(self):
-        self.patch_object(ovn_central.ch_core.hookenv, 'config',
-                          return_value={'ovn-source': ''})
-        self.patch_object(ovn_central.charms_openstack.charm.OpenStackCharm,
-                          'install')
-        self.patch_object(ovn_central.os.path, 'islink')
-        self.islink.return_value = False
-        self.patch_object(ovn_central.os, 'symlink')
-        self.patch_target('configure_source')
-        self.patch_object(ovn_central.os, 'mkdir')
-        self.patch_object(ovn_central.OVNCentralConfigurationAdapter,
-                          '_ovn_source',
-                          new=mock.PropertyMock())
-        self._ovn_source.return_value = 'cloud:focal-ovn-22.03'
-        self.patch_object(ovn_central.ch_fetch, 'add_source')
-        self.patch_object(ovn_central.ch_fetch, 'apt_update')
-        self.target.install()
-        self.add_source.assert_called_once_with('cloud:focal-ovn-22.03')
-        self.apt_update.assert_called_once_with(fatal=True)
 
     def test_states_to_check(self):
         self.maxDiff = None
