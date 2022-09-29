@@ -1,0 +1,9 @@
+Code-Review+2: Alex Kavanagh <alex.kavanagh@canonical.com>
+Code-Review+2: Chris MacNaughton <chris.macnaughton@canonical.com>
+Workflow+1: Chris MacNaughton <chris.macnaughton@canonical.com>
+Verified+2: Zuul
+Submitted-by: Zuul
+Submitted-at: Thu, 29 Sep 2022 19:14:40 +0000
+Reviewed-on: https://review.opendev.org/c/x/charm-ovn-central/+/859806
+Project: x/charm-ovn-central
+Branch: refs/heads/stable/22.03
