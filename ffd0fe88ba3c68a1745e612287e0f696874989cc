@@ -16,6 +16,41 @@
       "message": "The current build issue seems to be caused by `charmcraft` installing `charms 3.0`. Locally I was able to solve this by changing charmcraft.yaml from\n```\nparts:\n  charm:\n    build-snaps:\n      - charm\n```\nto\n```\nparts:\n  charm:\n    build-snaps:\n      - charm/2.x/stable\n```\nbut I\u0027m not sure if it\u0027s appropriate to include this fix in this PR.",
       "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "453d1733_2a13554d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2022-09-29T02:04:05Z",
+      "side": 1,
+      "message": "charm-recheck",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dc97a297_6aa8cf4b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2022-09-29T02:04:05Z",
+      "side": 1,
+      "message": "This should not count as a full review, I\u0027m responding to your issue with the incompatibility between charmcraft 2.0 and charm-tools 3.0.0.\n\nWe\u0027ve worked around the issue in charm-tools 3.0.1",
+      "parentUuid": "b06b73ae_fb22809b",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
