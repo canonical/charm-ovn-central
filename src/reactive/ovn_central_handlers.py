@@ -177,13 +177,12 @@ def publish_addr_to_clients():
 
 
 @reactive.when_none('is-update-status-hook')
-@reactive.when('config.changed.source', 'ovsdb-peer.available')
+@reactive.when('ovsdb-peer.available')
+@reactive.when_any('config.changed.source', 'config.changed.ovn-source')
 def maybe_do_upgrade():
     ovsdb_peer = reactive.endpoint_from_flag('ovsdb-peer.available')
     with charm.provide_charm_instance() as ovn_charm:
-        ovn_charm.configure_source()
         ovn_charm.upgrade_if_available([ovsdb_peer])
-        reactive.clear_flag('config.changed.source')
         ovn_charm.assess_status()
 
 
