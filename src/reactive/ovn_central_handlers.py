@@ -14,6 +14,7 @@
 
 import charms.reactive as reactive
 import charms.leadership as leadership
+import charms.coordinator as coordinator
 
 import charms_openstack.bus
 import charms_openstack.charm as charm
@@ -62,6 +63,12 @@ def enable_install():
     """Enable the default install hook."""
     charm.use_defaults('charm.installed')
 
+    # These flags will be set on initial install.  We use these flags to ensure
+    # not performing certain actions during coordinated payload upgrades, but
+    # we don't want these provisions to interfere with initial clustering.
+    reactive.clear_flag('config.changed.source')
+    reactive.clear_flag('config.changed.ovn-source')
+
 
 @reactive.when_none('is-update-status-hook', 'charm.firewall_initialized')
 def initialize_firewall():
@@ -73,7 +80,11 @@ def initialize_firewall():
 
 @reactive.when_none('is-update-status-hook',
                     'leadership.set.nb_cid',
-                    'leadership.set.sb_cid')
+                    'leadership.set.sb_cid',
+                    'coordinator.granted.upgrade',
+                    'coordinator.requested.upgrade',
+                    'config.changed.source',
+                    'config.changed.ovn-source')
 @reactive.when('config.rendered',
                'certificates.connected',
                'certificates.available',
@@ -111,8 +122,11 @@ def announce_leader_ready():
         })
 
 
-@reactive.when_none('is-update-status-hook', 'leadership.set.nb_cid',
-                    'leadership.set.sb_cid')
+@reactive.when_none('is-update-status-hook',
+                    'leadership.set.nb_cid',
+                    'leadership.set.sb_cid',
+                    'coordinator.granted.upgrade',
+                    'coordinator.requested.upgrade')
 @reactive.when('charm.installed', 'leadership.is_leader',
                'ovsdb-peer.connected')
 def initialize_ovsdbs():
@@ -179,6 +193,22 @@ def publish_addr_to_clients():
 @reactive.when_none('is-update-status-hook')
 @reactive.when('ovsdb-peer.available')
 @reactive.when_any('config.changed.source', 'config.changed.ovn-source')
+def maybe_request_upgrade():
+    # The ovn-ctl script in the ovn-common package does schema upgrade based
+    # on non-presence of a value to `--db-nb-cluster-remote-addr` in
+    # /etc/default/ovn-central.  This is the case for the charm leader.
+    #
+    # The charm leader will perform DB schema upgrade as part of the package
+    # upgrade, and in order to succeed with that we must ensure the other
+    # units does not perform the package upgrade simultaneously.
+    #
+    # The coordinator library is based on leader storage and the leader will
+    # always be the first one to get the lock.
+    coordinator.acquire('upgrade')
+
+
+@reactive.when_none('is-update-status-hook')
+@reactive.when('ovsdb-peer.available', 'coordinator.granted.upgrade')
 def maybe_do_upgrade():
     ovsdb_peer = reactive.endpoint_from_flag('ovsdb-peer.available')
     with charm.provide_charm_instance() as ovn_charm:
@@ -186,7 +216,11 @@ def maybe_do_upgrade():
         ovn_charm.assess_status()
 
 
-@reactive.when_none('is-update-status-hook')
+@reactive.when_none('is-update-status-hook',
+                    'coordinator.granted.upgrade',
+                    'coordinator.requested.upgrade',
+                    'config.changed.source',
+                    'config.changed.ovn-source')
 @reactive.when('ovsdb-peer.available',
                'leadership.set.nb_cid',
                'leadership.set.sb_cid',
