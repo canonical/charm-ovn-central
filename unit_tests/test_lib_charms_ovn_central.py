@@ -119,11 +119,9 @@ class TestOVNCentralCharm(Helper):
                           '/etc/systemd/system/{}.service'.format(service)))
         self.symlink.assert_has_calls(calls)
         self.install.assert_called_once_with()
-        self.configure_source.assert_called_once_with()
+        self.configure_source.assert_called_once_with(config_key='ovn-source')
 
     def test_install(self):
-        self.patch_object(ovn_central.ch_core.hookenv, 'config',
-                          return_value={'ovn-source': ''})
         self.patch_object(ovn_central.charms_openstack.charm.OpenStackCharm,
                           'install')
         self.patch_object(ovn_central.os.path, 'islink')
@@ -147,27 +145,33 @@ class TestOVNCentralCharm(Helper):
                           '/etc/systemd/system/{}.service'.format(service)))
         self.symlink.assert_has_calls(calls)
         self.install.assert_called_once_with()
-        self.configure_source.assert_called_once_with()
+        self.configure_source.assert_called_once_with(config_key='ovn-source')
 
-    def test_install_focal(self):
+    def test_configure_source(self):
+        self.patch(
+            'charmhelpers.contrib.openstack.utils.get_source_and_pgp_key',
+            name='get_source_and_pgp_key')
+        self.get_source_and_pgp_key.return_value = None, None
         self.patch_object(ovn_central.ch_core.hookenv, 'config',
-                          return_value={'ovn-source': ''})
-        self.patch_object(ovn_central.charms_openstack.charm.OpenStackCharm,
-                          'install')
-        self.patch_object(ovn_central.os.path, 'islink')
-        self.islink.return_value = False
-        self.patch_object(ovn_central.os, 'symlink')
-        self.patch_target('configure_source')
-        self.patch_object(ovn_central.os, 'mkdir')
+                          return_value={'source': 'fake-source',
+                                        'ovn-source': ''})
         self.patch_object(ovn_central.OVNCentralConfigurationAdapter,
                           '_ovn_source',
                           new=mock.PropertyMock())
         self._ovn_source.return_value = 'cloud:focal-ovn-22.03'
         self.patch_object(ovn_central.ch_fetch, 'add_source')
         self.patch_object(ovn_central.ch_fetch, 'apt_update')
-        self.target.install()
-        self.add_source.assert_called_once_with('cloud:focal-ovn-22.03')
-        self.apt_update.assert_called_once_with(fatal=True)
+        self.target.configure_source(config_key='ovn-source')
+        self.add_source.assert_has_calls([
+            mock.call('cloud:focal-ovn-22.03'),
+            mock.call(None, None),
+        ])
+        self.get_source_and_pgp_key.assert_called_once_with(mock.ANY)
+
+        self.add_source.reset_mock()
+        self._ovn_source.return_value = ''
+        self.target.configure_source(config_key='ovn-source')
+        self.add_source.assert_called_once_with(None, None)
 
     def test_states_to_check(self):
         self.maxDiff = None

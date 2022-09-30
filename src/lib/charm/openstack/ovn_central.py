@@ -75,6 +75,11 @@ class OVNCentralConfigurationAdapter(
 
 class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
     abstract_class = True
+    # Note that we currently do not support pivoting between release specific
+    # charm classes in the OVN charms.  We still need this set to ensure the
+    # default methods are happy.
+    #
+    # Also see docstring in the `upgrade_if_available` method.
     package_codenames = {
         'ovn-central': collections.OrderedDict([
             ('2', 'train'),
@@ -139,6 +144,20 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
                      'ovn-northd', 'ovn-central'])
         return list(set(svcs))
 
+    def configure_source(self, config_key=None):
+        """Override default configure_source method."""
+        if self.options.ovn_source:
+            # The end user has added configuration
+            super().configure_source(config_key=config_key)
+        elif self.options._ovn_source:
+            # The end user has not added configuration and we want to use the
+            # runtime determined default value.
+            ch_fetch.add_source(self.options._ovn_source)
+            ch_fetch.apt_update(fatal=True)
+
+        # for `source` configuration option
+        super().configure_source()
+
     def install(self, service_masks=None):
         """Extend the default install method.
 
@@ -160,18 +179,46 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
             abs_path_svc = os.path.join('/etc/systemd/system', service_file)
             if not os.path.islink(abs_path_svc):
                 os.symlink('/dev/null', abs_path_svc)
-        # for `ovn-source` configuration option
-        if self.options.ovn_source:
-            # The end user has added configuration
-            self.configure_source(config_key='ovn-source')
-        elif self.options._ovn_source:
-            # The end user has not added configuration and we want to use the
-            # runtime determined default value.
-            ch_fetch.add_source(self.options._ovn_source)
-            ch_fetch.apt_update(fatal=True)
-        # for `source` configuration option
-        self.configure_source()
+        self.configure_source(config_key='ovn-source')
         super().install()
+
+    def upgrade_charm(self):
+        """Extend the default upgrade_charm method."""
+        super().upgrade_charm()
+
+        # Ensure that `config.changed.ovn-source` flag is not set on charm
+        # upgrade.  When upgrading from an older charm, this flag will be
+        # set even though the config has not changed.
+        reactive.clear_flag('config.changed.ovn-source')
+
+    def ovn_upgrade_available(self, package=None, snap=None):
+        """Determine whether an OVN upgrade is available.
+
+        Make use of the installed package version and the package version
+        available in the apt cache to determine availability of new version.
+        """
+        self.configure_source(config_key='ovn-source')
+        cur_vers = self.get_package_version(self.release_pkg,
+                                            apt_cache_sufficient=False)
+        avail_vers = self.get_package_version(self.release_pkg,
+                                              apt_cache_sufficient=True)
+        ch_fetch.apt_pkg.init()
+        return ch_fetch.apt_pkg.version_compare(avail_vers, cur_vers) == 1
+
+    def upgrade_if_available(self, interfaces_list):
+        """Upgrade OVN if an upgrade is available.
+
+        At present there is no need to pivot to a release specific charm class
+        when upgrading OVN.  As such we override the default method to keep
+        this simpler, given OVN versions are not fully represented in the
+        OpenStack version machinery that the default method relies on.
+
+        :param interfaces_list: List of instances of interface classes
+        :returns: None
+        """
+        if self.ovn_upgrade_available(self.release_pkg):
+            self.do_openstack_pkg_upgrade(upgrade_openstack=False)
+            self.render_with_interfaces(interfaces_list)
 
     def configure_deferred_restarts(self):
         if 'enable-auto-restarts' in ch_core.hookenv.config().keys():
