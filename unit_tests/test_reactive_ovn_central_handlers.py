@@ -65,8 +65,7 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
                 'initialize_ovsdbs': ('charm.installed',
                                       'leadership.is_leader',
                                       'ovsdb-peer.connected',),
-                'maybe_do_upgrade': ('config.changed.source',
-                                     'ovsdb-peer.available',),
+                'maybe_do_upgrade': ('ovsdb-peer.available',),
                 'publish_addr_to_clients': ('ovsdb-peer.available',
                                             'leadership.set.nb_cid',
                                             'leadership.set.sb_cid',
@@ -89,6 +88,8 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
                                    'nrpe-external-master.available',),
                 'enable_install': ('leadership.set.install_stamp',
                                    'leadership.set.upgrade_stamp'),
+                'maybe_do_upgrade': ('config.changed.source',
+                                     'config.changed.ovn-source'),
             },
             'when_not': {
                 'configure_deferred_restarts': ('is-update-status-hook',),
