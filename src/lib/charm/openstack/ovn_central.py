@@ -245,6 +245,7 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
         :returns: None
         """
         if self.ovn_upgrade_available(self.release_pkg):
+            ch_core.hookenv.status_set('maintenance', 'Rolling upgrade')
             self.do_openstack_pkg_upgrade(upgrade_openstack=False)
             self.render_with_interfaces(interfaces_list)
 
