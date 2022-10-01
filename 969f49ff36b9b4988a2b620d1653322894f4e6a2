@@ -18,6 +18,23 @@
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "cdb250b4_59276beb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2022-10-01T18:32:52Z",
+      "side": 1,
+      "message": "Thank you for taking the time to review, most appreciated ",
+      "revId": "969f49ff36b9b4988a2b620d1653322894f4e6a2",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d996bf8d_cb3c3784",
@@ -31,6 +48,30 @@
       "writtenOn": "2022-10-01T14:08:13Z",
       "side": 1,
       "message": "Should this be followed by a return, or is it intended to fall through to the other super().configure_source() at the end of the function?",
+      "range": {
+        "startLine": 151,
+        "startChar": 1,
+        "endLine": 151,
+        "endChar": 59
+      },
+      "revId": "969f49ff36b9b4988a2b620d1653322894f4e6a2",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "734e8119_89607d01",
+        "filename": "src/lib/charm/openstack/ovn_central.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2022-10-01T18:32:52Z",
+      "side": 1,
+      "message": "It is actually intended to fall through in order to support the situation where both the \u0027source\u0027 and \u0027ovn-source\u0027 configuration options being set at the same time.\n\nI guess this could deserve two separate methods behind a collective `configure_sources` method to make it more clear.",
+      "parentUuid": "d996bf8d_cb3c3784",
       "range": {
         "startLine": 151,
         "startChar": 1,
