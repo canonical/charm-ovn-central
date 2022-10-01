@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "790ba235_0002dc7e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 20870
+      },
+      "writtenOn": "2022-10-01T14:08:13Z",
+      "side": 1,
+      "message": "One minor comment/question.  Looks great otherwise.",
+      "revId": "969f49ff36b9b4988a2b620d1653322894f4e6a2",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d996bf8d_cb3c3784",
+        "filename": "src/lib/charm/openstack/ovn_central.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 20870
+      },
+      "writtenOn": "2022-10-01T14:08:13Z",
+      "side": 1,
+      "message": "Should this be followed by a return, or is it intended to fall through to the other super().configure_source() at the end of the function?",
+      "range": {
+        "startLine": 151,
+        "startChar": 1,
+        "endLine": 151,
+        "endChar": 59
+      },
+      "revId": "969f49ff36b9b4988a2b620d1653322894f4e6a2",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    }
+  ]
+}
