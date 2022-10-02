@@ -23,7 +23,6 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
 
     def test_hooks(self):
         defaults = [
-            'charm.installed',
             'config.changed',
             'charm.default-select-release',
             'update-status',
@@ -46,6 +45,12 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
                 'publish_addr_to_clients': ('is-update-status-hook',),
                 'render': ('is-update-status-hook',),
                 'configure_nrpe': ('charm.paused', 'is-update-status-hook',),
+                'stamp_fresh_deployment': ('charm.installed',
+                                           'leadership.set.install_stamp'),
+                'stamp_upgraded_deployment': ('is-update-status-hook',
+                                              'leadership.set.install_stamp',
+                                              'leadership.set.upgrade_stamp'),
+                'enable_install': ('charm.installed', 'is-update-status-hook'),
             },
             'when': {
                 'announce_leader_ready': ('config.rendered',
@@ -73,12 +78,17 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
                            'certificates.connected',
                            'certificates.available',),
                 'configure_nrpe': ('config.rendered',),
+                'stamp_fresh_deployment': ('leadership.is_leader',),
+                'stamp_upgraded_deployment': ('charm.installed',
+                                              'leadership.is_leader'),
             },
             'when_any': {
                 'configure_nrpe': ('config.changed.nagios_context',
                                    'config.changed.nagios_servicegroups',
                                    'endpoint.nrpe-external-master.changed',
                                    'nrpe-external-master.available',),
+                'enable_install': ('leadership.set.install_stamp',
+                                   'leadership.set.upgrade_stamp'),
             },
             'when_not': {
                 'configure_deferred_restarts': ('is-update-status-hook',),
