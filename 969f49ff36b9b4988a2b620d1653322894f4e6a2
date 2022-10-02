@@ -80,6 +80,30 @@
       },
       "revId": "969f49ff36b9b4988a2b620d1653322894f4e6a2",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0bbc7340_2a9d7d6b",
+        "filename": "src/lib/charm/openstack/ovn_central.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2022-10-02T07:01:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "734e8119_89607d01",
+      "range": {
+        "startLine": 151,
+        "startChar": 1,
+        "endLine": 151,
+        "endChar": 59
+      },
+      "revId": "969f49ff36b9b4988a2b620d1653322894f4e6a2",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }

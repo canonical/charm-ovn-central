@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dc8e73ee_034a44ed",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2022-10-02T07:01:47Z",
+      "side": 1,
+      "message": "Alex, I split this out into two methods and added a more elaborate docstring explaining the presence and intended use of the two source options.\n\nLet me know what you think!",
+      "revId": "cd74dadf2a7399d8c6292788ca6780f133b13980",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    }
+  ]
+}
