@@ -34,6 +34,14 @@
     },
     {
       "type": "layer",
+      "item": "layer:coordinator",
+      "url": "https://git.launchpad.net/layer-coordinator",
+      "vcs": null,
+      "branch": "refs/heads/master",
+      "commit": "fa27fc93e0b08000963e83a6bfe49812d890dfcf"
+    },
+    {
+      "type": "layer",
       "item": "ovn-central",
       "url": null,
       "vcs": null,
