@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2752d10e_cb5e9bd9",
+        "filename": "src/layer.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 2424
+      },
+      "writtenOn": "2022-10-04T12:47:59Z",
+      "side": 1,
+      "message": "adding a new layer need an update of the build.lock file, since this is a cherry-pick, there should be a patch stacked on top of this one with the update of lock file.",
+      "revId": "400e0dc26a9da208d274e4d47150596f0ec23488",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    }
+  ]
+}
