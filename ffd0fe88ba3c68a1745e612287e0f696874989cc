@@ -104,6 +104,23 @@
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "150fd7d0_302310bb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 32288
+      },
+      "writtenOn": "2022-10-06T16:26:41Z",
+      "side": 1,
+      "message": "Thanks for the thorough review. I\u0027ll address your points + I left some inline answers.",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4836e836_852a233d",
@@ -117,6 +134,24 @@
       "writtenOn": "2022-10-06T09:12:12Z",
       "side": 1,
       "message": "The rest of this charms follows a different style for imports, so please amend them to comply.\n\nThe background on this is that as charms have evolved over the years it has become increasingly difficult to know from where exactly identifiers come, so we want all identifiers in the code to be prefixed with something that identifies from which module the identifier comes.\n\nFor built-in and standard library modules, just use import the module and prefix identifier with its module name.\n\nFor charm-helpers we ususally do something like `import charmhelpers.core as ch_core` and then use it like `ch_core.hookenv.log(...`",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3269f71a_2b593b64",
+        "filename": "src/actions/cluster.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 32288
+      },
+      "writtenOn": "2022-10-06T16:26:41Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "4836e836_852a233d",
       "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     },
@@ -140,6 +175,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "8184cbc5_7b935a37",
+        "filename": "src/actions/cluster.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 32288
+      },
+      "writtenOn": "2022-10-06T16:26:41Z",
+      "side": 1,
+      "message": "My intention was to keep data format in the output of the action same as the output of the `ovn-appctl cluster/status` command. However I don\u0027t have any strong opinions about this, I can change it to direct `__dict__` conversion if you think that would be better.",
+      "parentUuid": "da216238_4d55a96a",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "3ae92676_17484b34",
         "filename": "src/actions/cluster.py",
         "patchSetId": 1
@@ -157,6 +210,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "247d8853_3b13ad94",
+        "filename": "src/actions/cluster.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 32288
+      },
+      "writtenOn": "2022-10-06T16:26:41Z",
+      "side": 1,
+      "message": "I thought that this would be the least intrusive way of introducing this additional data and I don\u0027t see much downsides to this. Do you see any disadvantages to this?\n\nPerhaps the one thing I can think of is that this way, if there are any \"abandoned\" servers, the information is scattered throughout the \"Servers\" dict in form of `Unit: \"UNKNOWN\"`. Whereas if there was a dedicated dict mapping units to servers the \"abandoned\" servers could be mapped under single key like \"UNKNOWN\".\n\nBut then there\u0027s a question about the structure of the list. Every unit should host single server (correct?) so it would make sense to have `Dict[str, str]`. However there can be multiple abandoned servers (if multiple units went missing) so the final structure would be `Dict[str, Union[str, List[str]]]`. Example:\n```\nunit_map:\n  ovn-central/0: aa11\n  ovn-central/1: bb22\n  UNKNOWN:\n    - cc33\n    - dd44\n```\nI don\u0027t really like this struct and it would introduce more complications for parsing it (on the side that would consume data from this action). What do you think?",
+      "parentUuid": "3ae92676_17484b34",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "e421a832_1cdc1bf8",
         "filename": "src/actions/cluster.py",
         "patchSetId": 1
@@ -168,6 +239,24 @@
       "writtenOn": "2022-10-06T09:12:12Z",
       "side": 1,
       "message": "I see that you assert that this flag is set at the beginning of the main function, and it would be great with a comment about that here.",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1e05f130_0d6d1e8e",
+        "filename": "src/actions/cluster.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 32288
+      },
+      "writtenOn": "2022-10-06T16:26:41Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "e421a832_1cdc1bf8",
       "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     },
@@ -191,6 +280,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1ff94ae7_91bf6d75",
+        "filename": "src/actions/cluster.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 32288
+      },
+      "writtenOn": "2022-10-06T16:26:41Z",
+      "side": 1,
+      "message": "Oh, thanks for clarification.\n\nSide note: charmhelpers docs should be probably updated then as right now it still states that `action_*` is deprecated in favor of `function_*` [0]. It seems that the docs are really old, based on the commit from April 2020 [1].\n\n[0] https://charm-helpers.readthedocs.io/en/latest/api/charmhelpers.core.hookenv.html#charmhelpers.core.hookenv.action_fail\n[1] https://github.com/juju/charm-helpers/commit/28cc026ba6140e47b3a67989179d694279078129",
+      "parentUuid": "ad42d270_62c50063",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8d0019ed_970d081e",
         "filename": "src/actions/cluster.py",
         "patchSetId": 1
@@ -202,6 +309,24 @@
       "writtenOn": "2022-10-06T09:12:12Z",
       "side": 1,
       "message": "The charm exposes the `ovnsb_db` and `ovnnb_db` identifiers in Juju status etc, would it not make sense to keep using those instead of inventing a new identifier?",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c141b8cf_103f5c72",
+        "filename": "src/actions/cluster.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 32288
+      },
+      "writtenOn": "2022-10-06T16:26:41Z",
+      "side": 1,
+      "message": "I guess they did not click with me very well because they do not feel very user friendly, they require bit of internal OVN knowledge and they are very similar so it\u0027s harder to distinguish them at glance (as opposed to stating `southbound-cluster`/ `northbound-cluster`). But you are right consistency is more important. I\u0027ll change them",
+      "parentUuid": "8d0019ed_970d081e",
       "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     },
@@ -223,6 +348,24 @@
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9ceb803f_ecf3340e",
+        "filename": "src/actions/cluster.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 32288
+      },
+      "writtenOn": "2022-10-06T16:26:41Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "bafb0350_06a0cd3a",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "28fb2047_4d51506e",
@@ -236,6 +379,24 @@
       "writtenOn": "2022-10-06T09:12:12Z",
       "side": 1,
       "message": "Why not use the already known `ovnsb_db` identifier here",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "83032e29_3637c471",
+        "filename": "src/actions/cluster.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 32288
+      },
+      "writtenOn": "2022-10-06T16:26:41Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "28fb2047_4d51506e",
       "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     },
@@ -259,6 +420,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "387f5243_b1f677cd",
+        "filename": "src/actions/cluster.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 32288
+      },
+      "writtenOn": "2022-10-06T16:26:41Z",
+      "side": 1,
+      "message": "3 out of 4 arguments for each call are different so the helper function would really only help to reduce number of arguments to 3. e.g.:\n```python\ndef kick_server(db, cluster, server_id)\n  ovn_appctl(db, (\"cluster/kick\", cluster, server_id))\n```\n\nUnless I misunderstood what you meant.",
+      "parentUuid": "df2cf99e_40011f28",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "338ce53f_c37d0343",
         "filename": "src/actions/cluster.py",
         "patchSetId": 1
@@ -270,6 +449,24 @@
       "writtenOn": "2022-10-06T09:12:12Z",
       "side": 1,
       "message": "Why not use the already known `ovnnb_db` identifier here?",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1c931ac7_e35bf4db",
+        "filename": "src/actions/cluster.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 32288
+      },
+      "writtenOn": "2022-10-06T16:26:41Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "338ce53f_c37d0343",
       "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     },
@@ -287,6 +484,24 @@
       "writtenOn": "2022-10-06T09:12:12Z",
       "side": 1,
       "message": "Please don\u0027t do `from ... import` imports. See comment in actions/cluster.py",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9122cd4c_b20e074e",
+        "filename": "src/reactive/ovn_central_handlers.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 32288
+      },
+      "writtenOn": "2022-10-06T16:26:41Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "20210ad4_fdf4688d",
       "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     },
@@ -310,6 +525,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b7fe0ea6_11a87595",
+        "filename": "src/reactive/ovn_central_handlers.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 258,
+      "author": {
+        "id": 32288
+      },
+      "writtenOn": "2022-10-06T16:26:41Z",
+      "side": 1,
+      "message": "The placement of this code (within the charm lifeceycle) proved to be really challenging. Ideally I would want to execute this on `stop` event, however I found out that at this point the certificates are already removed from the unit and `ovn-appctl` command can no longer communicate with the rest of the cluster, therefore it\u0027s unable to leave cluster gracefully.\nI think it makes most sense to execute this code when `certificates` relation emits the `broken` event because regardless if it\u0027s happening because the unit is being removed (juju remove-unit) or the relation is removed (juju remove-relation) this unit will no longer be capable of participating in the cluster and should attempt to leave it gracefully.\n\nIt should be noted that even if the code is placed in this hook I did not achieve 100% success rate of graceful departure. It still occasionally happens that unit is not capable of executing the `ovn-appctl cluster/leave` command. Therefore the charm-guide about cluster downscaling should mention that operator should check output of the `cluster-status` action and manually kick any servers that were left behind after the unit removal.\n\nI do not like this as it kinda depends on a race condition to be able to execute `ovn-appctl` command before the certificates disappear so if you have any suggestion on how to better place this code in the lifecycle I\u0027d be very grateful.\n\nNow to your points:\n\n\u003e  Re-joining the certificates relation does not mean the unit is leaving the cluster.\n\nI\u0027m not sure I understand this point. This code is executed only when `certificate-relation-broken` event is emitted and it happens only once. Either when the unit is removed or when the relation is removed. Re-joining certificates relation should not trigger this code. Or am I missing something?\n\n\n\u003e What happens if the cluster never formed or the charm code has not yet installed on the unit?\n\nThis function is designed to fail gracefully. If the unit is removed before the cluster is formed (or before the charm software is installed), the worst thing that happens is that two ERROR messaged will be logged (I\u0027m open to changing this to WARNING btw.)\n\nCorrect me if I misunderstood you but I feel like you are suggesting that this code will be executed periodically during the installation (and cluster setup) until the certificates become available. However I tested this and unless I misunderstood the documentation [0], this should really be executed only once per unit or relation removal.\n\n[0] https://juju.is/docs/sdk/relation-name-relation-broken-event",
+      "parentUuid": "983336ce_f4b0ab2e",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "fc8cb31b_0fe86172",
         "filename": "src/reactive/ovn_central_handlers.py",
         "patchSetId": 1
@@ -321,6 +554,24 @@
       "writtenOn": "2022-10-06T09:12:12Z",
       "side": 1,
       "message": "The `_` here is not necessary.\n\nThe payload handling code in this function belongs in a charm class method.",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0a8f6eab_6802884f",
+        "filename": "src/reactive/ovn_central_handlers.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 32288
+      },
+      "writtenOn": "2022-10-06T16:26:41Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "fc8cb31b_0fe86172",
       "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     },
@@ -344,6 +595,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "bb4b5922_b69dddbe",
+        "filename": "src/tests/bundles/jammy-yoga.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 32288
+      },
+      "writtenOn": "2022-10-06T16:26:41Z",
+      "side": 1,
+      "message": "Thanks. I\u0027ll rework this.",
+      "parentUuid": "52216a4b_95fc6df1",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d8bfd683_68351ee9",
         "filename": "src/tests/bundles/jammy-zed.yaml",
         "patchSetId": 1
@@ -355,6 +624,24 @@
       "writtenOn": "2022-10-06T09:12:12Z",
       "side": 1,
       "message": "While I understand your desire to do this for the functional test, please don\u0027t. A cluster of a even number of units is an invalid configuration, and we should not \"sell\" invalid configuration in the functional test bundles.\n\nThe functional test can add/remove units when needed.",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "da2329f7_da26fc89",
+        "filename": "src/tests/bundles/jammy-zed.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 32288
+      },
+      "writtenOn": "2022-10-06T16:26:41Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "d8bfd683_68351ee9",
       "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     },
@@ -372,6 +659,24 @@
       "writtenOn": "2022-10-06T09:12:12Z",
       "side": 1,
       "message": "While I understand your desire to do this for the functional test, please don\u0027t. A cluster of a even number of units is an invalid configuration, and we should not \"sell\" invalid configuration in the functional test bundles.\n\nThe functional test can add/remove units when needed.",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "63494ade_c2bc01d7",
+        "filename": "src/tests/bundles/kinetic-zed.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 32288
+      },
+      "writtenOn": "2022-10-06T16:26:41Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "2b331e41_2f54e8e4",
       "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
