@@ -333,6 +333,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "d237d531_074eb4c1",
+        "filename": "src/actions/cluster.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 32288
+      },
+      "writtenOn": "2022-10-06T16:55:01Z",
+      "side": 1,
+      "message": "There\u0027s an additional issue. Apparently `action_set` does not allow underscores in the key names. Trying to do\n```python\nch_core.hookenv.action_set({\"ovnsb_db\": yaml.dump(sb_cluster, sort_keys\u003dFalse)})\n```\nresults in:\n\n```\nERROR key \"ovnsb_db\" must start and end with lowercase alphanumeric, and contain only lowercase alphanumeric, hyphens and periods\n```",
+      "parentUuid": "c141b8cf_103f5c72",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "bafb0350_06a0cd3a",
         "filename": "src/actions/cluster.py",
         "patchSetId": 1
