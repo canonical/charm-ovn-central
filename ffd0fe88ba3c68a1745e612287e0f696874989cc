@@ -85,6 +85,295 @@
       "message": "charm-recheck",
       "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "11a1ce24_d4af68a2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2022-10-06T09:12:12Z",
+      "side": 1,
+      "message": "Thank you for your work on this. The overall approach looks good, and I have a few comments in-line.",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4836e836_852a233d",
+        "filename": "src/actions/cluster.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2022-10-06T09:12:12Z",
+      "side": 1,
+      "message": "The rest of this charms follows a different style for imports, so please amend them to comply.\n\nThe background on this is that as charms have evolved over the years it has become increasingly difficult to know from where exactly identifiers come, so we want all identifiers in the code to be prefixed with something that identifies from which module the identifier comes.\n\nFor built-in and standard library modules, just use import the module and prefix identifier with its module name.\n\nFor charm-helpers we ususally do something like `import charmhelpers.core as ch_core` and then use it like `ch_core.hookenv.log(...`",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "da216238_4d55a96a",
+        "filename": "src/actions/cluster.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2022-10-06T09:12:12Z",
+      "side": 1,
+      "message": "1) This manual conversion is not necessary, you can access a dictionary version of the object at `raw_cluster_status.__dict__`\n\n2) You are providing the caller of the action with a machine readable YAML output, would it not make more sense to keep the existing dictionary ID\u0027s? If something in the other end of the action wants human readable labels, the translation could happen there?",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3ae92676_17484b34",
+        "filename": "src/actions/cluster.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2022-10-06T09:12:12Z",
+      "side": 1,
+      "message": "I wonder if it would be useful to put the server to juju unit map in a separate key and retain the original `servers` overview as is?",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e421a832_1cdc1bf8",
+        "filename": "src/actions/cluster.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2022-10-06T09:12:12Z",
+      "side": 1,
+      "message": "I see that you assert that this flag is set at the beginning of the main function, and it would be great with a comment about that here.",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ad42d270_62c50063",
+        "filename": "src/actions/cluster.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2022-10-06T09:12:12Z",
+      "side": 1,
+      "message": "Juju walked back the change of naming of actions to functions, so please use the `action_set`, `action_fail` c-h functions instead.",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8d0019ed_970d081e",
+        "filename": "src/actions/cluster.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2022-10-06T09:12:12Z",
+      "side": 1,
+      "message": "The charm exposes the `ovnsb_db` and `ovnnb_db` identifiers in Juju status etc, would it not make sense to keep using those instead of inventing a new identifier?",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bafb0350_06a0cd3a",
+        "filename": "src/actions/cluster.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2022-10-06T09:12:12Z",
+      "side": 1,
+      "message": "The charm exposes the `ovnsb_db` and `ovnnb_db` identifiers in Juju status etc, would it not make sense to keep using those instead of inventing a new identifier?",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "28fb2047_4d51506e",
+        "filename": "src/actions/cluster.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2022-10-06T09:12:12Z",
+      "side": 1,
+      "message": "Why not use the already known `ovnsb_db` identifier here",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "df2cf99e_40011f28",
+        "filename": "src/actions/cluster.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2022-10-06T09:12:12Z",
+      "side": 1,
+      "message": "This is the second time you call this in this function, perhaps a helper function is in order?",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "338ce53f_c37d0343",
+        "filename": "src/actions/cluster.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2022-10-06T09:12:12Z",
+      "side": 1,
+      "message": "Why not use the already known `ovnnb_db` identifier here?",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "20210ad4_fdf4688d",
+        "filename": "src/reactive/ovn_central_handlers.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2022-10-06T09:12:12Z",
+      "side": 1,
+      "message": "Please don\u0027t do `from ... import` imports. See comment in actions/cluster.py",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "983336ce_f4b0ab2e",
+        "filename": "src/reactive/ovn_central_handlers.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 258,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2022-10-06T09:12:12Z",
+      "side": 1,
+      "message": "Why are you gating this on the `certificates` relation? Re-joining the certificates relation does not mean the unit is leaving the cluster.\n\nThe handler should probably have some more guards. What happens if the cluster never formed or the charm code has not yet installed on the unit?",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fc8cb31b_0fe86172",
+        "filename": "src/reactive/ovn_central_handlers.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2022-10-06T09:12:12Z",
+      "side": 1,
+      "message": "The `_` here is not necessary.\n\nThe payload handling code in this function belongs in a charm class method.",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "52216a4b_95fc6df1",
+        "filename": "src/tests/bundles/jammy-yoga.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2022-10-06T09:12:12Z",
+      "side": 1,
+      "message": "While I understand your desire to do this for the functional test, please don\u0027t. A cluster of a even number of units is an invalid configuration, and we should not \"sell\" invalid configuration in the functional test bundles.\n\nThe functional test can add/remove units when needed.",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d8bfd683_68351ee9",
+        "filename": "src/tests/bundles/jammy-zed.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2022-10-06T09:12:12Z",
+      "side": 1,
+      "message": "While I understand your desire to do this for the functional test, please don\u0027t. A cluster of a even number of units is an invalid configuration, and we should not \"sell\" invalid configuration in the functional test bundles.\n\nThe functional test can add/remove units when needed.",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2b331e41_2f54e8e4",
+        "filename": "src/tests/bundles/kinetic-zed.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2022-10-06T09:12:12Z",
+      "side": 1,
+      "message": "While I understand your desire to do this for the functional test, please don\u0027t. A cluster of a even number of units is an invalid configuration, and we should not \"sell\" invalid configuration in the functional test bundles.\n\nThe functional test can add/remove units when needed.",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
