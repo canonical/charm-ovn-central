@@ -596,6 +596,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "ed8577de_d3305eea",
+        "filename": "src/reactive/ovn_central_handlers.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 32288
+      },
+      "writtenOn": "2022-10-06T17:07:30Z",
+      "side": 1,
+      "message": "Actually, I tested it and the underscore is necessary. Without it I\u0027m getting\n\n```\nTraceback (most recent call last):\n  File \"/var/lib/juju/agents/unit-ovn-central-1/.venv/lib/python3.10/site-packages/charms/reactive/__init__.py\", line 74, in main\n    bus.dispatch(restricted\u003drestricted_mode)\n  File \"/var/lib/juju/agents/unit-ovn-central-1/.venv/lib/python3.10/site-packages/charms/reactive/bus.py\", line 379, in dispatch\n    _invoke(hook_handlers)\n  File \"/var/lib/juju/agents/unit-ovn-central-1/.venv/lib/python3.10/site-packages/charms/reactive/bus.py\", line 359, in _invoke\n    handler.invoke()\n  File \"/var/lib/juju/agents/unit-ovn-central-1/.venv/lib/python3.10/site-packages/charms/reactive/bus.py\", line 181, in invoke\n    self._action(*args)\nTypeError: leave_cluster() takes 0 positional arguments but 1 was given\n```",
+      "parentUuid": "0a8f6eab_6802884f",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "52216a4b_95fc6df1",
         "filename": "src/tests/bundles/jammy-yoga.yaml",
         "patchSetId": 1
