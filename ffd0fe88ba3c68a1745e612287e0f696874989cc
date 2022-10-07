@@ -193,6 +193,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1363291c_7f9b3ecc",
+        "filename": "src/actions/cluster.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2022-10-07T07:24:15Z",
+      "side": 1,
+      "message": "My main concern is that whenever the cluster status object code changes, this would have to be updated to match, which is not a good situation to be in with regards to maintainability.\n\nIf you really want a \"pretty output\" mode or something similar, you need to add this as a method/property of the OVNClusterStatus class:\nhttps://github.com/juju/charm-helpers/blob/5302e0e5b3756f4f4d9d889592344b2f9f75547d/charmhelpers/contrib/network/ovs/ovn.py#L57",
+      "parentUuid": "8184cbc5_7b935a37",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "3ae92676_17484b34",
         "filename": "src/actions/cluster.py",
         "patchSetId": 1
@@ -222,6 +240,24 @@
       "side": 1,
       "message": "I thought that this would be the least intrusive way of introducing this additional data and I don\u0027t see much downsides to this. Do you see any disadvantages to this?\n\nPerhaps the one thing I can think of is that this way, if there are any \"abandoned\" servers, the information is scattered throughout the \"Servers\" dict in form of `Unit: \"UNKNOWN\"`. Whereas if there was a dedicated dict mapping units to servers the \"abandoned\" servers could be mapped under single key like \"UNKNOWN\".\n\nBut then there\u0027s a question about the structure of the list. Every unit should host single server (correct?) so it would make sense to have `Dict[str, str]`. However there can be multiple abandoned servers (if multiple units went missing) so the final structure would be `Dict[str, Union[str, List[str]]]`. Example:\n```\nunit_map:\n  ovn-central/0: aa11\n  ovn-central/1: bb22\n  UNKNOWN:\n    - cc33\n    - dd44\n```\nI don\u0027t really like this struct and it would introduce more complications for parsing it (on the side that would consume data from this action). What do you think?",
       "parentUuid": "3ae92676_17484b34",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1c03b62c_f5d383d0",
+        "filename": "src/actions/cluster.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2022-10-07T07:24:15Z",
+      "side": 1,
+      "message": "For the human operator, having access to the raw source data is always useful. In the event of something going wrong the two data sets can be compared to help reveal the truth.",
+      "parentUuid": "247d8853_3b13ad94",
       "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     },
@@ -298,6 +334,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "28ff7b8d_91953e99",
+        "filename": "src/actions/cluster.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2022-10-07T07:24:15Z",
+      "side": 1,
+      "message": "Yeah, some work was started to at least undeprecate stuff here: https://github.com/juju/charm-helpers/pull/655 and PRs are welcome to clean up the rest of the mess.",
+      "parentUuid": "1ff94ae7_91bf6d75",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8d0019ed_970d081e",
         "filename": "src/actions/cluster.py",
         "patchSetId": 1
@@ -345,6 +399,24 @@
       "side": 1,
       "message": "There\u0027s an additional issue. Apparently `action_set` does not allow underscores in the key names. Trying to do\n```python\nch_core.hookenv.action_set({\"ovnsb_db\": yaml.dump(sb_cluster, sort_keys\u003dFalse)})\n```\nresults in:\n\n```\nERROR key \"ovnsb_db\" must start and end with lowercase alphanumeric, and contain only lowercase alphanumeric, hyphens and periods\n```",
       "parentUuid": "c141b8cf_103f5c72",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3ca750dd_a3245703",
+        "filename": "src/actions/cluster.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2022-10-07T07:24:15Z",
+      "side": 1,
+      "message": "Seeking user friendliness is a great trait, however it has to be done in a consistent manner. IMHO adding new identifiers where some are used in one context and others are used in a different context just gives more source of confusion for the end user.\n\nFor the underscore issue, I guess we could either replace the underscore with a hyphen or drop the _db suffix?",
+      "parentUuid": "d237d531_074eb4c1",
       "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     },
@@ -456,6 +528,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1a9815c9_5908403a",
+        "filename": "src/actions/cluster.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2022-10-07T07:24:15Z",
+      "side": 1,
+      "message": "Some of these helper functions may feel excessive, but they are really powerful at multiple levels.\n\n1) For anyone not intimately familiar with the inner workings of the OVN command line tools, reading `kick_server()` immediately reveals whats going on, without having to decipher implementation details of `ovn-appctl` and the server it\u0027s talking to.\n\n2) At some point in time in the future the syntax or parameters required to do this may change, and it is then useful to have one place to change and one function with superior knowledge about how to perform this one task.",
+      "parentUuid": "387f5243_b1f677cd",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "338ce53f_c37d0343",
         "filename": "src/actions/cluster.py",
         "patchSetId": 1
@@ -561,6 +651,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "7fe1a512_54b320ae",
+        "filename": "src/reactive/ovn_central_handlers.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 258,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2022-10-07T07:24:15Z",
+      "side": 1,
+      "message": "Removing and then adding the certificates relation in a running cluster is a perfectly normal thing for an operator to do, and it can not lead to the side effect of units leaving the cluster.\n\nAfter removing the certificates relation the certificate data remains on disk, so if you have observed them not being there in the stop hook something else in the charm or package life cycle has removed them.\n\nLooks like some more work is needed to identify what is going on and how to best deal with the unit departure sequence.\n\nThere is some interesting discussion in this thread:\nhttps://discourse.charmhub.io/t/relation-broken-hook-not-running-in-peers-relation/3212/2",
+      "parentUuid": "b7fe0ea6_11a87595",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "fc8cb31b_0fe86172",
         "filename": "src/reactive/ovn_central_handlers.py",
         "patchSetId": 1
@@ -608,6 +716,24 @@
       "side": 1,
       "message": "Actually, I tested it and the underscore is necessary. Without it I\u0027m getting\n\n```\nTraceback (most recent call last):\n  File \"/var/lib/juju/agents/unit-ovn-central-1/.venv/lib/python3.10/site-packages/charms/reactive/__init__.py\", line 74, in main\n    bus.dispatch(restricted\u003drestricted_mode)\n  File \"/var/lib/juju/agents/unit-ovn-central-1/.venv/lib/python3.10/site-packages/charms/reactive/bus.py\", line 379, in dispatch\n    _invoke(hook_handlers)\n  File \"/var/lib/juju/agents/unit-ovn-central-1/.venv/lib/python3.10/site-packages/charms/reactive/bus.py\", line 359, in _invoke\n    handler.invoke()\n  File \"/var/lib/juju/agents/unit-ovn-central-1/.venv/lib/python3.10/site-packages/charms/reactive/bus.py\", line 181, in invoke\n    self._action(*args)\nTypeError: leave_cluster() takes 0 positional arguments but 1 was given\n```",
       "parentUuid": "0a8f6eab_6802884f",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c02b2fcd_c08f8250",
+        "filename": "src/reactive/ovn_central_handlers.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2022-10-07T07:24:15Z",
+      "side": 1,
+      "message": "You\u0027re right, I missed the fact that this was a `hook` decorator.\n\nNote that the hook decorator is problematic and you may find that other handlers will run regardless of which hook it is.\n\nAn alternative could be to create a shallow hook function that just sets a flag. The other handlers can then avoid running when this flag is set.",
+      "parentUuid": "ed8577de_d3305eea",
       "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     },
