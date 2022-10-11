@@ -25,6 +25,7 @@ tags:
 - networking
 series:
 - jammy
+- kinetic
 subordinate: false
 provides:
   ovsdb:
