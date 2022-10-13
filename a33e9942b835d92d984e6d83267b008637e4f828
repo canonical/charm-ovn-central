@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b7f05d09_04e2b9fe",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 32288
+      },
+      "writtenOn": "2022-10-13T02:52:00Z",
+      "side": 1,
+      "message": "I think I addressed all of your points Frode. I managed to reliably handle unit\u0027s departure on \"ovsdb-peer.departed\" event and I added functional tests that verifies this.",
+      "revId": "a33e9942b835d92d984e6d83267b008637e4f828",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    }
+  ]
+}

@@ -352,6 +352,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b9595d0a_995ce9cb",
+        "filename": "src/actions/cluster.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 32288
+      },
+      "writtenOn": "2022-10-13T02:52:00Z",
+      "side": 1,
+      "message": "In this case I think trigger of new doc build on readthedocs should be enough since the code/docstrings are already updated.",
+      "parentUuid": "28ff7b8d_91953e99",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8d0019ed_970d081e",
         "filename": "src/actions/cluster.py",
         "patchSetId": 1
@@ -417,6 +435,24 @@
       "side": 1,
       "message": "Seeking user friendliness is a great trait, however it has to be done in a consistent manner. IMHO adding new identifiers where some are used in one context and others are used in a different context just gives more source of confusion for the end user.\n\nFor the underscore issue, I guess we could either replace the underscore with a hyphen or drop the _db suffix?",
       "parentUuid": "d237d531_074eb4c1",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cbd0a3ef_1da5b222",
+        "filename": "src/actions/cluster.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 32288
+      },
+      "writtenOn": "2022-10-13T02:52:00Z",
+      "side": 1,
+      "message": "In this case I think I\u0027ll go with dropping the _db suffix. Thanks",
+      "parentUuid": "3ca750dd_a3245703",
       "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     },
@@ -540,6 +576,24 @@
       "side": 1,
       "message": "Some of these helper functions may feel excessive, but they are really powerful at multiple levels.\n\n1) For anyone not intimately familiar with the inner workings of the OVN command line tools, reading `kick_server()` immediately reveals whats going on, without having to decipher implementation details of `ovn-appctl` and the server it\u0027s talking to.\n\n2) At some point in time in the future the syntax or parameters required to do this may change, and it is then useful to have one place to change and one function with superior knowledge about how to perform this one task.",
       "parentUuid": "387f5243_b1f677cd",
+      "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c162e095_b40679dc",
+        "filename": "src/actions/cluster.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 32288
+      },
+      "writtenOn": "2022-10-13T02:52:00Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "1a9815c9_5908403a",
       "revId": "ffd0fe88ba3c68a1745e612287e0f696874989cc",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     },
