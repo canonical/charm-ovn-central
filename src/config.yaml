@@ -31,7 +31,7 @@ options:
       runtime.
 
       When charm is deployed into a fresh environment on Ubuntu
-      20.04 (Focal Fossa), the default will be 'focal-ovn-22.03'.
+      20.04 (Focal Fossa), the default will be 'cloud:focal-ovn-22.03'.
 
       When charm is upgraded or deployed into a fresh environment
       on a different series the default will be to not use the
