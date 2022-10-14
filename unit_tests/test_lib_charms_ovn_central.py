@@ -626,3 +626,82 @@ class TestOVNCentralCharm(Helper):
             'configure_deferred_restarts')
         self.target.configure_deferred_restarts()
         self.assertFalse(self.configure_deferred_restarts.called)
+
+    def test_assess_exporter_no_channel_installed(self):
+        self.patch_object(
+            ovn_central.ch_core.hookenv,
+            'config',
+            return_value={'ovn-exporter-channel': ''})
+
+        self.patch_object(ovn_central.snap, 'is_installed')
+        self.patch_object(ovn_central.snap, 'install')
+        self.patch_object(ovn_central.snap, 'remove')
+        self.patch_object(ovn_central.snap, 'refresh')
+
+        self.is_installed.return_value = True
+
+        self.target.assess_exporter()
+        self.remove.assert_called_once_with('prometheus-ovn-exporter')
+        self.install.assert_not_called()
+        self.refresh.assert_not_called()
+
+    def test_assess_exporter_no_channel_not_installed(self):
+        self.patch_object(
+            ovn_central.ch_core.hookenv,
+            'config',
+            return_value={'ovn-exporter-channel': ''})
+
+        self.patch_object(ovn_central.snap, 'is_installed')
+        self.patch_object(ovn_central.snap, 'install')
+        self.patch_object(ovn_central.snap, 'remove')
+        self.patch_object(ovn_central.snap, 'refresh')
+
+        self.is_installed.return_value = False
+
+        self.target.assess_exporter()
+        self.install.assert_not_called()
+        self.refresh.assert_not_called()
+        self.remove.assert_not_called()
+
+    def test_assess_exporter_fresh_install(self):
+        self.patch_object(
+            ovn_central.ch_core.hookenv,
+            'config',
+            return_value={'ovn-exporter-channel': 'stable'})
+        self.patch_object(ovn_central.snap, 'is_installed')
+        self.patch_object(ovn_central.snap, 'install')
+        self.patch_object(ovn_central.snap, 'remove')
+        self.patch_object(ovn_central.snap, 'refresh')
+
+        self.is_installed.return_value = False
+
+        self.target.assess_exporter()
+
+        self.install.assert_called_once_with(
+            'prometheus-ovn-exporter',
+            channel='stable',
+            devmode=True)
+        self.remove.assert_not_called()
+        self.refresh.assert_not_called()
+
+    def test_assess_exporter_refresh(self):
+        self.patch_object(
+            ovn_central.ch_core.hookenv,
+            'config',
+            return_value={'ovn-exporter-channel': 'stable'})
+
+        self.patch_object(ovn_central.snap, 'is_installed')
+        self.patch_object(ovn_central.snap, 'install')
+        self.patch_object(ovn_central.snap, 'remove')
+        self.patch_object(ovn_central.snap, 'refresh')
+
+        self.is_installed.return_value = True
+
+        self.target.assess_exporter()
+
+        self.refresh.assert_called_once_with(
+            'prometheus-ovn-exporter',
+            channel='stable',
+            devmode=True)
+        self.install.assert_not_called()
+        self.remove.assert_not_called()

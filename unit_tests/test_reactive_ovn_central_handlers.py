@@ -62,6 +62,9 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
                                               'leadership.set.install_stamp',
                                               'leadership.set.upgrade_stamp'),
                 'enable_install': ('charm.installed', 'is-update-status-hook'),
+                'reassess_exporter': ('is-update-status-hook',),
+                'maybe_clear_metrics_endpoint': ('is-update-status-hook',),
+                'handle_metrics_endpoint': ('is-update-status-hook',),
             },
             'when': {
                 'announce_leader_ready': ('config.rendered',
@@ -93,6 +96,18 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
                 'stamp_fresh_deployment': ('leadership.is_leader',),
                 'stamp_upgraded_deployment': ('charm.installed',
                                               'leadership.is_leader'),
+                'handle_metrics_endpoint': (
+                    'charm.installed',
+                    'metrics-endpoint.available',
+                    'snap.installed.prometheus-ovn-exporter',
+                ),
+                'reassess_exporter': (
+                    'charm.installed',
+                ),
+                'maybe_clear_metrics_endpoint': (
+                    'charm.installed',
+                    'metrics-endpoint.available',
+                ),
             },
             'when_any': {
                 'configure_nrpe': ('config.changed.nagios_context',
@@ -103,9 +118,15 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
                                    'leadership.set.upgrade_stamp'),
                 'maybe_request_upgrade': ('config.changed.source',
                                           'config.changed.ovn-source'),
+                'reassess_exporter': (
+                    'config.changed.ovn-exporter-channel',
+                    'snap.installed.prometheus-ovn-exporter'),
             },
             'when_not': {
                 'configure_deferred_restarts': ('is-update-status-hook',),
+                'maybe_clear_metrics_endpoint': (
+                    'snap.installed.prometheus-ovn-exporter',
+                ),
             },
         }
         # test that the hooks were registered via the

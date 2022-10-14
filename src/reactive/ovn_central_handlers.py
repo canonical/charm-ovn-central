@@ -282,3 +282,43 @@ def configure_nrpe():
 def configure_deferred_restarts():
     with charm.provide_charm_instance() as instance:
         instance.configure_deferred_restarts()
+
+
+@reactive.when_none('is-update-status-hook')
+@reactive.when_any('config.changed.ovn-exporter-channel',
+                   'snap.installed.prometheus-ovn-exporter')
+def reassess_exporter():
+    with charm.provide_charm_instance() as instance:
+        instance.assess_exporter()
+
+
+@reactive.when_none('is-update-status-hook')
+@reactive.when('charm.installed',
+               'metrics-endpoint.available',
+               'snap.installed.prometheus-ovn-exporter')
+def handle_metrics_endpoint():
+    metrics_endpoint = reactive.endpoint_from_flag(
+        'metrics-endpoint.available')
+    job_name = 'ovn-exporter'
+    metrics_endpoint.expose_job(
+        job_name,
+        static_configs=[{"targets": ["*:9476"]}])
+
+
+@reactive.when_none('is-update-status-hook')
+@reactive.when('charm.installed', 'metrics-endpoint.available')
+@reactive.when_not('snap.installed.prometheus-ovn-exporter')
+def maybe_clear_metrics_endpoint():
+    """Clear the metrics endpoint state if the exporter isn't installed.
+
+    An operator may choose not to install the ovs exporter which needs
+    to be reflected if a relation to prometheus is present to avoid
+    scrape errors.
+    """
+    metrics_endpoint = reactive.endpoint_from_flag(
+        'metrics-endpoint.available')
+    job_name = 'ovn-exporter'
+    if not reactive.is_flag_set(f'metrics-endpoint.exposed.{job_name}'):
+        return
+
+    metrics_endpoint.clear_job(job_name)
