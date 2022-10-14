@@ -90,3 +90,10 @@ options:
     description: |
       Allow the charm and packages to restart services automatically when
       required.
+  ovn-exporter-channel:
+    type: string
+    default: stable
+    description: >-
+      The snap channel to install the prometheus-ovn-exporter from. Setting
+      this option to an empty string will result in the snap not being
+      installed or removed if it has already been installed.

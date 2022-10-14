@@ -31,6 +31,8 @@ import charms.reactive as reactive
 import charms_openstack.adapters
 import charms_openstack.charm
 
+from charms.layer import snap
+
 # Release selection need to happen here for correct determination during
 # bus discovery and action exection
 charms_openstack.charm.use_defaults('charm.default-select-release')
@@ -71,6 +73,23 @@ class OVNCentralConfigurationAdapter(
                 and ch_core.host.lsb_release()['DISTRIB_CODENAME'] == 'focal'):
             return 'cloud:focal-ovn-22.03'
         return self.ovn_source
+
+    @property
+    def ovn_exporter_snap_channel(self):
+        """Validate a provided snap channel and return it
+
+        Any prefix is ignored ('0.10' in '0.10/stable' for example). If
+        a config value is empty it means that the snap does not need to
+        be installed.
+        """
+        channel = self.ovn_exporter_channel
+        if not channel:
+            return None
+
+        channel_suffix = channel.split('/')[-1]
+        if channel_suffix not in ('stable', 'candidate', 'beta', 'edge'):
+            return 'stable'
+        return channel_suffix
 
 
 class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
@@ -780,6 +799,22 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
             else:
                 message = svc_msg
         return state, message
+
+    def assess_exporter(self):
+        is_installed = snap.is_installed('prometheus-ovn-exporter')
+        channel = None
+        channel = self.options.ovn_exporter_snap_channel
+        if channel is None:
+            if is_installed:
+                snap.remove('prometheus-ovn-exporter')
+            return
+
+        if is_installed:
+            snap.refresh('prometheus-ovn-exporter', channel=channel,
+                         devmode=True)
+        else:
+            snap.install('prometheus-ovn-exporter', channel=channel,
+                         devmode=True)
 
 
 class TrainOVNCentralCharm(BaseOVNCentralCharm):

@@ -2,10 +2,12 @@ includes:
   - layer:openstack
   - layer:leadership
   - layer:coordinator
+  - layer:snap
   - interface:nrpe-external-master
   - interface:ovsdb
   - interface:ovsdb-cluster
   - interface:ovsdb-cms
+  - interface:prometheus-scrape
 options:
   basic:
     use_venv: True

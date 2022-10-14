@@ -37,6 +37,8 @@ provides:
   nrpe-external-master:
     interface: nrpe-external-master
     scope: container
+  metrics-endpoint:
+    interface: prometheus_scrape
 peers:
   ovsdb-peer:
     interface: ovsdb-cluster
