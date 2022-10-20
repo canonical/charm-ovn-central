@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f04c477d_9df8ae44",
+        "filename": "src/layer.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2022-10-20T17:59:56Z",
+      "side": 1,
+      "message": "Are these supposed to be commented out?",
+      "revId": "0866f5fbafa681809c7ce39279382863d3dbf7fd",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    }
+  ]
+}
