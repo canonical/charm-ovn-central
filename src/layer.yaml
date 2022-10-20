@@ -12,6 +12,20 @@ options:
   basic:
     use_venv: True
     include_system_packages: False
+  snap:
+    prometheus-ovn-exporter:
+      connect:
+        - ['prometheus-ovn-exporter:network-bind', ':kernel-module-observe']
+        - ['prometheus-ovn-exporter:kernel-module-observe', ':kernel-module-observe']
+        - ['prometheus-ovn-exporter:netlink-audit', ':netlink-audit']
+        - ['prometheus-ovn-exporter:log-observe', ':log-observe']
+        - ['prometheus-ovn-exporter:network-observe', ':network-observe']
+        - ['prometheus-ovn-exporter:openvswitch', ':openvswitch']
+        - ['prometheus-ovn-exporter:system-observe', ':system-observe']
+        # NOTE(dmitriis): uncomment those once the snap upload is approved.
+        # - ['prometheus-ovn-exporter:etc-openvswitch', ':system-files']
+        # - ['prometheus-ovn-exporter:run-openvswitch', ':system-files']
+        # - ['prometheus-ovn-exporter:run-ovn', ':system-files']
 repo: https://opendev.org/x/charm-ovn-central
 config:
   deletes:
