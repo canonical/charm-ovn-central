@@ -18,6 +18,24 @@
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "64faec46_335b09dd",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 24824
+      },
+      "writtenOn": "2022-10-20T18:34:22Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "3a23f1aa_120f68f5",
+      "revId": "0866f5fbafa681809c7ce39279382863d3dbf7fd",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f04c477d_9df8ae44",
@@ -31,6 +49,24 @@
       "writtenOn": "2022-10-20T17:59:56Z",
       "side": 1,
       "message": "Are these supposed to be commented out?",
+      "revId": "0866f5fbafa681809c7ce39279382863d3dbf7fd",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1543dab7_67d4263a",
+        "filename": "src/layer.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 24824
+      },
+      "writtenOn": "2022-10-20T18:34:22Z",
+      "side": 1,
+      "message": "Yes, pending the snap store upload approval by the policy-reviewers group.",
+      "parentUuid": "f04c477d_9df8ae44",
       "revId": "0866f5fbafa681809c7ce39279382863d3dbf7fd",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
