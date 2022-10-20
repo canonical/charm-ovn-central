@@ -3,6 +3,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "3a23f1aa_120f68f5",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2022-10-20T18:02:00Z",
+      "side": 1,
+      "message": "I\u0027m not sure if we want to record in eternal history whether we agreed or did not agreed to said decision, would it be appropriate to moderate this comment?",
+      "revId": "0866f5fbafa681809c7ce39279382863d3dbf7fd",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "f04c477d_9df8ae44",
         "filename": "src/layer.yaml",
         "patchSetId": 2
