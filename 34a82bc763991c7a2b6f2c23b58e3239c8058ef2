@@ -16,6 +16,23 @@
       "message": "Last failure due to transient ci infra issue ",
       "revId": "34a82bc763991c7a2b6f2c23b58e3239c8058ef2",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0c3c4917_052f9158",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2022-10-21T16:14:50Z",
+      "side": 1,
+      "message": "charm-recheck ",
+      "revId": "34a82bc763991c7a2b6f2c23b58e3239c8058ef2",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
