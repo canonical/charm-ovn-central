@@ -16,6 +16,46 @@
       "message": "(merge conflict resolution)",
       "revId": "38fee1d9656f69f0f11e633d2a2c133bffe788ec",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "47527504_30e7ab09",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2022-10-21T06:12:38Z",
+      "side": 1,
+      "message": "This is looking really good!\n\nThere is one minor comment on the action description, and I found an issue with the test code (https://github.com/openstack-charmers/zaza-openstack-tests/pull/933#discussion_r1001397280).  When we get those sorted, I think we\u0027re good to go!\n\n",
+      "revId": "38fee1d9656f69f0f11e633d2a2c133bffe788ec",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6a41dbef_9693eed0",
+        "filename": "src/actions.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2022-10-21T06:12:38Z",
+      "side": 1,
+      "message": "The description appear to be out of date after the code changed which keys are presented",
+      "range": {
+        "startLine": 31,
+        "startChar": 5,
+        "endLine": 31,
+        "endChar": 23
+      },
+      "revId": "38fee1d9656f69f0f11e633d2a2c133bffe788ec",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
