@@ -56,6 +56,30 @@
       },
       "revId": "38fee1d9656f69f0f11e633d2a2c133bffe788ec",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "656824c8_79391363",
+        "filename": "src/actions.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 32288
+      },
+      "writtenOn": "2022-10-21T12:34:32Z",
+      "side": 1,
+      "message": "Thanks, I forgot to update the cluster-status action description.",
+      "parentUuid": "6a41dbef_9693eed0",
+      "range": {
+        "startLine": 31,
+        "startChar": 5,
+        "endLine": 31,
+        "endChar": 23
+      },
+      "revId": "38fee1d9656f69f0f11e633d2a2c133bffe788ec",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
