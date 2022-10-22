@@ -679,8 +679,7 @@ class TestOVNCentralCharm(Helper):
 
         self.install.assert_called_once_with(
             'prometheus-ovn-exporter',
-            channel='stable',
-            devmode=True)
+            channel='stable')
         self.remove.assert_not_called()
         self.refresh.assert_not_called()
 
@@ -701,7 +700,6 @@ class TestOVNCentralCharm(Helper):
 
         self.refresh.assert_called_once_with(
             'prometheus-ovn-exporter',
-            channel='stable',
-            devmode=True)
+            channel='stable')
         self.install.assert_not_called()
         self.remove.assert_not_called()
