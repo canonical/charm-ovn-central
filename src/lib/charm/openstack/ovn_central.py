@@ -810,11 +810,9 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
             return
 
         if is_installed:
-            snap.refresh('prometheus-ovn-exporter', channel=channel,
-                         devmode=True)
+            snap.refresh('prometheus-ovn-exporter', channel=channel)
         else:
-            snap.install('prometheus-ovn-exporter', channel=channel,
-                         devmode=True)
+            snap.install('prometheus-ovn-exporter', channel=channel)
         snap.connect_all()
 
 
