@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e9be8948_76497405",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 24824
+      },
+      "writtenOn": "2022-10-23T12:27:36Z",
+      "side": 1,
+      "message": "2022-10-21 22:26:32.245702 | focal-medium | ERROR error attempting to remove ports associated with instance \"fa3cae1f-1b91-4178-a269-bfe22b1d7faf\": failed to list os interfaces\n2022-10-21 22:26:32.246001 | focal-medium | caused by: Resource at http://10.245.161.158:8774/v2.1/servers/fa3cae1f-1b91-4178-a269-bfe22b1d7faf/os-interface not found\n2022-10-21 22:26:32.246127 | focal-medium | caused by: request (http://10.245.161.158:8774/v2.1/servers/fa3cae1f-1b91-4178-a269-bfe22b1d7faf/os-interface) returned unexpected status: 404; error info: {\"itemNotFound\": {\"code\": 404, \"message\": \"Instance fa3cae1f-1b91-4178-a269-bfe22b1d7faf could not be found.\"}}\n",
+      "revId": "938b91b6172323977e03a6be95504370c97fc9bf",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    }
+  ]
+}
