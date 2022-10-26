@@ -50,6 +50,23 @@
       "message": "1.8/stable isn\u0027t there yet for Vault:\n\n➜  ~ juju info vault | grep -P \u00271.[7-8]\u0027          \n  1.7/stable:        8cd82fb  2022-08-29  (82)  46MB  amd64, arm64, ppc64el, s390x  focal, jammy\n  1.7/candidate:     820b94d  2022-08-01  (78)  46MB  amd64, arm64, ppc64el, s390x  focal, jammy\n  1.7/beta:          ^\n  1.7/edge:          820b94d  2022-08-01  (78)  46MB  amd64, arm64, ppc64el, s390x  focal, jammy\n\n\n2022-10-23 12:58:38.722976 | focal-medium | 2022-10-23 12:58:38 [INFO] ERROR cannot deploy bundle: cannot resolve charm or bundle \"vault\": selecting releases: charm or bundle not found for channel \"1.8/edge\", platform \"amd64\"\n\n",
       "revId": "938b91b6172323977e03a6be95504370c97fc9bf",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "89d69878_62db0ad6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 2424
+      },
+      "writtenOn": "2022-10-26T15:18:45Z",
+      "side": 1,
+      "message": "charm-recheck\n\nvault 1.8 is ready\n\n```\n1.8      ubuntu 22.04 (amd64)    stable     -          -           -                                                   \n                                 candidate  -          -           -                                                   \n                                 beta       -          -           -                                                   \n                                 edge       eb50b25    86          core (r0), vault (r0)                               \n         ubuntu 22.04 (arm64)    stable     -          -           -                                                   \n                                 candidate  -          -           -                                                   \n                                 beta       -          -           -                                                   \n                                 edge       eb50b25    86          core (r0), vault (r0)                               \n         ubuntu 22.04 (ppc64el)  stable     -          -           -                                                   \n                                 candidate  -          -           -                                                   \n                                 beta       -          -           -                                                   \n                                 edge       eb50b25    86          core (r0), vault (r0)                               \n         ubuntu 22.04 (s390x)    stable     -          -           -                                                   \n                                 candidate  -          -           -                                                   \n                                 beta       -          -           -                                                   \n                                 edge       eb50b25    86          core (r0), vault (r0)\n```",
+      "revId": "938b91b6172323977e03a6be95504370c97fc9bf",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
