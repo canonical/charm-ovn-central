@@ -67,6 +67,23 @@
       "message": "charm-recheck\n\nvault 1.8 is ready\n\n```\n1.8      ubuntu 22.04 (amd64)    stable     -          -           -                                                   \n                                 candidate  -          -           -                                                   \n                                 beta       -          -           -                                                   \n                                 edge       eb50b25    86          core (r0), vault (r0)                               \n         ubuntu 22.04 (arm64)    stable     -          -           -                                                   \n                                 candidate  -          -           -                                                   \n                                 beta       -          -           -                                                   \n                                 edge       eb50b25    86          core (r0), vault (r0)                               \n         ubuntu 22.04 (ppc64el)  stable     -          -           -                                                   \n                                 candidate  -          -           -                                                   \n                                 beta       -          -           -                                                   \n                                 edge       eb50b25    86          core (r0), vault (r0)                               \n         ubuntu 22.04 (s390x)    stable     -          -           -                                                   \n                                 candidate  -          -           -                                                   \n                                 beta       -          -           -                                                   \n                                 edge       eb50b25    86          core (r0), vault (r0)\n```",
       "revId": "938b91b6172323977e03a6be95504370c97fc9bf",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1f558cd2_c6b15a3d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 2424
+      },
+      "writtenOn": "2022-10-26T15:19:31Z",
+      "side": 1,
+      "message": "charm-recheck\n\nvault 1.8 is ready\n\n```\n1.8      ubuntu 22.04 (amd64)    stable     -          -           -                                                   \n                                 candidate  -          -           -                                                   \n                                 beta       -          -           -                                                   \n                                 edge       eb50b25    86          core (r0), vault (r0)                               \n         ubuntu 22.04 (arm64)    stable     -          -           -                                                   \n                                 candidate  -          -           -                                                   \n                                 beta       -          -           -                                                   \n                                 edge       eb50b25    86          core (r0), vault (r0)                               \n         ubuntu 22.04 (ppc64el)  stable     -          -           -                                                   \n                                 candidate  -          -           -                                                   \n                                 beta       -          -           -                                                   \n                                 edge       eb50b25    86          core (r0), vault (r0)                               \n         ubuntu 22.04 (s390x)    stable     -          -           -                                                   \n                                 candidate  -          -           -                                                   \n                                 beta       -          -           -                                                   \n                                 edge       eb50b25    86          core (r0), vault (r0)  \n```",
+      "revId": "938b91b6172323977e03a6be95504370c97fc9bf",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
