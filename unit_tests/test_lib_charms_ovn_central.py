@@ -616,9 +616,11 @@ class TestOVNCentralCharm(Helper):
             'configure_deferred_restarts')
         self.patch_object(ovn_central.os, 'chmod')
         self.target.configure_deferred_restarts()
-        self.configure_deferred_restarts.assert_called_once_with(
-            ['ovn-central', 'ovn-ovsdb-server-nb', 'ovn-northd',
-             'ovn-ovsdb-server-sb'])
+        self.configure_deferred_restarts.assert_called_once()
+        self.assertEqual(
+            sorted(self.configure_deferred_restarts.call_args.args[0]),
+            sorted(['ovn-central', 'ovn-ovsdb-server-nb', 'ovn-northd',
+                    'ovn-ovsdb-server-sb']))
 
         self.chmod.assert_called_once_with(
             '/var/lib/charm/myapp/policy-rc.d',
