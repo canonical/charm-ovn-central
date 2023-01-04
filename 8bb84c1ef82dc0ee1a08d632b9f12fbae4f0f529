@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8f2b9839_c0d86ecf",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2023-01-04T22:42:31Z",
+      "side": 1,
+      "message": "ftr; we make an attempt at tracking these common files for all charms in the https://github.com/openstack-charmers/release-tools\n\nFeel free to chime in on https://github.com/openstack-charmers/release-tools/pull/275 if you have comments and/or other suggestions",
+      "revId": "8bb84c1ef82dc0ee1a08d632b9f12fbae4f0f529",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    }
+  ]
+}
