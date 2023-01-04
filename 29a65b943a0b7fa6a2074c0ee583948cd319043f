@@ -35,6 +35,23 @@
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9a559d44_45a475e5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2023-01-04T16:22:38Z",
+      "side": 1,
+      "message": "Thank you for the review, Brian, much appreciated!\n\nSince we are just getting started sorting this mess I\u0027ll see if we can get your proposed changes into the current proposal.",
+      "revId": "29a65b943a0b7fa6a2074c0ee583948cd319043f",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ce05aaee_03ec7363",
