@@ -16,6 +16,91 @@
       "message": "recheck",
       "revId": "29a65b943a0b7fa6a2074c0ee583948cd319043f",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "22870467_98ec3ab0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1131
+      },
+      "writtenOn": "2023-01-04T14:45:34Z",
+      "side": 1,
+      "message": "Just adding some comments based on similar neutron changes that would apply to most of these repos as we dealt with the tox4 mess a few weeks ago. Don\u0027t think you have to change anything right now more at future work.",
+      "revId": "29a65b943a0b7fa6a2074c0ee583948cd319043f",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ce05aaee_03ec7363",
+        "filename": "src/tox.ini",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1131
+      },
+      "writtenOn": "2023-01-04T14:45:34Z",
+      "side": 1,
+      "message": "Same comment as other file.",
+      "revId": "29a65b943a0b7fa6a2074c0ee583948cd319043f",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "82f60d7b_5e15714c",
+        "filename": "src/tox.ini",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1131
+      },
+      "writtenOn": "2023-01-04T14:45:34Z",
+      "side": 1,
+      "message": "Same comment as other file.",
+      "revId": "29a65b943a0b7fa6a2074c0ee583948cd319043f",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9e2cf4c4_acea15b6",
+        "filename": "tox.ini",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1131
+      },
+      "writtenOn": "2023-01-04T14:45:34Z",
+      "side": 1,
+      "message": "To support tox4 this should be False or just removed since the default is False. https://github.com/tox-dev/tox/issues/2730\nThis was also something we did in most of the neutron* repos.",
+      "revId": "29a65b943a0b7fa6a2074c0ee583948cd319043f",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0efa6618_9898cf43",
+        "filename": "tox.ini",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1131
+      },
+      "writtenOn": "2023-01-04T14:45:34Z",
+      "side": 1,
+      "message": "I believe install_command can be removed completely, see comment in https://review.opendev.org/c/openstack/neutron/+/694568",
+      "revId": "29a65b943a0b7fa6a2074c0ee583948cd319043f",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
