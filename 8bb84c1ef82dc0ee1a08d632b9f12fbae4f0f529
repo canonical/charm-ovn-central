@@ -16,6 +16,23 @@
       "message": "ftr; we make an attempt at tracking these common files for all charms in the https://github.com/openstack-charmers/release-tools\n\nFeel free to chime in on https://github.com/openstack-charmers/release-tools/pull/275 if you have comments and/or other suggestions",
       "revId": "8bb84c1ef82dc0ee1a08d632b9f12fbae4f0f529",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8a0e037a_71c27516",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2023-01-05T08:02:59Z",
+      "side": 1,
+      "message": "recheck bug 2001893",
+      "revId": "8bb84c1ef82dc0ee1a08d632b9f12fbae4f0f529",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
