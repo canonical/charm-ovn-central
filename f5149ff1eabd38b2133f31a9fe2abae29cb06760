@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "116a5c3c_7c20c4fe",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11805
+      },
+      "writtenOn": "2023-01-20T20:38:40Z",
+      "side": 1,
+      "message": "This needs libffi-dev fixes and possibly more work before it can merge.\n\nThe plan for this change is to hold off on fixing any CI failures and therefore hold off on merging until another contributor needs to backport a patch to this stable branch in the future. At that point the team will revisit this change, fix any blockers, and get them merged in order to unblock the contributor\u0027s change.",
+      "revId": "f5149ff1eabd38b2133f31a9fe2abae29cb06760",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    }
+  ]
+}
