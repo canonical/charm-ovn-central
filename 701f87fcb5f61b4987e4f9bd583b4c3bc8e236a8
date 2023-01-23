@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "41fc3f8b_f7630808",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11805
+      },
+      "writtenOn": "2023-01-23T21:33:14Z",
+      "side": 1,
+      "message": "charm-recheck\n\nThe following was merged today. Let\u0027s see if it helps: https://github.com/openstack-charmers/zosci-config/pull/259",
+      "revId": "701f87fcb5f61b4987e4f9bd583b4c3bc8e236a8",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    }
+  ]
+}
