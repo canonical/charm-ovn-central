@@ -16,6 +16,23 @@
       "message": "charm-recheck\n\nThe following was merged today. Let\u0027s see if it helps: https://github.com/openstack-charmers/zosci-config/pull/259",
       "revId": "701f87fcb5f61b4987e4f9bd583b4c3bc8e236a8",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3bdc2221_6eb578c4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 20870
+      },
+      "writtenOn": "2023-01-26T09:20:06Z",
+      "side": 1,
+      "message": "LGTM",
+      "revId": "701f87fcb5f61b4987e4f9bd583b4c3bc8e236a8",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
