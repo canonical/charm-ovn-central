@@ -16,6 +16,23 @@
       "message": "charm-recheck",
       "revId": "b2580d40c2623729ae76feb99b19f5a597b99d2a",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "db74660b_2854e337",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 10366
+      },
+      "writtenOn": "2023-02-03T07:59:56Z",
+      "side": 1,
+      "message": "CI failure seems to be hitting https://bugs.launchpad.net/juju/+bug/1952221",
+      "revId": "b2580d40c2623729ae76feb99b19f5a597b99d2a",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
