@@ -1,15 +1,16 @@
 charm_name: ovn-central
 
 gate_bundles:
-- jammy-yoga
+- jammy-zed
 
 smoke_bundles:
-- jammy-yoga
+- jammy-zed
 
 dev_bundles:
-- jammy-yoga
 - jammy-zed
+- jammy-antelope
 - kinetic-zed
+- lunar-antelope
 
 target_deploy_status:
   ovn-central:
@@ -35,3 +36,4 @@ tests:
 tests_options:
   force_deploy:
     - kinetic-zed
+    - lunar-antelope
