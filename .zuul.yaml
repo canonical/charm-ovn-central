@@ -1,4 +1,6 @@
 - project:
     templates:
-      - openstack-python3-charm-jobs
+      # This is still -zed-jobs as it has py310 and pep8 gate/check jobs
+      # which is what is wanted for this 23.03 version.
+      - openstack-python3-charm-zed-jobs
       - openstack-cover-jobs

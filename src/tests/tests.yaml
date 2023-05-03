@@ -1,10 +1,11 @@
 charm_name: ovn-central
 
 gate_bundles:
+- jammy-antelope
 - jammy-zed
 
 smoke_bundles:
-- jammy-zed
+- jammy-antelope
 
 dev_bundles:
 - jammy-zed
