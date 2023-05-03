@@ -1,4 +1,5 @@
 - project:
     templates:
-      - openstack-python3-charm-jobs
+      - openstack-tox-pep8
+      - openstack-tox-py310
       - openstack-cover-jobs
