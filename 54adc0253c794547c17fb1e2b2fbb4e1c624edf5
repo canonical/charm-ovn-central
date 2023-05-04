@@ -1,0 +1,10 @@
+Code-Review+2: Frode Nordahl <frode.nordahl@canonical.com>
+Workflow+1: Dmitrii Shcherbakov <dmitrii.shcherbakov@canonical.com>
+Verified+1: Canonical CI <uosci-testing-bot@ubuntu.com>
+Code-Review+2: Dmitrii Shcherbakov <dmitrii.shcherbakov@canonical.com>
+Verified+2: Zuul
+Submitted-by: Zuul
+Submitted-at: Thu, 04 May 2023 11:31:42 +0000
+Reviewed-on: https://review.opendev.org/c/x/charm-ovn-central/+/882157
+Project: x/charm-ovn-central
+Branch: refs/heads/stable/23.03
