@@ -3,6 +3,8 @@ psutil
 poetry-core
 six
 
+tenacity>=8.2.0  # http://pad.lv/2020221
+
 # pin zipp to a version that does not require setuptools>=42
 zipp<=1.2.0
 
