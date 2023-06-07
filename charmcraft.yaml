@@ -1,7 +1,20 @@
 type: charm
 
 parts:
+  deadsnakes:
+    plugin: nil
+    override-build: |
+      apt-get update -q
+      apt-get install -y software-properties-common
+      add-apt-repository -y ppa:deadsnakes/ppa
+      apt install -y python3.11 python3.11-dev python3.11-venv
+      update-alternatives --force --install /usr/bin/python3 python3 /usr/bin/python3.10 1
+      update-alternatives --force --install /usr/bin/python3 python3 /usr/bin/python3.11 2
+      ls -l /usr/bin/python3
+      python3 --version
+      env
   charm:
+    after: [deadsnakes]
     source: src/
     plugin: reactive
     reactive-charm-build-arguments:
@@ -28,53 +41,5 @@ bases:
         architectures: [amd64]
     run-on:
       - name: ubuntu
-        channel: "22.04"
-        architectures: [amd64]
-      - name: ubuntu
-        channel: "22.10"
-        architectures: [amd64]
-      - name: ubuntu
         channel: "23.04"
         architectures: [amd64]
-  - build-on:
-      - name: ubuntu
-        channel: "22.04"
-        architectures: [arm64]
-    run-on:
-      - name: ubuntu
-        channel: "22.04"
-        architectures: [arm64]
-      - name: ubuntu
-        channel: "22.10"
-        architectures: [arm64]
-      - name: ubuntu
-        channel: "23.04"
-        architectures: [arm64]
-  - build-on:
-      - name: ubuntu
-        channel: "22.04"
-        architectures: [ppc64el]
-    run-on:
-      - name: ubuntu
-        channel: "22.04"
-        architectures: [ppc64el]
-      - name: ubuntu
-        channel: "22.10"
-        architectures: [ppc64el]
-      - name: ubuntu
-        channel: "23.04"
-        architectures: [ppc64el]
-  - build-on:
-      - name: ubuntu
-        channel: "22.04"
-        architectures: [s390x]
-    run-on:
-      - name: ubuntu
-        channel: "22.04"
-        architectures: [s390x]
-      - name: ubuntu
-        channel: "22.10"
-        architectures: [s390x]
-      - name: ubuntu
-        channel: "23.04"
-        architectures: [s390x]
