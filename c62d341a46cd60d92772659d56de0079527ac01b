@@ -16,6 +16,23 @@
       "message": "Overall I\u0027m +1 on this change, however since we are touching the `source` config, we should update its description as well as it has some shortcomings.\n\n* It does not mention this shorthand reference to UCA pockets (so the default value does not match any of the described accepted formats)\n* There\u0027s a explicit list of supported UCA pockets which is likely outdated\n* It mentions \"Ceph\" instead of \"OVN\"",
       "revId": "c62d341a46cd60d92772659d56de0079527ac01b",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8bf42a47_416d3bda",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 32288
+      },
+      "writtenOn": "2023-06-08T09:14:51Z",
+      "side": 1,
+      "message": "The changes I suggested above are more suited for master branch rather than just `23.03` stable branch. It doesn\u0027t make sense to solve them in this PR. +1",
+      "revId": "c62d341a46cd60d92772659d56de0079527ac01b",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
