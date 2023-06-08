@@ -1,6 +1,6 @@
 options:
   source:
-    default: zed
+    default: antelope
     type: string
     description: |
       Repository from which to install packages.
