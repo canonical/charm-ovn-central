@@ -18,6 +18,11 @@ import os
 import subprocess
 import time
 
+import json
+from cryptography.hazmat.backends import default_backend
+from cryptography import x509
+from datetime import datetime
+
 import charmhelpers.core as ch_core
 import charmhelpers.contrib.charmsupport.nrpe as nrpe
 import charmhelpers.contrib.network.ovs.ovn as ch_ovn
@@ -37,9 +42,31 @@ from charms.layer import snap
 # bus discovery and action exection
 charms_openstack.charm.use_defaults('charm.default-select-release')
 
+NAGIOS_PLUGINS = '/usr/local/lib/nagios/plugins'
+NAGIOS_PLUGIN_DATA = '/usr/local/lib/nagios/juju_charm_plugin_data'
+
 
 PEER_RELATION = 'ovsdb-peer'
 CERT_RELATION = 'certificates'
+
+
+class SSLCertificate(object):
+    def __init__(self, path):
+        self.path = path
+
+    @property
+    def cert(self):
+        with open(self.path, "rb") as fd:
+            return fd.read()
+
+    @property
+    def expiry_date(self):
+        cert = x509.load_pem_x509_certificate(self.cert, default_backend())
+        return cert.not_valid_after
+
+    @property
+    def days_remaining(self):
+        return int((self.expiry_date - datetime.now()).days)
 
 
 # NOTE(fnordahl): We should split the ``OVNConfigurationAdapter`` in
@@ -769,9 +796,21 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
         hostname = nrpe.get_nagios_hostname()
         current_unit = nrpe.get_nagios_unit_name()
         charm_nrpe = nrpe.NRPE(hostname=hostname)
+        self.add_nrpe_certs_check(charm_nrpe)
         nrpe.add_init_service_checks(
             charm_nrpe, self.nrpe_check_services, current_unit)
         charm_nrpe.write()
+
+    def add_nrpe_certs_check(self, charm_nrpe):
+        ch_core.host.rsync(os.path.join(os.getenv('CHARM_DIR'), 'files',
+                                        'nagios', 'check_ovn_certs.py'),
+                           os.path.join(NAGIOS_PLUGINS, 'check_ovn_certs.py'))
+        check_cmd = 'check_ovn_certs.py'
+        charm_nrpe.add_check(
+            shortname='check_ovn_certs',
+            description='Check that ovn certs are valid.',
+            check_cmd=check_cmd
+        )
 
     def custom_assess_status_check(self):
         """Report deferred events in charm status message."""
@@ -915,6 +954,37 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
             timer += tick
 
         return servers_left
+
+    def check_ovn_certs(self):
+        output_path = os.path.join(NAGIOS_PLUGIN_DATA, 'ovn_cert_status.json')
+        for cert in ['/etc/ovn/cert_host', '/etc/ovn/ovn-central.crt']:
+            if not os.path.exists(cert):
+                message = "cert '{}' does not exist.".format(cert)
+                exit_code = 2
+                break
+
+            if not os.access(cert, os.R_OK):
+                message = "cert '{}' is not readable.".format(cert)
+                exit_code = 2
+                break
+
+            remaining_days = SSLCertificate(cert).days_remaining
+            if remaining_days <= 0:
+                message = "{}: cert has expired.".format(cert)
+                exit_code = 2
+                break
+
+            if remaining_days < 10:
+                message = ("{}: cert will expire soon (less than 10 days).".
+                           format(cert))
+                exit_code = 1
+                break
+        else:
+            message = "all certs healthy"
+            exit_code = 0
+
+        with open(output_path, 'w') as fd:
+            fd.write(json.dumps({'message': message, 'exit_code': exit_code}))
 
 
 class TrainOVNCentralCharm(BaseOVNCentralCharm):
