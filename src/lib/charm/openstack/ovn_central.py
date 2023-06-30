@@ -18,6 +18,9 @@ import os
 import subprocess
 import time
 
+from cryptography.hazmat.backends import default_backend
+from cryptography import x509
+
 import charmhelpers.core as ch_core
 import charmhelpers.contrib.charmsupport.nrpe as nrpe
 import charmhelpers.contrib.network.ovs.ovn as ch_ovn
@@ -36,6 +39,8 @@ from charms.layer import snap
 # Release selection need to happen here for correct determination during
 # bus discovery and action exection
 charms_openstack.charm.use_defaults('charm.default-select-release')
+
+NAGIOS_PLUGINS = '/usr/local/lib/nagios/plugins'
 
 
 PEER_RELATION = 'ovsdb-peer'
@@ -769,9 +774,21 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
         hostname = nrpe.get_nagios_hostname()
         current_unit = nrpe.get_nagios_unit_name()
         charm_nrpe = nrpe.NRPE(hostname=hostname)
+        self.add_nrpe_certs_check(charm_nrpe)
         nrpe.add_init_service_checks(
             charm_nrpe, self.nrpe_check_services, current_unit)
         charm_nrpe.write()
+
+    def add_nrpe_certs_check(self, charm_nrpe):
+        rsync(os.path.join(os.getenv('CHARM_DIR'), 'files', 'nagios',
+                           'check_ovn_certs.py'),
+              os.path.join(NAGIOS_PLUGINS, 'check_ovn_certs.py'))
+        check_cmd = 'check_ovn_certs.py'
+        charm_nrpe.add_check(
+            shortname='ovn certs check',
+            description='Check that ovn certs are valid.',
+            check_cmd=check_cmd
+        )
 
     def custom_assess_status_check(self):
         """Report deferred events in charm status message."""
