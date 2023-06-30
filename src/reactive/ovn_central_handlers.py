@@ -287,6 +287,12 @@ def configure_deferred_restarts():
         instance.configure_deferred_restarts()
 
 
+@reactive.when('is-update-status-hook')
+def check_ovn_certs():
+    with charm.provide_charm_instance() as charm_instance:
+        charm_instance.check_ovn_certs()
+
+
 @reactive.when_none('is-update-status-hook')
 @reactive.when_any('config.changed.ovn-exporter-channel',
                    'snap.installed.prometheus-ovn-exporter')
