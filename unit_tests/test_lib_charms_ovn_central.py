@@ -12,8 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 import collections
 import io
+import tempfile
 import unittest.mock as mock
 
 import charms_openstack.test_utils as test_utils
@@ -614,20 +616,23 @@ class TestOVNCentralCharm(Helper):
         ])
 
     def test_render_nrpe(self):
-        self.patch_object(ovn_central.nrpe, 'NRPE')
-        self.patch_object(ovn_central.nrpe, 'add_init_service_checks')
-        self.target.render_nrpe()
-        # Note that this list is valid for Ussuri
-        self.add_init_service_checks.assert_has_calls([
-            mock.call().add_init_service_checks(
-                mock.ANY,
-                ['ovn-northd', 'ovn-ovsdb-server-nb', 'ovn-ovsdb-server-sb'],
-                mock.ANY
-            ),
-        ])
-        self.NRPE.assert_has_calls([
-            mock.call().write(),
-        ])
+        with tempfile.TemporaryDirectory() as dtmp:
+            os.environ['CHARM_DIR'] = dtmp
+            self.patch_object(ovn_central.nrpe, 'NRPE')
+            self.patch_object(ovn_central.nrpe, 'add_init_service_checks')
+            self.target.render_nrpe()
+            # Note that this list is valid for Ussuri
+            self.add_init_service_checks.assert_has_calls([
+                mock.call().add_init_service_checks(
+                    mock.ANY,
+                    ['ovn-northd', 'ovn-ovsdb-server-nb',
+                     'ovn-ovsdb-server-sb'],
+                    mock.ANY
+                ),
+            ])
+            self.NRPE.assert_has_calls([
+                mock.call().write(),
+            ])
 
     def test_configure_deferred_restarts(self):
         self.patch_object(
