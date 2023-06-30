@@ -71,6 +71,7 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
                                           'ovsdb-peer.connected',),
                 'certificates_in_config_tls': ('config.rendered',
                                                'config.changed',),
+                'check_ovn_certs': ('is-update-status-hook',),
                 'configure_firewall': ('ovsdb-peer.available',),
                 'enable_default_certificates': ('charm.installed',),
                 'initialize_ovsdbs': ('charm.installed',

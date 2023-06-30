@@ -12,6 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
+import subprocess
+
 import charms.reactive as reactive
 import charms.leadership as leadership
 import charms.coordinator as coordinator
@@ -19,6 +22,7 @@ import charms.coordinator as coordinator
 import charms_openstack.bus
 import charms_openstack.charm as charm
 
+import charmhelpers.fetch as ch_fetch
 
 charms_openstack.bus.discover()
 
@@ -282,3 +286,11 @@ def configure_nrpe():
 def configure_deferred_restarts():
     with charm.provide_charm_instance() as instance:
         instance.configure_deferred_restarts()
+
+
+@reactive.when('is-update-status-hook')
+def check_ovn_certs():
+    ch_fetch.apt_install(['python3-cryptography'])
+    path = os.path.join(os.getenv('CHARM_DIR'), 'files',
+                        'scripts', 'check_ovn_certs.py')
+    subprocess.check_output(path)
