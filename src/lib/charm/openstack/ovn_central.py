@@ -37,6 +37,8 @@ from charms.layer import snap
 # bus discovery and action exection
 charms_openstack.charm.use_defaults('charm.default-select-release')
 
+NAGIOS_PLUGINS = '/usr/local/lib/nagios/plugins'
+
 
 PEER_RELATION = 'ovsdb-peer'
 CERT_RELATION = 'certificates'
@@ -769,9 +771,21 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
         hostname = nrpe.get_nagios_hostname()
         current_unit = nrpe.get_nagios_unit_name()
         charm_nrpe = nrpe.NRPE(hostname=hostname)
+        self.add_nrpe_certs_check(charm_nrpe)
         nrpe.add_init_service_checks(
             charm_nrpe, self.nrpe_check_services, current_unit)
         charm_nrpe.write()
+
+    def add_nrpe_certs_check(self, charm_nrpe):
+        ch_core.host.rsync(os.path.join(os.getenv('CHARM_DIR'), 'files',
+                                        'nagios', 'check_ovn_certs.py'),
+                           os.path.join(NAGIOS_PLUGINS, 'check_ovn_certs.py'))
+        check_cmd = 'check_ovn_certs.py'
+        charm_nrpe.add_check(
+            shortname='check_ovn_certs',
+            description='Check that ovn certs are valid.',
+            check_cmd=check_cmd
+        )
 
     def custom_assess_status_check(self):
         """Report deferred events in charm status message."""
