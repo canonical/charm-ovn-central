@@ -133,6 +133,7 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
             },
             'hook': {
                 'leave_cluster': ('certificates-relation-broken',),
+                'handle_charm_upgrade': ('upgrade-charm',),
             },
         }
         # test that the hooks were registered via the

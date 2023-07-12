@@ -376,3 +376,16 @@ def handle_cluster_downscale():
                 hookenv.WARNING
             )
         configure_firewall()
+
+
+@reactive.hook('upgrade-charm')
+def handle_charm_upgrade():
+    """Set environment in preparation for charm upgrade."""
+    hookenv.log("Preparing flags for charm upgrade", hookenv.INFO)
+    ovn_source_changed = reactive.is_flag_set('config.changed.ovn-source')
+    ovn_source_default = reactive.is_flag_set('config.default.ovn-source')
+    if ovn_source_changed and ovn_source_default:
+        # We want to remove 'config.changed.ovn-source' flag during the upgrade
+        # if it has default value. This is to avoid adding default OVN UCA
+        # pocket and upgrading OVN packages on charm upgrades.
+        reactive.clear_flag('config.changed.ovn-source')
