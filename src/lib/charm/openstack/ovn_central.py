@@ -1002,16 +1002,20 @@ class UssuriOVNCentralCharm(BaseOVNCentralCharm):
             'ovn-ovsdb-server-sb',
         ]
 
-    def install(self):
+    def install(self, service_masks=None):
         """Override charm install method."""
-
-        # This is done to prevent extraneous standalone DB initialization and
-        # subsequent upgrade to clustered DB when configuration is rendered.
-        service_masks = [
-            'ovn-central.service',
-            'ovn-ovsdb-server-nb.service',
-            'ovn-ovsdb-server-sb.service',
-        ]
+        service_masks = service_masks or []
+        if not reactive.is_flag_set('charm.installed'):
+            # This is done to prevent extraneous standalone DB initialization
+            # and subsequent upgrade to clustered DB when configuration is
+            # rendered during the initial installation.
+            # Masking of OVN services is skipped on subsequent calls to this
+            # handler.
+            service_masks.extend([
+                'ovn-central.service',
+                'ovn-ovsdb-server-nb.service',
+                'ovn-ovsdb-server-sb.service',
+            ])
         super().install(service_masks=service_masks)
 
 
