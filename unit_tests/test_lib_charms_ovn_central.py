@@ -146,6 +146,30 @@ class TestOVNCentralCharm(Helper):
         self.install.assert_called_once_with()
         self.configure_sources.assert_called_once_with()
 
+    def test_install_during_upgrade(self):
+        """Test that services are not masked during charm upgrade.
+
+        install() handler is also called during charm-upgrade handling
+        and in such case, services should not be masked. Otherwise, it
+        results in upgrade failures.
+        """
+        self.patch_object(ovn_central.charms_openstack.charm.OpenStackCharm,
+                          'install')
+        self.patch_object(ovn_central.os.path, 'islink')
+        self.islink.return_value = False
+        self.patch_object(ovn_central.os, 'symlink')
+        self.patch_target('configure_sources')
+        self.patch_object(ovn_central.os, 'mkdir')
+
+        self.target.upgrade_in_progress = True
+        self.target.install()
+
+        # Assert that services were not masked
+        self.islink.assert_not_called()
+        self.symlink.assert_not_called()
+        self.install.assert_called_once_with()
+        self.configure_sources.assert_called_once_with()
+
     def test_configure_ovn_source(self):
         self.patch_target('configure_source')
         self.patch_object(ovn_central.ch_core.hookenv, 'config',

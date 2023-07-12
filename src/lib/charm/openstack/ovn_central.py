@@ -1001,17 +1001,30 @@ class UssuriOVNCentralCharm(BaseOVNCentralCharm):
             'ovn-ovsdb-server-nb',
             'ovn-ovsdb-server-sb',
         ]
+        self.upgrade_in_progress = False
+
+    def upgrade_charm(self):
+        """Handle charm-upgrade hook.
+
+        This method sets internal upgrade flag that indicates to other
+        handlers (i.e. install) that the charm upgrade is in progress.
+        """
+        self.upgrade_in_progress = True
+        super().upgrade_charm()
+        self.upgrade_in_progress = False
 
     def install(self):
         """Override charm install method."""
 
         # This is done to prevent extraneous standalone DB initialization and
         # subsequent upgrade to clustered DB when configuration is rendered.
-        service_masks = [
-            'ovn-central.service',
-            'ovn-ovsdb-server-nb.service',
-            'ovn-ovsdb-server-sb.service',
-        ]
+        service_masks = []
+        if not self.upgrade_in_progress:
+            service_masks = [
+                'ovn-central.service',
+                'ovn-ovsdb-server-nb.service',
+                'ovn-ovsdb-server-sb.service',
+            ]
         super().install(service_masks=service_masks)
 
 
