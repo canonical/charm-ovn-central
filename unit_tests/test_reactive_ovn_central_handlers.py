@@ -134,6 +134,10 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
             'hook': {
                 'leave_cluster': ('certificates-relation-broken',),
             },
+            'when_not_all': {
+                'maybe_request_upgrade': ('config.default.source',
+                                          'config.default.ovn-source')
+            }
         }
         # test that the hooks were registered via the
         # reactive.ovn_handlers

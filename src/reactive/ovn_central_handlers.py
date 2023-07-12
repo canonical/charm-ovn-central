@@ -195,6 +195,7 @@ def publish_addr_to_clients():
 @reactive.when_none('is-update-status-hook')
 @reactive.when('ovsdb-peer.available')
 @reactive.when_any('config.changed.source', 'config.changed.ovn-source')
+@reactive.when_not_all('config.default.source', 'config.default.ovn-source')
 def maybe_request_upgrade():
     # The ovn-ctl script in the ovn-common package does schema upgrade based
     # on non-presence of a value to `--db-nb-cluster-remote-addr` in
