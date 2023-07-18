@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ec50799e_b0005313",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2023-07-18T11:08:27Z",
+      "side": 1,
+      "message": "Thank you for your work on this.\n\nWhile I may have chosen a different path, you have ended up with a low intervention change that appears to solve the problem in a pragmatic and backportable way.\n\nThe potential issue I see is that if anyone were to need the `install` method at runtime at a later stage in this charms lifetime, they may walk into this minefield again.\n\nWould there be some way to check whether this is the initial install directly from the `install` method?\n\nAn alternative approach would be to ditch the custom masking behavior altogether and make use of the now established `disable_services` and `enable_services` methods, however, that has a higher level of intervention and it raises some unknowns around side effects of extending the charm `services` list, either temporary or permanently.",
+      "revId": "6a5e944526ff43ea7e95d4fb20dbfcdcf9f216fe",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d459d916_fc4db9e6",
+        "filename": "src/lib/charm/openstack/ovn_central.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 1012,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2023-07-18T11:08:27Z",
+      "side": 1,
+      "message": "The name of this class instance variable is a bit unclear, because the charm can deal with multiple types of upgrades, such as charm upgrade, package upgrade and series upgrade.\n\nWould perhaps `charm_upgrade_in_progress` be better?",
+      "revId": "6a5e944526ff43ea7e95d4fb20dbfcdcf9f216fe",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    }
+  ]
+}
