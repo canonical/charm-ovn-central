@@ -1,0 +1,24 @@
+variables:
+  openstack-origin: &openstack-origin distro
+
+local_overlay_enabled: False
+
+series: mantic
+
+applications:
+
+  vault:
+    charm: ch:vault
+    num_units: 1
+    channel: latest/edge
+
+  ovn-central:
+    charm: ../../../ovn-central_ubuntu-22.04-amd64_ubuntu-22.10-amd64_ubuntu-23.04-amd64.charm
+    num_units: 3
+    options:
+      source: *openstack-origin
+
+relations:
+
+  - - 'ovn-central:certificates'
+    - 'vault:certificates'

@@ -27,6 +27,7 @@ series:
 - jammy
 - kinetic
 - lunar
+- mantic
 subordinate: false
 provides:
   ovsdb:
