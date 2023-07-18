@@ -21,6 +21,7 @@ description: |
   Running multiple ovn-northd daemons is supported and they will operate in
   active/passive mode. The daemon uses a locking feature in the OVSDB to
   automatically choose a single active instance.
+docs: https://discourse.charmhub.io/t/ovn-central-docs-index/10550
 tags:
 - networking
 series:
