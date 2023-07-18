@@ -56,6 +56,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "0c2e7fd0_9983db6b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2023-07-18T11:42:07Z",
+      "side": 1,
+      "message": "This is where `charm.installed` is set:\nhttps://github.com/openstack/charm-layer-openstack/blob/1c9e662d78b328c6d4587171ccba08572e8dcf25/reactive/layer_openstack.py#L29\n\nI\u0027d be happy to accept breaking the barrier and checking for this flag in this case, as it both solves our immediate problem and avoids future problems with this method.\n\nFeel free to add a comment about what that the \"proper\" fix would be, and that we avoid it now because of high level of intervention/issues with backport and some unknown potential side effects with changing the `services` list.",
+      "parentUuid": "8bc2d331_8ff54a97",
+      "revId": "6a5e944526ff43ea7e95d4fb20dbfcdcf9f216fe",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d459d916_fc4db9e6",
         "filename": "src/lib/charm/openstack/ovn_central.py",
         "patchSetId": 1
