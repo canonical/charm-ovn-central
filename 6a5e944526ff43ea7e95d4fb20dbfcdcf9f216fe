@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "8bc2d331_8ff54a97",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 32288
+      },
+      "writtenOn": "2023-07-18T11:29:46Z",
+      "side": 1,
+      "message": "[0] https://docs.openstack.org/charm-guide/latest/concepts/charm-anatomy.html#reacting-to-events",
+      "parentUuid": "b618a8fc_8dcf473f",
+      "revId": "6a5e944526ff43ea7e95d4fb20dbfcdcf9f216fe",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d459d916_fc4db9e6",
         "filename": "src/lib/charm/openstack/ovn_central.py",
         "patchSetId": 1
