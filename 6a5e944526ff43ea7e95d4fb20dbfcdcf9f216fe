@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b618a8fc_8dcf473f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 32288
+      },
+      "writtenOn": "2023-07-18T11:29:06Z",
+      "side": 1,
+      "message": "I didn\u0027t manage to find source code reference for `charm.installed` flag, but according to this doc[0] it\u0027s set only after the initial `install()` handler runs. We\u0027d be breaking a barrier between reactive handlers and charm implementation but we could check the `charm.installed` flag instead of implementing the `self.upgrade_in_progress` attribute.",
+      "parentUuid": "ec50799e_b0005313",
+      "revId": "6a5e944526ff43ea7e95d4fb20dbfcdcf9f216fe",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d459d916_fc4db9e6",
         "filename": "src/lib/charm/openstack/ovn_central.py",
         "patchSetId": 1
@@ -31,6 +49,24 @@
       "writtenOn": "2023-07-18T11:08:27Z",
       "side": 1,
       "message": "The name of this class instance variable is a bit unclear, because the charm can deal with multiple types of upgrades, such as charm upgrade, package upgrade and series upgrade.\n\nWould perhaps `charm_upgrade_in_progress` be better?",
+      "revId": "6a5e944526ff43ea7e95d4fb20dbfcdcf9f216fe",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "059f861a_f5f0038f",
+        "filename": "src/lib/charm/openstack/ovn_central.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 1012,
+      "author": {
+        "id": 32288
+      },
+      "writtenOn": "2023-07-18T11:29:06Z",
+      "side": 1,
+      "message": "Yup. That\u0027s definitely better. I\u0027ll update it if we decide to go down this road.",
+      "parentUuid": "d459d916_fc4db9e6",
       "revId": "6a5e944526ff43ea7e95d4fb20dbfcdcf9f216fe",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
