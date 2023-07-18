@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1106ae12_7c5e6ed0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 32288
+      },
+      "writtenOn": "2023-07-18T15:24:31Z",
+      "side": 1,
+      "message": "I updated the approach to use \u0027charm.installed\u0027 flag as discussed.\n\nI didn\u0027t include more details about the `disable_services()` because the comment paragraph in the `install()` was already getting bigger than the function itself and I don\u0027t think we necessarily need to add explanation here. The manual masking existed here before the `disable_services()` was available in helpers (if I understand it correctly) and we are not changing it.",
+      "revId": "9338baf8b4df09c694680b84ed40b1b7c5ac1ac3",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    }
+  ]
+}
