@@ -72,6 +72,24 @@
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "744a939f_ce7eaec6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2023-07-19T06:03:31Z",
+      "side": 1,
+      "message": "(Resolved)",
+      "parentUuid": "0c2e7fd0_9983db6b",
+      "revId": "6a5e944526ff43ea7e95d4fb20dbfcdcf9f216fe",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d459d916_fc4db9e6",
@@ -103,6 +121,24 @@
       "side": 1,
       "message": "Yup. That\u0027s definitely better. I\u0027ll update it if we decide to go down this road.",
       "parentUuid": "d459d916_fc4db9e6",
+      "revId": "6a5e944526ff43ea7e95d4fb20dbfcdcf9f216fe",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a1db3e98_d47cda32",
+        "filename": "src/lib/charm/openstack/ovn_central.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 1012,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2023-07-19T06:03:31Z",
+      "side": 1,
+      "message": "(Resolved)",
+      "parentUuid": "059f861a_f5f0038f",
       "revId": "6a5e944526ff43ea7e95d4fb20dbfcdcf9f216fe",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
