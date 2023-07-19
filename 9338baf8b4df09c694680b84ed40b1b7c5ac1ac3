@@ -33,6 +33,24 @@
       "message": "With the new approach, is this needed anymore?",
       "revId": "9338baf8b4df09c694680b84ed40b1b7c5ac1ac3",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d5edc728_7fc6d0d3",
+        "filename": "src/lib/charm/openstack/ovn_central.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 1004,
+      "author": {
+        "id": 32288
+      },
+      "writtenOn": "2023-07-19T06:50:39Z",
+      "side": 1,
+      "message": "thanks I did not notice that I left this in.",
+      "parentUuid": "b9ba0a60_29fc79bb",
+      "revId": "9338baf8b4df09c694680b84ed40b1b7c5ac1ac3",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
