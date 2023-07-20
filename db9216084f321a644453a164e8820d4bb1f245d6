@@ -16,6 +16,23 @@
       "message": "Last failure due to CI infrastructure issue:\nQuota exceeded for cores",
       "revId": "db9216084f321a644453a164e8820d4bb1f245d6",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "480cfc21_0e8a0922",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2023-07-20T04:07:58Z",
+      "side": 1,
+      "message": "charm-recheck",
+      "revId": "db9216084f321a644453a164e8820d4bb1f245d6",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
