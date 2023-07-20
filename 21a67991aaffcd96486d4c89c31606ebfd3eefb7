@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9604e162_d0267c16",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11805
+      },
+      "writtenOn": "2023-07-20T20:03:42Z",
+      "side": 1,
+      "message": "This depends on https://github.com/juju/charm-tools/pull/659 being merged and backported to the 2.8 branch, and will then need to bump the version of charm-tools in the tox.ini [testenv:pep8] section.",
+      "revId": "21a67991aaffcd96486d4c89c31606ebfd3eefb7",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    }
+  ]
+}
