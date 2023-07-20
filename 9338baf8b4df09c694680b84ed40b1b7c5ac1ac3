@@ -51,6 +51,24 @@
       "parentUuid": "b9ba0a60_29fc79bb",
       "revId": "9338baf8b4df09c694680b84ed40b1b7c5ac1ac3",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "64eaf7d4_368fa218",
+        "filename": "src/lib/charm/openstack/ovn_central.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 1004,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2023-07-20T06:21:58Z",
+      "side": 1,
+      "message": "(Resolved)",
+      "parentUuid": "d5edc728_7fc6d0d3",
+      "revId": "9338baf8b4df09c694680b84ed40b1b7c5ac1ac3",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
