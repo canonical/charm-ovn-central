@@ -33,6 +33,23 @@
       "message": "LGTM",
       "revId": "701f87fcb5f61b4987e4f9bd583b4c3bc8e236a8",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1bc7c47a_21ab548f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2023-07-21T13:50:13Z",
+      "side": 1,
+      "message": "We have an alternative approach in https://review.opendev.org/c/x/charm-ovn-central/+/889166 and would want to hear your thoughts on that before proceeding with this one. Makes it much more convenient to work with the repo on a recent system.",
+      "revId": "701f87fcb5f61b4987e4f9bd583b4c3bc8e236a8",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
