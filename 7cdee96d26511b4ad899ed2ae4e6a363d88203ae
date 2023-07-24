@@ -1,0 +1,10 @@
+Workflow+1: Corey Bryant <corey.bryant@canonical.com>
+Code-Review+2: Frode Nordahl <frode.nordahl@canonical.com>
+Code-Review+2: Corey Bryant <corey.bryant@canonical.com>
+Verified+1: Canonical CI <uosci-testing-bot@ubuntu.com>
+Verified+2: Zuul
+Submitted-by: Zuul
+Submitted-at: Mon, 24 Jul 2023 12:36:09 +0000
+Reviewed-on: https://review.opendev.org/c/x/charm-ovn-central/+/889166
+Project: x/charm-ovn-central
+Branch: refs/heads/stable/22.09
