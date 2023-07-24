@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d398064c_aa8c06c6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 32288
+      },
+      "writtenOn": "2023-07-24T07:22:32Z",
+      "side": 1,
+      "message": "I\u0027m marking this `-1` again because we potentially want to go with fixing the tox.ini to be compatible with tox 4[0], rather than pinning it to v3.\n\n[0]https://review.opendev.org/c/x/charm-ovn-central/+/889292",
+      "revId": "a4173d9fb698f72aaf5b0bb197605e92eb005c74",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    }
+  ]
+}
