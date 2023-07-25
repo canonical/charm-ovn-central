@@ -1,0 +1,11 @@
+Code-Review+2: Felipe Reyes <felipe.reyes@canonical.com>
+Workflow+1: Felipe Reyes <felipe.reyes@canonical.com>
+Verified+1: Canonical CI <uosci-testing-bot@ubuntu.com>
+Code-Review+2: Frode Nordahl <frode.nordahl@canonical.com>
+Code-Review+1: Martin Kalcok <martin.kalcok@canonical.com>
+Verified+2: Zuul
+Submitted-by: Zuul
+Submitted-at: Tue, 25 Jul 2023 01:31:34 +0000
+Reviewed-on: https://review.opendev.org/c/x/charm-ovn-central/+/871353
+Project: x/charm-ovn-central
+Branch: refs/heads/stable/22.03
