@@ -50,6 +50,23 @@
       "message": "Unblocking, since the tox fixup is not a straightforward change",
       "revId": "a4173d9fb698f72aaf5b0bb197605e92eb005c74",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "211878f0_bada5936",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 2424
+      },
+      "writtenOn": "2023-07-25T01:23:28Z",
+      "side": 1,
+      "message": "LGTM",
+      "revId": "a4173d9fb698f72aaf5b0bb197605e92eb005c74",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
