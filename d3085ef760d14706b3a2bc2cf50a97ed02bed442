@@ -68,6 +68,24 @@
       "parentUuid": "8850e170_dae73bb0",
       "revId": "d3085ef760d14706b3a2bc2cf50a97ed02bed442",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d9909c7a_9dafe143",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11805
+      },
+      "writtenOn": "2023-08-08T19:35:32Z",
+      "side": 1,
+      "message": "Ah I think it\u0027s this review: https://review.opendev.org/c/openstack/charm-vault/+/890404",
+      "parentUuid": "61d51c4f_ba8ad733",
+      "revId": "d3085ef760d14706b3a2bc2cf50a97ed02bed442",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
