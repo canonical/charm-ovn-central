@@ -50,6 +50,24 @@
       "message": "charm-recheck",
       "revId": "d3085ef760d14706b3a2bc2cf50a97ed02bed442",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "61d51c4f_ba8ad733",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11805
+      },
+      "writtenOn": "2023-08-08T19:31:32Z",
+      "side": 1,
+      "message": "@Felipe, do you know if this is being tracked in a bug?",
+      "parentUuid": "8850e170_dae73bb0",
+      "revId": "d3085ef760d14706b3a2bc2cf50a97ed02bed442",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
