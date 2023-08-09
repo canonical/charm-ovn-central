@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "54878469_9770d3d4",
+        "filename": "src/files/scripts/check_ovn_certs.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 20870
+      },
+      "writtenOn": "2023-08-09T15:23:16Z",
+      "side": 1,
+      "message": "Does `load_pen_x509_certificate` raise errors if the certificate is mangled; might need to just trap errors here and print/log them to the output path?",
+      "revId": "60adb408215ecddbe1c09791bdbad54c37400437",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a557db57_5ac63afe",
+        "filename": "src/lib/charm/openstack/ovn_central.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 793,
+      "author": {
+        "id": 20870
+      },
+      "writtenOn": "2023-08-09T15:23:16Z",
+      "side": 1,
+      "message": "Could a note be added that this is being done as a package as the cron script runs outside of the venv.",
+      "range": {
+        "startLine": 792,
+        "startChar": 0,
+        "endLine": 793,
+        "endChar": 54
+      },
+      "revId": "60adb408215ecddbe1c09791bdbad54c37400437",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c8c799d8_aa1f1b44",
+        "filename": "tox.ini",
+        "patchSetId": 14
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 20870
+      },
+      "writtenOn": "2023-08-09T15:23:16Z",
+      "side": 1,
+      "message": "Note this target won\u0027t run on gate, as the pep8 env target is used directly.",
+      "range": {
+        "startLine": 66,
+        "startChar": 0,
+        "endLine": 73,
+        "endChar": 0
+      },
+      "revId": "60adb408215ecddbe1c09791bdbad54c37400437",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    }
+  ]
+}
