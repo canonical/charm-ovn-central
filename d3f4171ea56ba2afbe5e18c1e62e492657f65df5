@@ -33,6 +33,24 @@
       "message": "we should switch to 2.x/stable",
       "revId": "d3f4171ea56ba2afbe5e18c1e62e492657f65df5",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e0a6e7b3_c69831af",
+        "filename": "osci.yaml",
+        "patchSetId": 9
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 11805
+      },
+      "writtenOn": "2023-08-16T15:46:04Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "936b1831_bde6d981",
+      "revId": "d3f4171ea56ba2afbe5e18c1e62e492657f65df5",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
