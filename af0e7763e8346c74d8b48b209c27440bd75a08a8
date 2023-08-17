@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ce472545_3f902f78",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 10
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 2424
+      },
+      "writtenOn": "2023-08-17T00:25:01Z",
+      "side": 1,
+      "message": "charm-recheck\n\nfix in layer-snap merged - https://code.launchpad.net/~corey.bryant/layer-snap/+git/layer-snap/+merge/449280",
+      "revId": "af0e7763e8346c74d8b48b209c27440bd75a08a8",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    }
+  ]
+}
