@@ -18,6 +18,24 @@
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f7ce3005_2f75f38b",
+        "filename": "src/files/scripts/check_ovn_certs.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 6737
+      },
+      "writtenOn": "2023-08-23T12:06:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "54878469_9770d3d4",
+      "revId": "60adb408215ecddbe1c09791bdbad54c37400437",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a557db57_5ac63afe",
@@ -41,6 +59,30 @@
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "28240891_42aad3ba",
+        "filename": "src/lib/charm/openstack/ovn_central.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 793,
+      "author": {
+        "id": 6737
+      },
+      "writtenOn": "2023-08-23T12:06:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a557db57_5ac63afe",
+      "range": {
+        "startLine": 792,
+        "startChar": 0,
+        "endLine": 793,
+        "endChar": 54
+      },
+      "revId": "60adb408215ecddbe1c09791bdbad54c37400437",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c8c799d8_aa1f1b44",
@@ -54,6 +96,30 @@
       "writtenOn": "2023-08-09T15:23:16Z",
       "side": 1,
       "message": "Note this target won\u0027t run on gate, as the pep8 env target is used directly.",
+      "range": {
+        "startLine": 66,
+        "startChar": 0,
+        "endLine": 73,
+        "endChar": 0
+      },
+      "revId": "60adb408215ecddbe1c09791bdbad54c37400437",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f4c75ad3_28cb8b5d",
+        "filename": "tox.ini",
+        "patchSetId": 14
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 6737
+      },
+      "writtenOn": "2023-08-23T12:06:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c8c799d8_aa1f1b44",
       "range": {
         "startLine": 66,
         "startChar": 0,
