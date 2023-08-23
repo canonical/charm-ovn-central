@@ -16,6 +16,23 @@
       "message": "charm-recheck\n\nfix in layer-snap merged - https://code.launchpad.net/~corey.bryant/layer-snap/+git/layer-snap/+merge/449280",
       "revId": "af0e7763e8346c74d8b48b209c27440bd75a08a8",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a4b2e5b5_3eafcd40",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 10
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 2424
+      },
+      "writtenOn": "2023-08-23T14:50:47Z",
+      "side": 1,
+      "message": "LGTM",
+      "revId": "af0e7763e8346c74d8b48b209c27440bd75a08a8",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
