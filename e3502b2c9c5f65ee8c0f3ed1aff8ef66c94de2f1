@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "04c3b15d_0f70c588",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 15
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 6737
+      },
+      "writtenOn": "2023-09-12T12:34:18Z",
+      "side": 1,
+      "message": "I have tested a deployment with this patch today and it works well for me so it is ready for review.",
+      "revId": "e3502b2c9c5f65ee8c0f3ed1aff8ef66c94de2f1",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    }
+  ]
+}
