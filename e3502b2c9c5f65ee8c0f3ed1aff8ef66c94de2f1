@@ -16,6 +16,23 @@
       "message": "I have tested a deployment with this patch today and it works well for me so it is ready for review.",
       "revId": "e3502b2c9c5f65ee8c0f3ed1aff8ef66c94de2f1",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8ffc0317_d8b14e93",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 15
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 20870
+      },
+      "writtenOn": "2023-09-12T13:04:21Z",
+      "side": 1,
+      "message": "LGTM; as the OVN team are the final arbiters of this charm, they really ought to get final say; I\u0027ve added them in.",
+      "revId": "e3502b2c9c5f65ee8c0f3ed1aff8ef66c94de2f1",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
