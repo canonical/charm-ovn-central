@@ -33,6 +33,23 @@
       "message": "LGTM; as the OVN team are the final arbiters of this charm, they really ought to get final say; I\u0027ve added them in.",
       "revId": "e3502b2c9c5f65ee8c0f3ed1aff8ef66c94de2f1",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "612312a4_4e449d45",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 15
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2023-09-13T11:36:35Z",
+      "side": 1,
+      "message": "LGTM, thanks!",
+      "revId": "e3502b2c9c5f65ee8c0f3ed1aff8ef66c94de2f1",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
