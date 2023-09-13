@@ -1,0 +1,11 @@
+Code-Review+1: Brian Haley <haleyb.dev@gmail.com>
+Code-Review+2: Frode Nordahl <frode.nordahl@canonical.com>
+Workflow+1: Frode Nordahl <frode.nordahl@canonical.com>
+Verified+1: Canonical CI <uosci-testing-bot@ubuntu.com>
+Code-Review+2: Alex Kavanagh <alex.kavanagh@canonical.com>
+Verified+2: Zuul
+Submitted-by: Zuul
+Submitted-at: Wed, 13 Sep 2023 11:40:32 +0000
+Reviewed-on: https://review.opendev.org/c/x/charm-ovn-central/+/887411
+Project: x/charm-ovn-central
+Branch: refs/heads/master
