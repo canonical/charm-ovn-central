@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7dec4f24_32fb59b2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2023-09-13T12:02:49Z",
+      "side": 1,
+      "message": "What about stable/23.03 and stable/22.09 branches? Other than that this LGTM",
+      "revId": "2a5157b50fb4860ba48a4082200d9387819cf68d",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    }
+  ]
+}
