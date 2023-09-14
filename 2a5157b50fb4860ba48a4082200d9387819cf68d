@@ -33,6 +33,23 @@
       "message": "Hi Frode those have now been submitted:\n\nhttps://review.opendev.org/c/x/charm-ovn-central/+/895022?usp\u003dsearch\nhttps://review.opendev.org/c/x/charm-ovn-central/+/895021?usp\u003dsearch\n\nI initially submitting this backport so I could test 22.03 but now that the main patch is merged we are good for all releases.",
       "revId": "2a5157b50fb4860ba48a4082200d9387819cf68d",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "47d5ab97_56ebfa34",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2023-09-14T09:56:13Z",
+      "side": 1,
+      "message": "LGTM, thanks! And thank you for raising the other cherry picks, much appreciated.",
+      "revId": "2a5157b50fb4860ba48a4082200d9387819cf68d",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
