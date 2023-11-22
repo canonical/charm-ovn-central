@@ -6,6 +6,6 @@ six
 # pin zipp to a version that does not require setuptools>=42
 zipp<=1.2.0
 
-git+https://github.com/openstack/charms.openstack.git#egg=charms.openstack
+git+https://github.com/openstack/charms.openstack.git@stable/bobcat#egg=charms.openstack
 
-git+https://github.com/juju/charm-helpers.git#egg=charmhelpers
+git+https://github.com/juju/charm-helpers.git@stable/bobcat#egg=charmhelpers
