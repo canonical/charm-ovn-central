@@ -1,0 +1,13 @@
+Verified+1: Canonical CI <uosci-testing-bot@ubuntu.com>
+Verified+2: Zuul
+Code-Review+1: Brian Haley <haleyb.dev@gmail.com>
+Workflow+1: Martin Kalcok <martin.kalcok@canonical.com>
+Code-Review+2: Martin Kalcok <martin.kalcok@canonical.com>
+Code-Review+1: Nicolas Bock <nicolas.bock@canonical.com>
+Code-Review+2: Frode Nordahl <frode.nordahl@canonical.com>
+Submitted-by: Zuul
+Submitted-at: Wed, 31 Jan 2024 12:15:43 +0000
+Reviewed-on: https://review.opendev.org/c/x/charm-ovn-central/+/890216
+Comments-Total: 6
+Project: x/charm-ovn-central
+Branch: refs/heads/stable/22.03
