@@ -27,7 +27,6 @@ charms_openstack.bus.discover()
 # Use the charms.openstack defaults for common states and hooks
 charm.use_defaults(
     'config.changed',
-    'update-status',
     'upgrade-charm',
 )
 
@@ -376,3 +375,18 @@ def handle_cluster_downscale():
                 hookenv.WARNING
             )
         configure_firewall()
+
+
+@reactive.when('is-update-status-hook', 'charm.installed')
+def update_status():
+    """
+    The default charms.openstack/layer_openstack handler will use netcat to
+    check if services are running but that causes the ovsdb-server logs to get
+    spammed with SSL errors and warnings because netcat does not close the
+    connection properly so instead we use openssl here.
+
+    """
+    with charm.provide_charm_instance() as instance:
+        key = os.path.join(instance.ovn_sysconfdir(), 'key_host')
+        cert = os.path.join(instance.ovn_sysconfdir(), 'cert_host')
+        instance.assess_status(use_openssl=True, cert=cert, key=key)
