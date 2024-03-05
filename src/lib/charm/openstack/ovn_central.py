@@ -25,6 +25,8 @@ import charmhelpers.contrib.network.ovs.ovn as ch_ovn
 import charmhelpers.contrib.network.ovs.ovsdb as ch_ovsdb
 from charmhelpers.contrib.network import ufw as ch_ufw
 import charmhelpers.contrib.openstack.deferred_events as deferred_events
+import charmhelpers.contrib.hahelpers.cluster as ch_cluster
+import charmhelpers.contrib.openstack.utils as os_utils
 import charmhelpers.fetch as ch_fetch
 
 import charms.reactive as reactive
@@ -33,6 +35,7 @@ import charms_openstack.adapters
 import charms_openstack.charm
 
 from charms.layer import snap
+from charmhelpers.contrib.network.ip import SSLPortCheckInfo
 
 # Release selection need to happen here for correct determination during
 # bus discovery and action exection
@@ -379,6 +382,26 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
                 "> {} < {}."
                 .format(self.min_election_timer, self.max_election_timer))
         return None, None
+
+    def check_services_running(self):
+        """
+        The default charms.openstack/layer_openstack handler will use netcat to
+        check if services are running but that causes the ovsdb-server logs to
+        get spammed with SSL errors and warnings because netcat does not close
+        the connection properly so instead we use ssl connections to test here.
+        """
+        _services, _ports = ch_cluster.get_managed_services_and_ports(
+            self.services,
+            self.ports_to_check(self.active_api_ports))
+        ssl_info = SSLPortCheckInfo(os.path.join(self.ovn_sysconfdir(),
+                                                 'key_host'),
+                                    os.path.join(self.ovn_sysconfdir(),
+                                                 'cert_host'),
+                                    os.path.join(self.ovn_sysconfdir(),
+                                                 'ovn-central.crt'))
+        return os_utils.ows_check_services_running(services=_services,
+                                                   ports=_ports,
+                                                   ssl_check_info=ssl_info)
 
     def custom_assess_status_last_check(self):
         """Customize charm status output.
