@@ -16,6 +16,23 @@
       "message": "This needs https://github.com/juju/charm-helpers/pull/881 synced into it to work but ive tested it and it works well.",
       "revId": "784c4f2e8e916430ef8e4e8fc68a9fab44614d69",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "86a1181c_e702dc31",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1131
+      },
+      "writtenOn": "2024-03-20T21:12:05Z",
+      "side": 1,
+      "message": "lgtm, just requires charm-helpers dependency",
+      "revId": "784c4f2e8e916430ef8e4e8fc68a9fab44614d69",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
