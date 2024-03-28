@@ -33,6 +33,23 @@
       "message": "lgtm, just requires charm-helpers dependency",
       "revId": "784c4f2e8e916430ef8e4e8fc68a9fab44614d69",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4916b92f_16a92855",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 14567
+      },
+      "writtenOn": "2024-03-28T14:19:59Z",
+      "side": 1,
+      "message": "lgtm",
+      "revId": "784c4f2e8e916430ef8e4e8fc68a9fab44614d69",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
