@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fd609b1e_c6cfd114",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 6737
+      },
+      "writtenOn": "2024-04-12T14:17:54Z",
+      "side": 1,
+      "message": "charmhelpers patch has panded so this should work now",
+      "revId": "e3e4ca853954f72389e398498ce28174c475f55f",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    }
+  ]
+}
