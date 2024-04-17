@@ -16,6 +16,40 @@
       "message": "LGTM. Thanks for the improvement.",
       "revId": "6f9f8e7620ec78bbcce8ed92b0cd2ba7eb3f22a0",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "92b7ae98_47df0e79",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2024-04-17T10:03:02Z",
+      "side": 1,
+      "message": "I have a nit about whether the osci.yaml change should be a separate commit/review to make backports easier, but its up to you.\n\nOtherwise LGTM.\n\nNote that the Laucnchpad charm recpie [0] also defines which charmcraft version to use, and would need to be updated to match in order for the final artifact to build successfully.",
+      "revId": "6f9f8e7620ec78bbcce8ed92b0cd2ba7eb3f22a0",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c54a1137_e470147a",
+        "filename": "osci.yaml",
+        "patchSetId": 7
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2024-04-17T10:03:02Z",
+      "side": 1,
+      "message": "nit: If you intend to backport this change, it will make your life easier if this change is put in a separate commit/review.",
+      "revId": "6f9f8e7620ec78bbcce8ed92b0cd2ba7eb3f22a0",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
