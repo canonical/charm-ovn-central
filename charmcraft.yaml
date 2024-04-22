@@ -15,7 +15,7 @@ parts:
       - rustc
       - cargo
     build-snaps:
-      - charm
+      - charm/latest/edge
     build-environment:
       - CHARM_INTERFACES_DIR: /root/project/interfaces/
       - CHARM_LAYERS_DIR: /root/project/layers/
