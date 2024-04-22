@@ -1,13 +1,14 @@
 charm_name: ovn-central
 
 gate_bundles:
-- jammy-antelope
+- jammy-caracal
 
 smoke_bundles:
-- jammy-antelope
+- jammy-caracal
 
 dev_bundles:
 - jammy-bobcat
+- jammy-caracal
 - mantic-bobcat
 
 target_deploy_status:
