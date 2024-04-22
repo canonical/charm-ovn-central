@@ -16,6 +16,23 @@
       "message": "CI error:\n\n\u003e 2024-04-19 16:01:29.447627 | focal-medium | 2024-04-19 16:01:29 [ERROR] unit-ovn-central-2.log: ImportError: cannot import name \u0027SSLPortCheckInfo\u0027 from \u0027charmhelpers.contrib.network.ip\u0027 (/var/lib/juju/agents/unit-ovn-central-2/.venv/lib/python3.11/site-packages/charmhelpers/contrib/network/ip.py)",
       "revId": "05722e0fbc9474c98c373a589c4f86116cdd9b23",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "95fc9531_87b50fa7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 6737
+      },
+      "writtenOn": "2024-04-22T12:05:16Z",
+      "side": 1,
+      "message": "Corresponding charm-helpers backport (https://github.com/juju/charm-helpers/pulls?q\u003dis%3Apr+is%3Aopen+base%3Astable+%22Support+checking+service+ports+with+ssl+connection%22+in%3Atitle+) required to land first.",
+      "revId": "05722e0fbc9474c98c373a589c4f86116cdd9b23",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
