@@ -16,6 +16,23 @@
       "message": "Corresponding charm-helpers backport (https://github.com/juju/charm-helpers/pulls?q\u003dis%3Apr+is%3Aopen+base%3Astable+%22Support+checking+service+ports+with+ssl+connection%22+in%3Atitle+) required to land first.",
       "revId": "b02ed77119b6c3cd170ab5a75f5398a165318848",
       "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d3ce9380_6c39b2e3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 6737
+      },
+      "writtenOn": "2024-04-23T10:39:03Z",
+      "side": 1,
+      "message": "charm-recheck",
+      "revId": "b02ed77119b6c3cd170ab5a75f5398a165318848",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
     }
   ]
 }
