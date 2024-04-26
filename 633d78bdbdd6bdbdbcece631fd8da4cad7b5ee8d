@@ -1,0 +1,11 @@
+Code-Review+2: Edward Hope-Morley <edward.hope-morley@canonical.com>
+Workflow+1: Edward Hope-Morley <edward.hope-morley@canonical.com>
+Verified+2: Zuul
+Code-Review+2: Nicolas Bock <nicolas.bock@canonical.com>
+Verified+1: Canonical CI <uosci-testing-bot@ubuntu.com>
+Submitted-by: Zuul
+Submitted-at: Fri, 26 Apr 2024 08:43:38 +0000
+Reviewed-on: https://review.opendev.org/c/x/charm-ovn-central/+/916476
+Comments-Total: 2
+Project: x/charm-ovn-central
+Branch: refs/heads/stable/22.03
