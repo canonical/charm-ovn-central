@@ -21,6 +21,13 @@ from cryptography.hazmat.backends import default_backend
 from cryptography import x509
 
 NAGIOS_PLUGIN_DATA = '/usr/local/lib/nagios/juju_charm_plugin_data'
+UNKNOWN = 3
+CRITICAL = 2
+WARN = 1
+SUCCESS = 0
+
+CERT_EXPIRY_CRITICAL_LIMIT = 30
+CERT_EXPIRY_WARN_LIMIT = 60
 
 
 class SSLCertificate(object):
@@ -47,36 +54,43 @@ def check_ovn_certs():
     if not os.path.isdir(NAGIOS_PLUGIN_DATA):
         os.makedirs(NAGIOS_PLUGIN_DATA)
 
-    exit_code = 0
+    exit_code = SUCCESS
     for cert in ['/etc/ovn/cert_host', '/etc/ovn/ovn-central.crt']:
         if not os.path.exists(cert):
             message = "cert '{}' does not exist.".format(cert)
-            exit_code = 2
+            exit_code = CRITICAL
             break
 
         if not os.access(cert, os.R_OK):
             message = "cert '{}' is not readable.".format(cert)
-            exit_code = 2
+            exit_code = CRITICAL
             break
 
         try:
             remaining_days = SSLCertificate(cert).days_remaining
             if remaining_days <= 0:
                 message = "{}: cert has expired.".format(cert)
-                exit_code = 2
+                exit_code = CRITICAL
                 break
 
-            if remaining_days < 10:
-                message = ("{}: cert will expire soon (less than 10 days).".
-                           format(cert))
-                exit_code = 1
+            if remaining_days < CERT_EXPIRY_CRITICAL_LIMIT:
+                message = ("{}: cert will expire soon (less than {} days).".
+                           format(cert, CERT_EXPIRY_CRITICAL_LIMIT))
+                exit_code = CRITICAL
                 break
+
+            if remaining_days < CERT_EXPIRY_WARN_LIMIT:
+                message = ("{}: cert will expire soon (less than {} days).".
+                           format(cert, CERT_EXPIRY_WARN_LIMIT))
+                exit_code = WARN
+                break
+
         except Exception as exc:
             message = "failed to check cert '{}': {}".format(cert, str(exc))
-            exit_code = 1
+            exit_code = UNKNOWN
     else:
         message = "all certs healthy"
-        exit_code = 0
+        exit_code = SUCCESS
 
     ts = datetime.now()
     with open(output_path, 'w') as fd:
