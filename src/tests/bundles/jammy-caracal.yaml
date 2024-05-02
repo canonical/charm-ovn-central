@@ -10,7 +10,7 @@ applications:
   vault:
     charm: ch:vault
     num_units: 1
-    channel: latest/edge
+    channel: 1.8/edge
 
   ovn-central:
     charm: ../../../ovn-central_ubuntu-22.04-amd64.charm
