@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4eae491d_4aa6ccfe",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 14567
+      },
+      "writtenOn": "2024-05-02T11:25:42Z",
+      "side": 1,
+      "message": "same as https://review.opendev.org/c/x/charm-ovn-chassis/+/917511",
+      "revId": "a5b0e13db6cfac38c6621462a448fe47f090193a",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    }
+  ]
+}
