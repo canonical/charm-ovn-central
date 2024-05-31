@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cdb1aa10_6ccf91f9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1131
+      },
+      "writtenOn": "2024-05-31T15:39:24Z",
+      "side": 1,
+      "message": "Almost forgot about stable/24.03",
+      "revId": "3e105fdc282d3f689d715ae1f54d3054f34cf7da",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    }
+  ]
+}
