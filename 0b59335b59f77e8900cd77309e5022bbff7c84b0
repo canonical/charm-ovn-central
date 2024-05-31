@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4d377184_6c27e75a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 6737
+      },
+      "writtenOn": "2024-05-31T10:17:45Z",
+      "side": 1,
+      "message": "this needs to land in 24.03 first and i have proposed that patch in https://review.opendev.org/c/x/charm-ovn-central/+/920877",
+      "revId": "0b59335b59f77e8900cd77309e5022bbff7c84b0",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    }
+  ]
+}
