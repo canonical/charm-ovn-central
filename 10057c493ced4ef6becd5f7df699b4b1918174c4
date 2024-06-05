@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d59de4ad_88d67673",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2024-06-05T07:51:52Z",
+      "side": 1,
+      "message": "s/23.04/24.03",
+      "range": {
+        "startLine": 9,
+        "startChar": 8,
+        "endLine": 9,
+        "endChar": 20
+      },
+      "revId": "10057c493ced4ef6becd5f7df699b4b1918174c4",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b7b5c03d_8911fb7d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2024-06-05T07:51:52Z",
+      "side": 1,
+      "message": "s/23.04/24.03",
+      "range": {
+        "startLine": 11,
+        "startChar": 53,
+        "endLine": 11,
+        "endChar": 55
+      },
+      "revId": "10057c493ced4ef6becd5f7df699b4b1918174c4",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9cccf46a_89bc47ec",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 13686
+      },
+      "writtenOn": "2024-06-05T07:51:52Z",
+      "side": 1,
+      "message": "Thanks for raising this, was about to put my +2 on it when I discovered a typo in the commit message.\n\nWhile it has no functional side effect, I think it would be worth to avoid confusing anyone by having it in the commit history.",
+      "revId": "10057c493ced4ef6becd5f7df699b4b1918174c4",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    }
+  ]
+}
