@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "62799430_41daf430",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 2424
+      },
+      "writtenOn": "2024-06-22T04:09:24Z",
+      "side": 1,
+      "message": "LGTM.\n\nWe are merging this as it is, because we are in the process of stabilizing (and seeding) latest/edge charmhub channel with noble-enabled charms, so it is expected the gate won\u0027t pass at this point in time.",
+      "revId": "74f2aa702cf11c597d74a915a5e8d626d2241912",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    }
+  ]
+}
