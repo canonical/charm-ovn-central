@@ -3,8 +3,7 @@ psutil
 poetry-core
 six
 
-# pin zipp to a version that does not require setuptools>=42
-zipp<=1.2.0
+git+https://github.com/wolsen/charms.reactive.git@fix-entry-points#egg=charms.reactive
 
 git+https://github.com/openstack/charms.openstack.git#egg=charms.openstack
 

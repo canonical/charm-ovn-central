@@ -1,6 +1,6 @@
 options:
   source:
-    default: zed
+    default: caracal
     type: string
     description: |
       Repository from which to install packages.
