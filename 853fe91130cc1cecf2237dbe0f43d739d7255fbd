@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "845c1b41_1a664a0b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 2424
+      },
+      "writtenOn": "2024-07-24T14:52:44Z",
+      "side": 1,
+      "message": "LGTM. Waiting for the CI results.",
+      "revId": "853fe91130cc1cecf2237dbe0f43d739d7255fbd",
+      "serverId": "4a232e18-c5a9-48ee-94c0-e04e7cca6543"
+    }
+  ]
+}
