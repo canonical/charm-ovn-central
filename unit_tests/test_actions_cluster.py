@@ -103,11 +103,11 @@ class ClusterActionTests(TestCase):
 
         # Parse valid IPv4
         ipv4 = cluster_actions._url_to_ip(url.format(valid_ipv4))
-        self.assertEquals(ipv4, valid_ipv4)
+        self.assertEqual(ipv4, valid_ipv4)
 
         # Parse valid IPv6
         ipv6 = cluster_actions._url_to_ip(url.format(valid_ipv6))
-        self.assertEquals(ipv6, valid_ipv6)
+        self.assertEqual(ipv6, valid_ipv6)
 
         # Parse invalid url
         cluster_actions.ch_ip.is_ip.return_value = False
@@ -131,7 +131,7 @@ class ClusterActionTests(TestCase):
         # Compare resulting dict with expected data
         expected_status = sample_data.copy()
         expected_status["unit_map"] = self.unit_id_map
-        self.assertEquals(cluster_status, expected_status)
+        self.assertEqual(cluster_status, expected_status)
 
     @patch.object(cluster_actions.ch_ovn, 'OVNClusterStatus')
     def test_format_cluster_status_missing_server(self, mock_cluster_status):
@@ -160,7 +160,7 @@ class ClusterActionTests(TestCase):
         expected_status["unit_map"] = self.unit_id_map
         expected_status["unit_map"]["UNKNOWN"] = [missing_server_id]
 
-        self.assertEquals(cluster_status, expected_status)
+        self.assertEqual(cluster_status, expected_status)
 
     @patch.object(cluster_actions.ch_ovn, 'OVNClusterStatus')
     @patch.object(cluster_actions, "_url_to_ip")
@@ -212,7 +212,7 @@ class ClusterActionTests(TestCase):
 
         unit_mapping = cluster_actions._cluster_ip_map()
 
-        self.assertEquals(unit_mapping, expected_map)
+        self.assertEqual(unit_mapping, expected_map)
 
     def test_kick_server_success(self):
         """Test successfully kicking server from cluster"""
@@ -516,7 +516,7 @@ class ClusterActionTests(TestCase):
 
         result = cluster_actions.main([action_path])
 
-        self.assertEquals(result, err)
+        self.assertEqual(result, err)
 
         self.mapped_action_cluster_kick.assert_not_called()
         self.mapped_action_cluster_status.assert_not_called()
