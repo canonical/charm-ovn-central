@@ -1,0 +1,8 @@
+Verified+2: Zuul
+Code-Review+2: Guillaume Boutry <guillaume.boutry@canonical.com>
+Workflow+1: Guillaume Boutry <guillaume.boutry@canonical.com>
+Submitted-by: Zuul
+Submitted-at: Fri, 15 Nov 2024 16:04:50 +0000
+Reviewed-on: https://review.opendev.org/c/x/charm-ovn-central/+/935334
+Project: x/charm-ovn-central
+Branch: refs/heads/master
