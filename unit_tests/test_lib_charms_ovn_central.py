@@ -63,7 +63,7 @@ class TestOVNCentralConfigurationAdapter(test_utils.PatchHelper):
             charm_instance=self.charm_instance)
         m.stop()
         setattr(self, 'config', None)
-        self.assertEquals('fake-source', self.target._ovn_source)
+        self.assertEqual('fake-source', self.target._ovn_source)
 
         # User has not supplied a ovn-source config, charm was installed at
         # this version on focal
@@ -74,17 +74,17 @@ class TestOVNCentralConfigurationAdapter(test_utils.PatchHelper):
             charm_instance=self.charm_instance)
         m.stop()
         setattr(self, 'config', None)
-        self.assertEquals('cloud:focal-ovn-22.03', self.target._ovn_source)
+        self.assertEqual('cloud:focal-ovn-22.03', self.target._ovn_source)
 
         # User has not supplied a ovn-source config, charm was upgraded
         self.is_flag_set.return_value = False
-        self.assertEquals('', self.target._ovn_source)
+        self.assertEqual('', self.target._ovn_source)
 
         # User has not supplied a ovn-source config, charm was installed at
         # this version on jammy
         self.is_flag_set.return_value = True
         self.lsb_release.return_value = {'DISTRIB_CODENAME': 'jammy'}
-        self.assertEquals('', self.target._ovn_source)
+        self.assertEqual('', self.target._ovn_source)
 
 
 class TestOVNCentralCharm(Helper):
@@ -211,7 +211,7 @@ class TestOVNCentralCharm(Helper):
         self.assertDictEqual(self.target.states_to_check(), expect)
 
     def test__default_port_list(self):
-        self.assertEquals(
+        self.assertEqual(
             self.target._default_port_list(),
             [6641, 6642])
 
@@ -228,7 +228,7 @@ class TestOVNCentralCharm(Helper):
             self.FakeClusterStatus(False),
         ]
         self.is_northd_active.return_value = False
-        self.assertEquals(
+        self.assertEqual(
             self.target.cluster_status_message(), '')
         self.cluster_status.assert_has_calls([
             mock.call('ovnnb_db'),
@@ -238,14 +238,14 @@ class TestOVNCentralCharm(Helper):
             self.FakeClusterStatus(True),
             self.FakeClusterStatus(False),
         ]
-        self.assertEquals(
+        self.assertEqual(
             self.target.cluster_status_message(),
             'leader: ovnnb_db')
         self.cluster_status.side_effect = [
             self.FakeClusterStatus(True),
             self.FakeClusterStatus(True),
         ]
-        self.assertEquals(
+        self.assertEqual(
             self.target.cluster_status_message(),
             'leader: ovnnb_db, ovnsb_db')
         self.cluster_status.side_effect = [
@@ -253,21 +253,21 @@ class TestOVNCentralCharm(Helper):
             self.FakeClusterStatus(False),
         ]
         self.is_northd_active.return_value = True
-        self.assertEquals(
+        self.assertEqual(
             self.target.cluster_status_message(),
             'northd: active')
         self.cluster_status.side_effect = [
             self.FakeClusterStatus(True),
             self.FakeClusterStatus(False),
         ]
-        self.assertEquals(
+        self.assertEqual(
             self.target.cluster_status_message(),
             'leader: ovnnb_db northd: active')
         self.cluster_status.side_effect = [
             self.FakeClusterStatus(True),
             self.FakeClusterStatus(True),
         ]
-        self.assertEquals(
+        self.assertEqual(
             self.target.cluster_status_message(),
             'leader: ovnnb_db, ovnsb_db northd: active')
 
@@ -368,15 +368,15 @@ class TestOVNCentralCharm(Helper):
     def test_validate_config(self):
         self.patch_target('config')
         self.config.__getitem__.return_value = self.target.min_election_timer
-        self.assertEquals(self.target.validate_config(), (None, None))
+        self.assertEqual(self.target.validate_config(), (None, None))
         self.config.__getitem__.return_value = self.target.max_election_timer
-        self.assertEquals(self.target.validate_config(), (None, None))
+        self.assertEqual(self.target.validate_config(), (None, None))
         self.config.__getitem__.return_value = (
             self.target.min_election_timer - 1)
-        self.assertEquals(self.target.validate_config(), ('blocked', mock.ANY))
+        self.assertEqual(self.target.validate_config(), ('blocked', mock.ANY))
         self.config.__getitem__.return_value = (
             self.target.max_election_timer + 1)
-        self.assertEquals(self.target.validate_config(), ('blocked', mock.ANY))
+        self.assertEqual(self.target.validate_config(), ('blocked', mock.ANY))
 
     def test_configure_ovsdb_election_timer(self):
         with self.assertRaises(ValueError):
