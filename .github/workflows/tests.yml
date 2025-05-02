@@ -1,0 +1,239 @@
+name: Tests
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt install tox
+
+      - name: Run linter
+        run: |
+          tox -e pep8
+
+  unit:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.12"]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          sudo apt install tox
+
+      - name: Run Unit tests
+        run: |
+          tox -e py3
+
+  coverage:
+    name: Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt install tox
+
+      - name: Run coverage
+        run: |
+          tox -e cover
+
+  build:
+    name: Build charm
+    needs:
+      - lint
+      - unit
+      - coverage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt install tox
+          sudo snap install charmcraft --channel 3.x/stable --classic
+          sudo snap install lxd --channel 5.21/stable
+          sudo snap set lxd daemon.group=adm
+          sudo lxd init --auto
+
+      - name: Clear FORWARD firewall rules
+        run: |
+          # Docker can inject rules causing firewall conflicts
+          sudo iptables -P FORWARD ACCEPT  || true
+          sudo ip6tables -P FORWARD ACCEPT || true
+          sudo iptables -F FORWARD  || true
+          sudo ip6tables -F FORWARD || true
+
+      - name: Build charm
+        run: |
+          tox -e build
+
+      - name: Store charm as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ovn-central-charm
+          path: ./ovn-central_amd64.charm
+          retention-days: 7
+
+  parse_tags:
+    name: Parse tags in PR commits
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      zaza_pr: ${{ steps.find-zaza-pr.outputs.zaza_pr }}
+
+    steps:
+      - name: Get PR commits
+        id: 'get-pr-commits'
+        uses: tim-actions/get-pr-commits@198af03565609bb4ed924d1260247b4881f09e7d
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Find requested functional test PR
+        id: 'find-zaza-pr'
+        run: |
+          # Note(mkalcok): The command below cleanely transfers data from Github
+          #                variable to bash variable without interpreting curly
+          #                braces or losing quotations.
+          COMMIT_DATA=$(
+          cat <<'EOF'
+          ${{ steps.get-pr-commits.outputs.commits }}
+          EOF
+          )
+
+          ZAZA_TAG="Func-test-pr: "
+          FUNC_PR=$(jq -r '.[].commit.message' <<< "$COMMIT_DATA" | grep -i "^${ZAZA_TAG}" | tail -1)
+          PR_URL=$(echo $FUNC_PR | sed -e "s/^$ZAZA_TAG//I")
+
+          echo "zaza_pr=$PR_URL" >> "$GITHUB_OUTPUT"
+
+  functest:
+    name: Functional Tests
+    runs-on: [self-hosted, linux, X64, large, noble]
+    needs:
+      - build
+      - parse_tags
+    strategy:
+      matrix:
+        bundle: ["noble-caracal"]
+    env:
+      DEBIAN_FRONTEND: noninteractive
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+ 
+      - name: Download built charm
+        uses: actions/download-artifact@v4
+        with:
+          name: ovn-chassis-charm
+ 
+      - name: Install dependencies
+        run: |
+          sudo apt -yqq install tox
+          sudo snap install concierge --classic
+          sudo snap install juju-wait --classic
+ 
+      - name: Prepare Environment for functional tests
+        run: |
+          # Use concierge to setup LXD, microk8s and bootstrap juju controller
+          cat <<EOF >>/tmp/concierge.yaml
+          juju:
+            channel: 3.5/stable
+
+          providers:
+            microk8s:
+              enable: true
+              bootstrap: false
+              addons:
+                - dns
+                - hostpath-storage
+                - metallb
+
+            lxd:
+              enable: true
+              bootstrap: true
+          EOF
+
+          sudo concierge prepare -c /tmp/concierge.yaml
+
+          # Create second bridged network needed by the functional tests
+          lxc network create second --type=bridge
+
+          # Add microk8s as a kubernetes substrate to the Juju controller
+          sudo microk8s status --wait
+          # The kubernetes API is not always immediately available to use, even if
+          # microk8s status reports ready state. These retries ensure that we don't
+          # fail the test unnecessarily
+          (r=3;while ! juju add-k8s mk8s --controller concierge-lxd ; do ((--r))||exit;sleep 10;done)
+
+      - name: Install custom functional test repository
+        if: ${{ needs.parse_tags.outputs.zaza_pr != '' }}
+        working-directory: ./src/
+        env:
+          ZAZA_PR: ${{ needs.parse_tags.outputs.zaza_pr }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          tox -e func-target --notest
+
+          gh pr view --json headRepositoryOwner,headRepository,headRefName "$ZAZA_PR" > /tmp/zaza-pr.json
+          PR_OWNER=$(cat /tmp/zaza-pr.json | jq -r '.headRepositoryOwner.login')
+          PR_REPO=$(cat /tmp/zaza-pr.json | jq -r '.headRepository.name')
+          PR_BRANCH=$(cat /tmp/zaza-pr.json | jq -r '.headRefName')
+          PR_REPO_URL=$(gh repo view --json url --jq '.url' $PR_OWNER/$PR_REPO)
+
+          source .tox/func-target/bin/activate
+          pip install --force-reinstall --no-deps git+"$PR_REPO_URL"@"$PR_BRANCH"
+
+      - name: Deploy COS lite bundle
+        working-directory: ./src/tests/bundles/
+        run: |
+          juju add-model cos-lite mk8s
+          juju deploy ./cos-lite.yaml --trust --overlay ./offers-overlay.yaml
+          juju-wait -v
+          juju status
+
+      - name: Run functional tests for bundle ${{ matrix.bundle }}
+        working-directory: ./src/
+        run: |
+          tox -e func-target -- ${{ matrix.bundle }}
+
+      - name: Generate crash dumps
+        if: failure()
+        run: |
+          sudo snap install --classic juju-crashdump
+          models=$(juju models | grep zaza | awk '{print $1}' | tr -d '*')
+          rm -rf ./crashdumps
+          mkdir ./crashdumps
+          for model in $models; do
+            juju-crashdump -m $model -o ./crashdumps
+          done
+
+      - name: Upload artifacts on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: crashdumps-${{ matrix.bundle }}
+          path: "./crashdumps/*"
+
