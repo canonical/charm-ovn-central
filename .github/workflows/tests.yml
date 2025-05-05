@@ -147,7 +147,7 @@ jobs:
       - name: Download built charm
         uses: actions/download-artifact@v4
         with:
-          name: ovn-chassis-charm
+          name: ovn-central-charm
  
       - name: Install dependencies
         run: |
