@@ -19,14 +19,19 @@ target_deploy_status:
   nrpe:
     workload-status: blocked
     workload-status-message-prefix: "Nagios server not configured or related"
+  grafana-agent:
+    workload-status: blocked
+    workload-status-message-prefix: ""
 
 # Note that full end to end tests are performed with OVN in the
 # neutron-api-plugin-ovn and octavia charm gates
 configure:
 - zaza.openstack.charm_tests.vault.setup.auto_initialize_no_validation
+- zaza.openstack.charm_tests.cos.setup.try_relate_to_cos
 
 tests:
 - zaza.openstack.charm_tests.ovn.tests.OVNCentralDeferredRestartTest
 - zaza.openstack.charm_tests.ovn.tests.CentralCharmOperationTest
+- zaza.openstack.charm_tests.ovn.tests.CentralCosIntegrationTest
 - zaza.openstack.charm_tests.ovn.tests.OVNCentralDownscaleTests
 

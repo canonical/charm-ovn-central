@@ -8,3 +8,8 @@ git+https://github.com/wolsen/charms.reactive.git@fix-entry-points#egg=charms.re
 git+https://github.com/openstack/charms.openstack.git#egg=charms.openstack
 
 git+https://github.com/juju/charm-helpers.git#egg=charmhelpers
+
+# These dependencies are required for cos-agent
+# interface layer to work correctly.
+cosl==0.0.57
+ops==2.20.0
