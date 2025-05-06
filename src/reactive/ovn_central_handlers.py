@@ -11,6 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import os
+
+from pathlib import Path
 
 import charms.reactive as reactive
 import charms.leadership as leadership
@@ -325,6 +328,27 @@ def maybe_clear_metrics_endpoint():
         return
 
     metrics_endpoint.clear_job(job_name)
+
+
+@reactive.when_none('is-update-status-hook')
+@reactive.when('cos-agent.available',
+               'snap.installed.prometheus-ovn-exporter')
+def configure_cos_agent():
+    """Expose metrics endpoint and dashboards via cos-agent relation."""
+    already_configured = reactive.is_flag_set('cos-agent.configured')
+    is_upgrade_hook = hookenv.hook_name() == 'upgrade-charm'
+
+    if is_upgrade_hook or not already_configured:
+        cos_agent = reactive.endpoint_from_flag('cos-agent.available')
+        dashboards_dir = Path(os.getenv('CHARM_DIR')).joinpath('files',
+                                                               'dashboards')
+        metrics_endpoint = cos_agent.MetricsEndpoint(
+            port=9476,
+            dashboards_dir=dashboards_dir
+        )
+
+        cos_agent.update_cos_agent([metrics_endpoint])
+        reactive.set_flag('cos-agent.configured')
 
 
 @reactive.when('endpoint.ovsdb-peer.departed')

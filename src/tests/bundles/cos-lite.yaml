@@ -1,0 +1,31 @@
+---
+bundle: kubernetes
+name: cos-lite
+description: >
+  COS Lite is a light-weight, highly-integrated, observability stack running on Kubernetes
+applications:
+  traefik:
+    charm: traefik-k8s
+    scale: 1
+    trust: true
+    channel: stable
+  prometheus:
+    charm: prometheus-k8s
+    scale: 1
+    trust: true
+    channel: stable
+  grafana:
+    charm: grafana-k8s
+    scale: 1
+    trust: true
+    channel: stable
+
+relations:
+- [traefik:ingress-per-unit, prometheus:ingress]
+- [traefik:traefik-route, grafana:ingress]
+- [grafana:grafana-source, prometheus:grafana-source]
+# COS-monitoring
+- [prometheus:metrics-endpoint, traefik:metrics-endpoint]
+- [prometheus:metrics-endpoint, grafana:metrics-endpoint]
+- [grafana:grafana-dashboard, prometheus:grafana-dashboard]
+
