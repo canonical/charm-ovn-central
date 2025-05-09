@@ -5,7 +5,7 @@ parts:
     source: src/
     plugin: reactive
     reactive-charm-build-arguments:
-      - --binary-wheels-from-source
+      - --binary-wheels
       - -v
     build-packages:
       - git
