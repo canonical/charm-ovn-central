@@ -671,13 +671,24 @@ class TestOVNCentralCharm(Helper):
         self.patch_object(ovn_central.snap, 'install')
         self.patch_object(ovn_central.snap, 'remove')
         self.patch_object(ovn_central.snap, 'refresh')
+        self.patch_object(ovn_central.ch_core.host, 'service_restart')
+        self.patch_object(ovn_central.reactive, 'is_flag_set')
+        self.patch_object(ovn_central.reactive, 'set_flag')
+        self.patch_object(ovn_central.reactive, 'clear_flag')
 
         self.is_installed.return_value = True
+        self.is_flag_set.return_value = False
 
         self.target.assess_exporter()
         self.remove.assert_called_once_with('prometheus-ovn-exporter')
+        self.clear_flag.assert_called_once_with(
+            'prometheus-ovn-exporter.initialized')
         self.install.assert_not_called()
         self.refresh.assert_not_called()
+
+        # Don't initialize exporter if it was removed
+        self.service_restart.assert_not_called()
+        self.set_flag.assert_not_called()
 
     def test_assess_exporter_no_channel_not_installed(self):
         self.patch_object(
@@ -689,15 +700,25 @@ class TestOVNCentralCharm(Helper):
         self.patch_object(ovn_central.snap, 'install')
         self.patch_object(ovn_central.snap, 'remove')
         self.patch_object(ovn_central.snap, 'refresh')
+        self.patch_object(ovn_central.ch_core.host, 'service_restart')
+        self.patch_object(ovn_central.reactive, 'is_flag_set')
+        self.patch_object(ovn_central.reactive, 'set_flag')
+        self.patch_object(ovn_central.reactive, 'clear_flag')
 
         self.is_installed.return_value = False
+        self.is_flag_set.return_value = False
 
         self.target.assess_exporter()
         self.install.assert_not_called()
         self.refresh.assert_not_called()
         self.remove.assert_not_called()
+        self.clear_flag.assert_not_called()
 
-    def test_assess_exporter_fresh_install(self):
+        # Don't initialize exporter if it is not installed
+        self.service_restart.assert_not_called()
+        self.set_flag.assert_not_called()
+
+    def test_assess_exporter_fresh_install_initialized(self):
         self.patch_object(
             ovn_central.ch_core.hookenv,
             'config',
@@ -706,8 +727,13 @@ class TestOVNCentralCharm(Helper):
         self.patch_object(ovn_central.snap, 'install')
         self.patch_object(ovn_central.snap, 'remove')
         self.patch_object(ovn_central.snap, 'refresh')
+        self.patch_object(ovn_central.ch_core.host, 'service_restart')
+        self.patch_object(ovn_central.reactive, 'is_flag_set')
+        self.patch_object(ovn_central.reactive, 'set_flag')
+        self.patch_object(ovn_central.reactive, 'clear_flag')
 
         self.is_installed.return_value = False
+        self.is_flag_set.return_value = True
 
         self.target.assess_exporter()
 
@@ -715,9 +741,17 @@ class TestOVNCentralCharm(Helper):
             'prometheus-ovn-exporter',
             channel='stable')
         self.remove.assert_not_called()
+        self.clear_flag.assert_not_called()
         self.refresh.assert_not_called()
 
-    def test_assess_exporter_refresh(self):
+        # Always initialized exporter on fresh install, even if the flag
+        # was already set.
+        self.service_restart.assert_called_once_with(
+            self.target.exporter_service)
+        self.set_flag.assert_called_once_with(
+            'prometheus-ovn-exporter.initialized')
+
+    def test_assess_exporter_refresh_initialized(self):
         self.patch_object(
             ovn_central.ch_core.hookenv,
             'config',
@@ -727,8 +761,13 @@ class TestOVNCentralCharm(Helper):
         self.patch_object(ovn_central.snap, 'install')
         self.patch_object(ovn_central.snap, 'remove')
         self.patch_object(ovn_central.snap, 'refresh')
+        self.patch_object(ovn_central.ch_core.host, 'service_restart')
+        self.patch_object(ovn_central.reactive, 'is_flag_set')
+        self.patch_object(ovn_central.reactive, 'set_flag')
+        self.patch_object(ovn_central.reactive, 'clear_flag')
 
         self.is_installed.return_value = True
+        self.is_flag_set.return_value = True
 
         self.target.assess_exporter()
 
@@ -737,6 +776,44 @@ class TestOVNCentralCharm(Helper):
             channel='stable')
         self.install.assert_not_called()
         self.remove.assert_not_called()
+        self.clear_flag.assert_not_called()
+
+        # Don't initialize exporter on refresh if it was already initialized
+        self.service_restart.assert_not_called()
+        self.set_flag.assert_not_called()
+
+    def test_assess_exporter_refresh_not_initialized(self):
+        self.patch_object(
+            ovn_central.ch_core.hookenv,
+            'config',
+            return_value={'ovn-exporter-channel': 'stable'})
+
+        self.patch_object(ovn_central.snap, 'is_installed')
+        self.patch_object(ovn_central.snap, 'install')
+        self.patch_object(ovn_central.snap, 'remove')
+        self.patch_object(ovn_central.snap, 'refresh')
+        self.patch_object(ovn_central.ch_core.host, 'service_restart')
+        self.patch_object(ovn_central.reactive, 'is_flag_set')
+        self.patch_object(ovn_central.reactive, 'set_flag')
+        self.patch_object(ovn_central.reactive, 'clear_flag')
+
+        self.is_installed.return_value = True
+        self.is_flag_set.return_value = False
+
+        self.target.assess_exporter()
+
+        self.refresh.assert_called_once_with(
+            'prometheus-ovn-exporter',
+            channel='stable')
+        self.install.assert_not_called()
+        self.remove.assert_not_called()
+        self.clear_flag.assert_not_called()
+
+        # Initialize exporter on refresh if it hasn't been already.
+        self.service_restart.assert_called_once_with(
+            self.target.exporter_service)
+        self.set_flag.assert_called_once_with(
+            'prometheus-ovn-exporter.initialized')
 
     def test_cluster_leave_ok(self):
         """Test successfully leaving OVN cluster."""
