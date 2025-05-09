@@ -1,0 +1,11 @@
+applications:
+  grafana:
+    offers:
+      grafana-dashboards:
+        endpoints:
+          - grafana-dashboard
+  prometheus:
+    offers:
+      prometheus-receive-remote-write:
+        endpoints:
+        - receive-remote-write
