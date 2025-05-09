@@ -190,6 +190,7 @@ jobs:
         run: |
           sudo apt -yqq install tox
           sudo snap install concierge --classic
+          sudo snap install juju-wait --classic
 
       - name: Prepare Environment for functional tests
         run: |
@@ -199,12 +200,27 @@ jobs:
             channel: 3.4/stable
 
           providers:
+            microk8s:
+              channel: 1.32-strict/stable
+              enable: true
+              bootstrap: false
+              addons:
+                - dns
+                - hostpath-storage
+                - metallb
             lxd:
+              channel: 5.21/stable
               enable: true
               bootstrap: true
           EOF
 
           sudo concierge prepare -c /tmp/concierge.yaml
+          # Add microk8s as a kubernetes substrate to the Juju controller
+          sudo microk8s status --wait
+          # The kubernetes API is not always immediately available to use, even if
+          # microk8s status reports ready state. These retries ensure that we don't
+          # fail the test unnecessarily
+          (r=30;while ! juju add-k8s mk8s --controller concierge-lxd ; do ((--r))||exit;sleep 2;done)
 
       - name: Install custom functional test repository
         if: ${{ needs.parse_tags.outputs.zaza_pr != '' }}
@@ -223,6 +239,14 @@ jobs:
 
           source .tox/func-target/bin/activate
           pip install --force-reinstall --no-deps git+"$PR_REPO_URL"@"$PR_BRANCH"
+
+      - name: Deploy COS lite bundle
+        working-directory: ./src/tests/bundles/
+        run: |
+          juju add-model cos-lite mk8s
+          juju deploy ./cos-lite.yaml --trust --overlay ./offers-overlay.yaml
+          juju-wait -v
+          juju status
 
       - name: Run functional tests for bundle ${{ matrix.bundle }}
         working-directory: ./src/

@@ -14,6 +14,8 @@
 
 import mock
 
+from pathlib import Path
+
 import reactive.ovn_central_handlers as handlers
 
 import charms_openstack.test_utils as test_utils
@@ -67,6 +69,8 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
                 'reassess_exporter': ('is-update-status-hook',),
                 'maybe_clear_metrics_endpoint': ('is-update-status-hook',),
                 'handle_metrics_endpoint': ('is-update-status-hook',),
+                'configure_cos_agent': ('is-update-status-hook',),
+
             },
             'when': {
                 'announce_leader_ready': ('config.rendered',
@@ -111,6 +115,10 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
                     'metrics-endpoint.available',
                 ),
                 'handle_cluster_downscale': ('endpoint.ovsdb-peer.departed',),
+                'configure_cos_agent': (
+                    'cos-agent.available',
+                    'snap.installed.prometheus-ovn-exporter',
+                ),
             },
             'when_any': {
                 'configure_nrpe': ('config.changed.nagios_context',
@@ -372,3 +380,85 @@ class TestOvnCentralHandlers(test_utils.PatchHelper):
         )
         self.configure_firewall.assert_called_once_with()
         self.log.assert_called_once_with(fail_msg, handlers.hookenv.WARNING)
+
+    def test_configure_cos_agent_fresh(self):
+        """Test that configuration is triggered if it wasn't done already."""
+        self.patch_object(handlers.reactive, 'is_flag_set')
+        self.is_flag_set.return_value = False
+
+        self.patch_object(handlers.os, 'getenv')
+        self.getenv.return_value = "/tmp/"
+
+        self.patch_object(handlers.reactive, 'endpoint_from_flag')
+        mock_endpoint = mock.MagicMock()
+        mock_metrics_config = mock.MagicMock()
+        mock_endpoint.MetricsEndpoint.return_value = mock_metrics_config
+        self.endpoint_from_flag.return_value = mock_endpoint
+
+        self.patch_object(handlers.hookenv, 'hook_name')
+        self.hook_name.return_value = 'foo'
+
+        self.patch_object(handlers.reactive, 'set_flag')
+
+        handlers.configure_cos_agent()
+
+        mock_endpoint.MetricsEndpoint.assert_called_once_with(
+            port=9476,
+            dashboards_dir=Path("/tmp/").joinpath('files', 'dashboards'),
+        )
+        mock_endpoint.update_cos_agent.assert_called_once_with(
+            [mock_metrics_config]
+        )
+        self.set_flag.assert_called_once_with('cos-agent.configured')
+
+    def test_configure_cos_agent_force(self):
+        """Test that cos_agent is always reconfigured on upgrade hook."""
+        self.patch_object(handlers.reactive, 'is_flag_set')
+        self.is_flag_set.return_value = True
+
+        self.patch_object(handlers.os, 'getenv')
+        self.getenv.return_value = "/tmp/"
+
+        self.patch_object(handlers.reactive, 'endpoint_from_flag')
+        mock_endpoint = mock.MagicMock()
+        mock_metrics_config = mock.MagicMock()
+        mock_endpoint.MetricsEndpoint.return_value = mock_metrics_config
+        self.endpoint_from_flag.return_value = mock_endpoint
+
+        self.patch_object(handlers.hookenv, 'hook_name')
+        self.hook_name.return_value = 'upgrade-charm'
+
+        self.patch_object(handlers.reactive, 'set_flag')
+
+        handlers.configure_cos_agent()
+
+        mock_endpoint.MetricsEndpoint.assert_called_once_with(
+            port=9476,
+            dashboards_dir=Path("/tmp/").joinpath('files', 'dashboards'),
+        )
+        mock_endpoint.update_cos_agent.assert_called_once_with(
+            [mock_metrics_config]
+        )
+        self.set_flag.assert_called_once_with('cos-agent.configured')
+
+    def test_configure_cos_agent_skip(self):
+        """Test that cos_agent is not reconfigured after initially set up."""
+        self.patch_object(handlers.reactive, 'is_flag_set')
+        self.is_flag_set.return_value = True
+
+        self.patch_object(handlers.os, 'getenv')
+        self.getenv.return_value = "/tmp/"
+
+        self.patch_object(handlers.reactive, 'endpoint_from_flag')
+        mock_endpoint = mock.MagicMock()
+        self.endpoint_from_flag.return_value = mock_endpoint
+
+        self.patch_object(handlers.hookenv, 'hook_name')
+        self.hook_name.return_value = 'foo'
+
+        self.patch_object(handlers.reactive, 'set_flag')
+
+        handlers.configure_cos_agent()
+
+        mock_endpoint.update_cos_agent.assert_not_called()
+        self.set_flag.assert_not_called()
