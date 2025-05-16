@@ -9,3 +9,8 @@ zipp<=1.2.0
 git+https://github.com/openstack/charms.openstack.git@stable/caracal#egg=charms.openstack
 
 git+https://github.com/juju/charm-helpers.git@stable/caracal#egg=charmhelpers
+
+# These dependencies are required for cos-agent
+# interface layer to work correctly.
+cosl==0.0.57
+ops==2.20.0
