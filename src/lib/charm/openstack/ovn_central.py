@@ -124,6 +124,7 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
     source_config_key = 'source'
     min_election_timer = 1
     max_election_timer = 60
+    exporter_service = 'snap.prometheus-ovn-exporter.ovn-exporter'
 
     def __init__(self, **kwargs):
         """Override class init to populate restart map with instance method."""
@@ -859,6 +860,7 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
         if channel is None:
             if is_installed:
                 snap.remove('prometheus-ovn-exporter')
+                reactive.clear_flag('prometheus-ovn-exporter.initialized')
             return
 
         if is_installed:
@@ -866,6 +868,16 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
         else:
             snap.install('prometheus-ovn-exporter', channel=channel)
         snap.connect_all()
+
+        # Note(mkalcok): After the plugs of the exporter snap are connected
+        # for the first time (on snap install), we need to restart
+        # the exporter service for the new permissions to take effect.
+        # The snap can also be installed by the snap layer, so we utilize
+        # additional flag to signal whether we already restarted the service.
+        if (not is_installed or not
+           reactive.is_flag_set('prometheus-ovn-exporter.initialized')):
+            ch_core.host.service_restart(self.exporter_service)
+            reactive.set_flag('prometheus-ovn-exporter.initialized')
 
     @staticmethod
     def leave_cluster():
