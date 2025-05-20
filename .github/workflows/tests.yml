@@ -159,6 +159,8 @@ jobs:
 
           echo "zaza_pr=$PR_URL" >> "$GITHUB_OUTPUT"
 
+  # To conform with the pinned dependency on python3.8 for functional
+  # tests in branch stable/24.03, we run the tests on a Focal runner.
   functest:
     name: Functional Tests
     runs-on: [self-hosted, linux, X64, large, focal]
@@ -173,13 +175,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      # ovn-central branch stable/24.03 is locked to run functional tests
-      # with Python 3.8
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.8"
 
       - name: Download built charm
         uses: actions/download-artifact@v4
