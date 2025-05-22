@@ -18,7 +18,15 @@ applications:
     options:
       source: *openstack-origin
 
+  grafana-agent:
+    charm: ch:grafana-agent
+    channel: latest/stable
+    base: ubuntu@22.04
+
 relations:
 
   - - 'ovn-central:certificates'
     - 'vault:certificates'
+
+  - - 'grafana-agent:cos-agent'
+    - 'ovn-central:cos-agent'
