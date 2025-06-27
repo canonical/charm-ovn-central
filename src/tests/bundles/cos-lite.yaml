@@ -8,17 +8,17 @@ applications:
     charm: traefik-k8s
     scale: 1
     trust: true
-    channel: stable
+    channel: 1.0/stable
   prometheus:
     charm: prometheus-k8s
     scale: 1
     trust: true
-    channel: stable
+    channel: 1/stable
   grafana:
     charm: grafana-k8s
     scale: 1
     trust: true
-    channel: stable
+    channel: 1/stable
 
 relations:
 - [traefik:ingress-per-unit, prometheus:ingress]

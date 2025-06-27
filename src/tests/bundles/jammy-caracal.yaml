@@ -20,7 +20,7 @@ applications:
 
   grafana-agent:
     charm: ch:grafana-agent
-    channel: latest/stable
+    channel: 1/stable
     base: ubuntu@22.04
 
 relations:
