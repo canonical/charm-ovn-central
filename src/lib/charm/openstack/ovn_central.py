@@ -18,6 +18,8 @@ import os
 import subprocess
 import time
 
+from ssl import SSLCertVerificationError
+
 import charmhelpers.core as ch_core
 from charmhelpers.core.host import rsync, write_file
 import charmhelpers.contrib.charmsupport.nrpe as nrpe
@@ -401,9 +403,12 @@ class BaseOVNCentralCharm(charms_openstack.charm.OpenStackCharm):
                                                  'cert_host'),
                                     os.path.join(self.ovn_sysconfdir(),
                                                  'ovn-central.crt'))
-        return os_utils.ows_check_services_running(services=_services,
-                                                   ports=_ports,
-                                                   ssl_check_info=ssl_info)
+        try:
+            return os_utils.ows_check_services_running(services=_services,
+                                                       ports=_ports,
+                                                       ssl_check_info=ssl_info)
+        except SSLCertVerificationError as e:
+            return ("blocked", "Certificate Issue: {}".format(e.strerror))
 
     def custom_assess_status_last_check(self):
         """Customize charm status output.

@@ -36,6 +36,7 @@ tests:
 - zaza.openstack.charm_tests.ovn.tests.CentralCharmOperationTest
 - zaza.openstack.charm_tests.ovn.tests.CentralCosIntegrationTest
 - zaza.openstack.charm_tests.ovn.tests.OVNCentralDownscaleTests
+- zaza.openstack.charm_tests.ovn.tests.OVNCentralSSLExpireTests
 
 tests_options:
   force_deploy:
