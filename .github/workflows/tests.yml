@@ -192,7 +192,7 @@ jobs:
           # Use concierge to setup LXD, microk8s and bootstrap juju controller
           cat <<EOF >>/tmp/concierge.yaml
           juju:
-            channel: 3.4/stable
+            channel: 3.6/stable
 
           providers:
             microk8s:

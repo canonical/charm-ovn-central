@@ -12,8 +12,8 @@ parts:
       - python3-dev
       - libffi-dev
       - libssl-dev
-      - rustc
-      - cargo
+      - rustc-1.85
+      - cargo-1.85
     build-snaps:
       - charm
     build-environment:
