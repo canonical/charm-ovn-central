@@ -1,0 +1,48 @@
+name: Commits
+on:
+  - pull_request
+
+permissions:
+  contents: read
+
+jobs:
+  cla-check:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    name: Canonical CLA signed
+    steps:
+      - name: Check if CLA signed
+        uses: canonical/has-signed-canonical-cla@v2
+
+  dco-check:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read  # for tim-actions/get-pr-commits to get list of commits from the PR
+    name: Signed-off-by (DCO)
+    steps:
+    - name: Get PR Commits
+      id: 'get-pr-commits'
+      uses: tim-actions/get-pr-commits@198af03565609bb4ed924d1260247b4881f09e7d
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Check that all commits are signed-off
+      uses: tim-actions/dco@f2279e6e62d5a7d9115b0cb8e837b777b1b02e21
+      with:
+        commits: ${{ steps.get-pr-commits.outputs.commits }}
+
+  signed-commits-check:
+    runs-on: ubuntu-latest
+    name: Check signed commits in PR
+    permissions:
+      contents: read
+      # Note that the action authors suggest using `on: pull_request_target`
+      # and write permissions so that the action can comment on the PR.
+      #
+      # However, I found that doing that made the job not run on subsequent
+      # updates to the PR, which is not what we want.
+      pull-requests: read
+    steps:
+      - name: Check signed commits in PR
+        uses: 1Password/check-signed-commits-action@v1
