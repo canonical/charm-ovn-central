@@ -15,13 +15,14 @@ applications:
     channel: latest/edge
 
   ovn-central:
-    charm: ../../../ovn-central.charm
+    charm: ../../../ovn-central_ubuntu-20.04-amd64.charm
     num_units: 3
     options:
       source: *openstack-origin
 
   nrpe:
-    charm: cs:nrpe
+    charm: ch:nrpe
+    channel: latest/stable
 
 relations:
 
