@@ -19,7 +19,7 @@ target_deploy_status:
   nrpe:
     workload-status: blocked
     workload-status-message-prefix: "Nagios server not configured or related"
-  grafana-agent:
+  opentelemetry-collector:
     workload-status: blocked
     workload-status-message-prefix: ""
 
