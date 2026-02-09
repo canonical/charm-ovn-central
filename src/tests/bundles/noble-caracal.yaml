@@ -18,9 +18,9 @@ applications:
     options:
       source: *openstack-origin
 
-  grafana-agent:
-    charm: ch:grafana-agent
-    channel: 1/stable
+  opentelemetry-collector:
+    charm: ch:opentelemetry-collector
+    channel: 2/stable
     base: ubuntu@24.04
 
 relations:
@@ -28,5 +28,5 @@ relations:
   - - 'ovn-central:certificates'
     - 'vault:certificates'
 
-  - - 'grafana-agent:cos-agent'
+  - - 'opentelemetry-collector:cos-agent'
     - 'ovn-central:cos-agent'
