@@ -51,12 +51,17 @@ jobs:
         run: |
           tox -e py38
 
-  unit-py310-py311:
+  unit-py310-py312:
     name: Unit Tests
-    runs-on: ubuntu-22.04
+    runs-on: ${{ matrix.series }}
     strategy:
       matrix:
-        python-version: ["3.10", "3.11"]
+        python-version: ["3.10", "3.12"]
+        include:
+          - python-version: "3.10"
+            series: "ubuntu-22.04"
+          - python-version: "3.12"
+            series: "ubuntu-24.04"
     env:
       DEBIAN_FRONTEND: noninteractive
     steps:
@@ -92,7 +97,7 @@ jobs:
     needs:
       - lint
       - unit-py38
-      - unit-py310-py311
+      - unit-py310-py312
       - coverage
     runs-on: ubuntu-22.04
     steps:
@@ -102,7 +107,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt install tox
-          sudo snap install charmcraft --channel 2.x/stable --classic
+          sudo snap install charmcraft --channel 3.x/stable --classic
           sudo snap install lxd --channel 5.21/stable
           sudo snap set lxd daemon.group=adm
           sudo lxd init --auto
@@ -119,11 +124,18 @@ jobs:
         run: |
           tox -e build
 
-      - name: Store charm as artifact
+      - name: Store jammy charm as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ovn-central-charm
-          path: ./ovn-central_ubuntu-22.04-amd64.charm
+          name: ovn-central-charm_22.04
+          path: ./ovn-central_ubuntu@22.04-amd64.charm
+          retention-days: 7
+
+      - name: Store noble charm as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ovn-central-charm_24.04
+          path: ./ovn-central_ubuntu@24.04-amd64.charm
           retention-days: 7
 
   parse_tags:
@@ -169,7 +181,14 @@ jobs:
       - parse_tags
     strategy:
       matrix:
-        bundle: ["jammy-caracal"]
+        bundle:
+          - "jammy-caracal"
+          - "noble-caracal"
+        include:
+          - bundle: "jammy-caracal"
+            series: "22.04"
+          - bundle: "noble-caracal"
+            series: "24.04"
     env:
       DEBIAN_FRONTEND: noninteractive
     steps:
@@ -179,7 +198,7 @@ jobs:
       - name: Download built charm
         uses: actions/download-artifact@v4
         with:
-          name: ovn-central-charm
+          name: ovn-central-charm_${{ matrix.series }}
 
       - name: Install dependencies
         run: |
