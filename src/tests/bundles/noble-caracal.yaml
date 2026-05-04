@@ -3,7 +3,7 @@ variables:
 
 local_overlay_enabled: False
 
-series: mantic
+series: noble
 
 applications:
 
@@ -13,12 +13,20 @@ applications:
     channel: 1.8/edge
 
   ovn-central:
-    charm: ../../../ovn-central_ubuntu-23.10-amd64.charm
+    charm: ../../../ovn-central_ubuntu@22.04-amd64.charm
     num_units: 3
     options:
       source: *openstack-origin
+
+  grafana-agent:
+    charm: ch:grafana-agent
+    channel: 1/stable
+    base: ubuntu@24.04
 
 relations:
 
   - - 'ovn-central:certificates'
     - 'vault:certificates'
+
+  - - 'grafana-agent:cos-agent'
+    - 'ovn-central:cos-agent'
